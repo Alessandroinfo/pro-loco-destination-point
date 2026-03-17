@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
+  <rect width="720" height="540" fill="url(#bg)"/>
+  <circle cx="587" cy="121" r="88" fill="#E7C989" opacity="0.2"/>
+  <path d="M110 272C167 186 254 153 350 155C445 157 502 202 598 189C645 183 683 162 720 126V420H80L110 272Z" fill="rgba(255,255,255,0.16)"/>
+      <path d="M494 382C517 359 555 356 580 376C605 396 606 433 582 456C557 478 516 480 489 458C466 438 467 403 494 382Z" fill="rgba(231,201,137,0.72)"/>
+  <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">LAMPEDUSA E LINOSA ILLUSTRATE</text>
+  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Esplora le Pelagie</text>
+  <defs>
+    <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10243F"/>
+      <stop offset="1" stop-color="#5BB7D4"/>
+    </linearGradient>
+  </defs>
+</svg>

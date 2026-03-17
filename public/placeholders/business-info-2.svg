@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" fill="none">
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="476" cy="148" r="76" fill="#E3EEF9" opacity="0.24"/>
+  <path d="M0 244C151 176 300 164 458 224C625 286 744 321 920 264C1038 226 1128 228 1200 244" fill="rgba(255,255,255,0.1)"/>
+  <path d="M0 356C179 286 298 300 467 362C648 428 816 462 972 409C1070 376 1140 368 1200 380V900H0V356Z" fill="#5B8CB9" opacity="0.4"/>
+  <path d="M0 434C155 390 289 403 463 467C646 535 836 608 1200 541V900H0V434Z" fill="rgba(16,36,63,0.34)"/>
+  <rect x="60" y="60" width="1080" height="780" rx="36" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <text x="82" y="728" fill="#FFFFFF" fill-opacity="0.66" font-size="28" letter-spacing="7" font-family="Arial, sans-serif">PLACEHOLDER VISUAL</text>
+  <text x="82" y="788" fill="#FFFFFF" font-size="64" font-weight="700" font-family="Arial, sans-serif">Info 2</text>
+  <defs>
+    <linearGradient id="bg" x1="42" y1="48" x2="1120" y2="852" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173B63"/>
+      <stop offset="1" stop-color="#5B8CB9"/>
+    </linearGradient>
+  </defs>
+</svg>

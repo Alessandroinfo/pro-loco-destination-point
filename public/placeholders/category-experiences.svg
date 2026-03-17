@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
+  <rect width="720" height="540" fill="url(#bg)"/>
+  <circle cx="587" cy="121" r="88" fill="#C89A3D" opacity="0.2"/>
+  <circle cx="545" cy="132" r="56" fill="#C89A3D" opacity="0.28"/>
+      <path d="M94 388C178 368 250 370 330 395C405 419 476 438 560 434C618 431 657 421 684 410" fill="none" stroke="rgba(255,255,255,0.52)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M96 427C178 410 244 415 325 438C405 462 488 478 575 470C630 465 665 455 689 445" fill="none" stroke="#C89A3D" stroke-width="8" stroke-linecap="round" opacity="0.72"/>
+      <path d="M176 344H548C560 344 570 354 568 366C563 392 542 412 513 421C467 435 390 440 320 431C254 423 205 400 178 371C169 362 167 344 176 344Z" fill="rgba(255,255,255,0.16)"/>
+      <path d="M330 198L408 314H252L330 198Z" fill="rgba(255,255,255,0.9)"/>
+      <path d="M336 172V352" stroke="rgba(255,255,255,0.92)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M336 238L424 314" stroke="#C89A3D" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+      <path d="M344 317H500C512 317 523 326 526 338C532 363 520 389 497 402C469 418 416 427 363 425C314 423 270 413 237 394C217 382 204 362 208 342C210 328 221 317 235 317H344Z" fill="rgba(255,255,255,0.88)"/>
+  <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">MARE, SPORT E LUCE</text>
+  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Esperienze</text>
+  <defs>
+    <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16365D"/>
+      <stop offset="1" stop-color="#5BB7D4"/>
+    </linearGradient>
+  </defs>
+</svg>

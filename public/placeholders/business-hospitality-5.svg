@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" fill="none">
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="410" cy="178" r="100" fill="#F6EAD0" opacity="0.24"/>
+  <path d="M0 280C151 212 300 200 458 260C625 322 744 357 920 300C1038 262 1128 264 1200 280" fill="rgba(255,255,255,0.1)"/>
+  <path d="M0 392C179 322 298 336 467 398C648 464 816 498 972 445C1070 412 1140 404 1200 416V900H0V392Z" fill="#C89A3D" opacity="0.4"/>
+  <path d="M0 470C155 426 289 439 463 503C646 571 836 644 1200 577V900H0V470Z" fill="rgba(16,36,63,0.34)"/>
+  <rect x="60" y="60" width="1080" height="780" rx="36" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <text x="82" y="728" fill="#FFFFFF" fill-opacity="0.66" font-size="28" letter-spacing="7" font-family="Arial, sans-serif">PLACEHOLDER VISUAL</text>
+  <text x="82" y="788" fill="#FFFFFF" font-size="64" font-weight="700" font-family="Arial, sans-serif">Hospitality 5</text>
+  <defs>
+    <linearGradient id="bg" x1="42" y1="48" x2="1120" y2="852" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6E5520"/>
+      <stop offset="1" stop-color="#C89A3D"/>
+    </linearGradient>
+  </defs>
+</svg>

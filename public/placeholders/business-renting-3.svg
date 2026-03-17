@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" fill="none">
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="454" cy="158" r="84" fill="#DAF1E1" opacity="0.24"/>
+  <path d="M0 256C151 188 300 176 458 236C625 298 744 333 920 276C1038 238 1128 240 1200 256" fill="rgba(255,255,255,0.1)"/>
+  <path d="M0 368C179 298 298 312 467 374C648 440 816 474 972 421C1070 388 1140 380 1200 392V900H0V368Z" fill="#58AE72" opacity="0.4"/>
+  <path d="M0 446C155 402 289 415 463 479C646 547 836 620 1200 553V900H0V446Z" fill="rgba(16,36,63,0.34)"/>
+  <rect x="60" y="60" width="1080" height="780" rx="36" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <text x="82" y="728" fill="#FFFFFF" fill-opacity="0.66" font-size="28" letter-spacing="7" font-family="Arial, sans-serif">PLACEHOLDER VISUAL</text>
+  <text x="82" y="788" fill="#FFFFFF" font-size="64" font-weight="700" font-family="Arial, sans-serif">Renting 3</text>
+  <defs>
+    <linearGradient id="bg" x1="42" y1="48" x2="1120" y2="852" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#255B3D"/>
+      <stop offset="1" stop-color="#58AE72"/>
+    </linearGradient>
+  </defs>
+</svg>

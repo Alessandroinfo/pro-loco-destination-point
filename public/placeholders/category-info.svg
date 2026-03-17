@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
+  <rect width="720" height="540" fill="url(#bg)"/>
+  <circle cx="587" cy="121" r="88" fill="#D6E8F8" opacity="0.2"/>
+  <circle cx="360" cy="250" r="92" fill="rgba(255,255,255,0.12)"/>
+      <circle cx="360" cy="250" r="74" stroke="rgba(255,255,255,0.88)" stroke-width="12"/>
+      <circle cx="360" cy="210" r="12" fill="#D6E8F8"/>
+      <path d="M360 240V305" stroke="rgba(255,255,255,0.92)" stroke-width="14" stroke-linecap="round"/>
+      <path d="M212 364C257 340 305 328 361 328C419 328 474 343 525 372" fill="none" stroke="rgba(255,255,255,0.36)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M178 166H248" stroke="rgba(255,255,255,0.7)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M178 202H278" stroke="rgba(255,255,255,0.5)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M472 182H548" stroke="rgba(255,255,255,0.7)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M448 220H548" stroke="rgba(255,255,255,0.5)" stroke-width="10" stroke-linecap="round"/>
+  <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">TRASPORTI, ASSISTENZA, SERVIZI</text>
+  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Info utili</text>
+  <defs>
+    <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16365D"/>
+      <stop offset="1" stop-color="#5B8CB9"/>
+    </linearGradient>
+  </defs>
+</svg>

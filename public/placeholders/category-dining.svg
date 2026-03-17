@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
+  <rect width="720" height="540" fill="url(#bg)"/>
+  <circle cx="587" cy="121" r="88" fill="#F6D9A6" opacity="0.2"/>
+  <circle cx="372" cy="252" r="104" fill="rgba(255,255,255,0.15)"/>
+      <circle cx="372" cy="252" r="80" stroke="rgba(255,255,255,0.88)" stroke-width="12"/>
+      <path d="M215 160V348" stroke="rgba(255,255,255,0.88)" stroke-width="12" stroke-linecap="round"/>
+      <path d="M190 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M215 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M240 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M503 160V348" stroke="rgba(255,255,255,0.88)" stroke-width="12" stroke-linecap="round"/>
+      <path d="M503 160C536 196 540 232 515 260" fill="none" stroke="#F6D9A6" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="540" cy="162" r="36" fill="#F6D9A6" opacity="0.2"/>
+  <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">RISTORANTI, PIZZERIE, TRATTORIE</text>
+  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Ristorazione</text>
+  <defs>
+    <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4B2B18"/>
+      <stop offset="1" stop-color="#C89A3D"/>
+    </linearGradient>
+  </defs>
+</svg>
