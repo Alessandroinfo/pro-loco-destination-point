@@ -156,61 +156,17 @@ function appIconSvg() {
 function scenicSvg(title, subtitle, dark, accent, warm, mode) {
   const safeTitle = escapeXml(title);
   const safeSubtitle = escapeXml(subtitle.toUpperCase());
-  const decorative = {
-    sea: `<circle cx="545" cy="132" r="56" fill="${warm}" opacity="0.28"/>
-      <path d="M94 388C178 368 250 370 330 395C405 419 476 438 560 434C618 431 657 421 684 410" fill="none" stroke="rgba(255,255,255,0.52)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M96 427C178 410 244 415 325 438C405 462 488 478 575 470C630 465 665 455 689 445" fill="none" stroke="${warm}" stroke-width="8" stroke-linecap="round" opacity="0.72"/>
-      <path d="M176 344H548C560 344 570 354 568 366C563 392 542 412 513 421C467 435 390 440 320 431C254 423 205 400 178 371C169 362 167 344 176 344Z" fill="rgba(255,255,255,0.16)"/>
-      <path d="M330 198L408 314H252L330 198Z" fill="rgba(255,255,255,0.9)"/>
-      <path d="M336 172V352" stroke="rgba(255,255,255,0.92)" stroke-width="8" stroke-linecap="round"/>
-      <path d="M336 238L424 314" stroke="${warm}" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
-      <path d="M344 317H500C512 317 523 326 526 338C532 363 520 389 497 402C469 418 416 427 363 425C314 423 270 413 237 394C217 382 204 362 208 342C210 328 221 317 235 317H344Z" fill="rgba(255,255,255,0.88)"/>`,
-    dining: `<circle cx="372" cy="252" r="104" fill="rgba(255,255,255,0.15)"/>
-      <circle cx="372" cy="252" r="80" stroke="rgba(255,255,255,0.88)" stroke-width="12"/>
-      <path d="M215 160V348" stroke="rgba(255,255,255,0.88)" stroke-width="12" stroke-linecap="round"/>
-      <path d="M190 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M215 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M240 160V218" stroke="rgba(255,255,255,0.88)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M503 160V348" stroke="rgba(255,255,255,0.88)" stroke-width="12" stroke-linecap="round"/>
-      <path d="M503 160C536 196 540 232 515 260" fill="none" stroke="${warm}" stroke-width="10" stroke-linecap="round"/>
-      <circle cx="540" cy="162" r="36" fill="${warm}" opacity="0.2"/>`,
-    hospitality: `<rect x="138" y="262" width="432" height="112" rx="34" fill="rgba(255,255,255,0.18)"/>
-      <rect x="164" y="228" width="138" height="92" rx="32" fill="rgba(255,255,255,0.28)"/>
-      <rect x="312" y="284" width="214" height="58" rx="29" fill="rgba(255,255,255,0.92)"/>
-      <rect x="312" y="348" width="228" height="34" rx="17" fill="${warm}" opacity="0.72"/>
-      <path d="M502 150C502 120 527 95 557 95C544 108 537 124 537 140C537 166 556 189 582 195C574 200 563 204 551 204C524 204 502 181 502 150Z" fill="rgba(255,255,255,0.76)"/>
-      <rect x="170" y="122" width="124" height="84" rx="24" fill="rgba(255,255,255,0.14)"/>
-      <path d="M232 122V206" stroke="rgba(255,255,255,0.3)" stroke-width="8"/>
-      <path d="M170 164H294" stroke="rgba(255,255,255,0.3)" stroke-width="8"/>`,
-    renting: `<path d="M132 392C193 373 255 369 333 388C412 407 482 412 548 405C602 400 644 388 677 372" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M168 336H460C485 336 506 353 511 377H149C153 354 144 336 168 336Z" fill="rgba(255,255,255,0.9)"/>
-      <path d="M194 296C224 264 255 249 294 249H376C411 249 434 259 458 281L492 320H181L194 296Z" fill="rgba(255,255,255,0.16)"/>
-      <circle cx="219" cy="384" r="35" fill="${warm}" opacity="0.86"/>
-      <circle cx="219" cy="384" r="18" fill="${dark}"/>
-      <circle cx="434" cy="384" r="35" fill="${warm}" opacity="0.86"/>
-      <circle cx="434" cy="384" r="18" fill="${dark}"/>
-      <path d="M516 198L577 252H471L516 198Z" fill="rgba(255,255,255,0.82)"/>
-      <path d="M516 198V302" stroke="rgba(255,255,255,0.9)" stroke-width="8" stroke-linecap="round"/>
-      <path d="M486 316C529 307 572 307 616 321" fill="none" stroke="${warm}" stroke-width="8" stroke-linecap="round" opacity="0.76"/>`,
-    info: `<circle cx="360" cy="250" r="92" fill="rgba(255,255,255,0.12)"/>
-      <circle cx="360" cy="250" r="74" stroke="rgba(255,255,255,0.88)" stroke-width="12"/>
-      <circle cx="360" cy="210" r="12" fill="${warm}"/>
-      <path d="M360 240V305" stroke="rgba(255,255,255,0.92)" stroke-width="14" stroke-linecap="round"/>
-      <path d="M212 364C257 340 305 328 361 328C419 328 474 343 525 372" fill="none" stroke="rgba(255,255,255,0.36)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M178 166H248" stroke="rgba(255,255,255,0.7)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M178 202H278" stroke="rgba(255,255,255,0.5)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M472 182H548" stroke="rgba(255,255,255,0.7)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M448 220H548" stroke="rgba(255,255,255,0.5)" stroke-width="10" stroke-linecap="round"/>`,
-    map: `<path d="M110 272C167 186 254 153 350 155C445 157 502 202 598 189C645 183 683 162 720 126V420H80L110 272Z" fill="rgba(255,255,255,0.16)"/>
-      <path d="M494 382C517 359 555 356 580 376C605 396 606 433 582 456C557 478 516 480 489 458C466 438 467 403 494 382Z" fill="rgba(231,201,137,0.72)"/>`
-  }[mode];
+  const decorative = scenicIllustration(mode, dark, accent, warm);
 
   return `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
   <rect width="720" height="540" fill="url(#bg)"/>
-  <circle cx="587" cy="121" r="88" fill="${warm}" opacity="0.2"/>
+  <circle cx="590" cy="116" r="92" fill="${warm}" opacity="0.18"/>
+  <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
+  <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
   ${decorative}
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">${safeSubtitle}</text>
   <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">${safeTitle}</text>
   <defs>
@@ -218,8 +174,112 @@ function scenicSvg(title, subtitle, dark, accent, warm, mode) {
       <stop stop-color="${dark}"/>
       <stop offset="1" stop-color="${accent}"/>
     </linearGradient>
+    <linearGradient id="bottomFade" x1="360" y1="336" x2="360" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(16,36,63,0)"/>
+      <stop offset="1" stop-color="rgba(16,36,63,0.44)"/>
+    </linearGradient>
   </defs>
 </svg>`.trim();
+}
+
+function scenicIllustration(mode, dark, accent, warm) {
+  const white = "rgba(255,255,255,0.94)";
+  const soft = "rgba(255,255,255,0.18)";
+  const mist = "rgba(255,255,255,0.1)";
+
+  if (mode === "sea") {
+    return `
+      <path d="M0 304C77 280 159 277 239 294C317 310 392 339 476 343C552 347 633 327 720 277V540H0V304Z" fill="rgba(255,255,255,0.12)"/>
+      <path d="M0 344C88 322 176 322 264 343C350 363 432 390 517 389C589 388 657 370 720 334V540H0V344Z" fill="rgba(91,183,212,0.2)"/>
+      <path d="M132 400C213 381 287 383 357 407C435 434 518 446 607 432C650 425 688 414 720 397" fill="none" stroke="${warm}" stroke-width="7" stroke-linecap="round" opacity="0.78"/>
+      <path d="M122 366C196 347 270 347 344 370C425 395 513 409 604 399C647 394 687 384 720 370" fill="none" stroke="rgba(255,255,255,0.56)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M210 310C240 262 294 231 360 231C406 231 444 245 474 273C503 300 518 336 519 377H205C204 352 205 332 210 310Z" fill="${white}"/>
+      <path d="M218 376C251 390 293 399 341 401C415 405 484 390 532 352" fill="none" stroke="${dark}" stroke-width="4.5" stroke-linecap="round" opacity="0.18"/>
+      <path d="M334 156L414 305H268L334 156Z" fill="${white}"/>
+      <path d="M338 144V385" stroke="${white}" stroke-width="8" stroke-linecap="round"/>
+      <path d="M338 217L432 306" stroke="${warm}" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+      <path d="M232 388C270 372 319 367 376 372C431 377 473 393 506 420" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M238 402C270 395 299 397 326 405C349 412 372 427 390 445" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="5" stroke-linecap="round"/>
+    `.trim();
+  }
+
+  if (mode === "dining") {
+    return `
+      <ellipse cx="362" cy="282" rx="186" ry="112" fill="${soft}"/>
+      <circle cx="362" cy="276" r="98" fill="none" stroke="${white}" stroke-width="14"/>
+      <circle cx="362" cy="276" r="70" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.34)" stroke-width="3"/>
+      <path d="M210 170V370" stroke="${white}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M184 170V228" stroke="${white}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M210 170V228" stroke="${white}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M236 170V228" stroke="${white}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M520 168V370" stroke="${white}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M520 170C555 208 557 244 530 274" fill="none" stroke="${white}" stroke-width="10" stroke-linecap="round"/>
+      <path d="M310 282C328 255 356 240 390 240C417 240 443 250 467 272C449 301 427 320 390 326C356 331 327 315 310 282Z" fill="${warm}" opacity="0.9"/>
+      <path d="M310 282C329 294 352 301 380 301C409 301 432 292 452 277" fill="none" stroke="${dark}" stroke-width="4.5" stroke-linecap="round" opacity="0.18"/>
+      <path d="M343 240C353 219 370 205 395 198" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="548" cy="154" r="30" fill="${warm}" opacity="0.22"/>
+    `.trim();
+  }
+
+  if (mode === "hospitality") {
+    return `
+      <path d="M112 368C160 314 221 286 292 286H510C541 286 570 299 592 322C615 345 628 376 628 410H112V368Z" fill="${soft}"/>
+      <path d="M154 235C154 196 186 164 226 164H499C539 164 572 196 572 235V410H154V235Z" fill="${white}"/>
+      <path d="M154 242H572" stroke="rgba(16,36,63,0.08)" stroke-width="4"/>
+      <path d="M186 235C186 215 202 198 222 198H285V410H186V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M302 235C302 215 318 198 338 198H402C422 198 438 215 438 235V410H302V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M455 235C455 215 471 198 491 198H540V410H455V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M210 410V334C210 317 223 304 240 304H282V410H210Z" fill="${white}" opacity="0.94"/>
+      <path d="M322 410V282C322 266 335 253 352 253C369 253 382 266 382 282V410H322Z" fill="${white}" opacity="0.9"/>
+      <path d="M474 410V324C474 307 487 294 504 294H540V410H474Z" fill="${white}" opacity="0.94"/>
+      <path d="M114 410H628" stroke="${warm}" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+      <path d="M508 140C508 111 531 88 560 88C548 101 542 117 542 132C542 157 560 178 584 184C576 190 566 194 555 194C529 194 508 172 508 140Z" fill="rgba(255,255,255,0.76)"/>
+      <path d="M134 432C188 420 241 420 295 434" fill="none" stroke="rgba(255,255,255,0.48)" stroke-width="6" stroke-linecap="round"/>
+    `.trim();
+  }
+
+  if (mode === "renting") {
+    return `
+      <path d="M0 356C81 334 170 333 260 351C343 368 429 391 517 392C592 392 662 377 720 350V540H0V356Z" fill="rgba(255,255,255,0.1)"/>
+      <path d="M152 348H424C451 348 474 366 480 392H138C142 367 129 348 152 348Z" fill="${white}"/>
+      <path d="M184 308C217 272 251 254 294 254H365C401 254 432 267 458 291L485 322H171L184 308Z" fill="${mist}"/>
+      <circle cx="221" cy="398" r="36" fill="${warm}" opacity="0.92"/>
+      <circle cx="221" cy="398" r="18" fill="${dark}"/>
+      <circle cx="413" cy="398" r="36" fill="${warm}" opacity="0.92"/>
+      <circle cx="413" cy="398" r="18" fill="${dark}"/>
+      <path d="M507 231L571 284H463L507 231Z" fill="${white}"/>
+      <path d="M507 232V338" stroke="${white}" stroke-width="7" stroke-linecap="round"/>
+      <path d="M482 343C531 334 579 336 627 352" fill="none" stroke="${warm}" stroke-width="7" stroke-linecap="round" opacity="0.78"/>
+      <circle cx="618" cy="370" r="45" fill="rgba(255,255,255,0.14)"/>
+      <circle cx="618" cy="370" r="26" stroke="${white}" stroke-width="8"/>
+      <path d="M618 326V414" stroke="${white}" stroke-width="6" stroke-linecap="round"/>
+      <path d="M574 370H662" stroke="${white}" stroke-width="6" stroke-linecap="round"/>
+    `.trim();
+  }
+
+  if (mode === "info") {
+    return `
+      <circle cx="360" cy="245" r="104" fill="${soft}"/>
+      <circle cx="360" cy="245" r="80" fill="none" stroke="${white}" stroke-width="12"/>
+      <circle cx="360" cy="203" r="12" fill="${warm}"/>
+      <path d="M360 234V303" stroke="${white}" stroke-width="14" stroke-linecap="round"/>
+      <path d="M196 356C243 334 296 322 360 322C424 322 480 339 534 372" fill="none" stroke="rgba(255,255,255,0.38)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M176 176H252L284 152" stroke="${white}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M176 220H274L304 245" stroke="rgba(255,255,255,0.66)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M460 182H552L578 160" stroke="${white}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M446 226H542L575 251" stroke="rgba(255,255,255,0.66)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="164" y="154" width="20" height="94" rx="10" fill="rgba(255,255,255,0.3)"/>
+      <rect x="552" y="154" width="20" height="104" rx="10" fill="rgba(255,255,255,0.3)"/>
+    `.trim();
+  }
+
+  return `
+    <path d="M94 290C144 208 236 157 340 157C437 157 520 197 610 188C647 184 685 173 720 152V418H82L94 290Z" fill="rgba(255,255,255,0.16)"/>
+    <path d="M128 304C187 235 259 201 348 201C419 201 486 230 565 228C616 226 668 210 720 177V430H116L128 304Z" fill="rgba(255,255,255,0.12)"/>
+    <path d="M202 265L244 252L289 274L334 249L391 266L448 241L493 265L548 250L603 270" fill="none" stroke="${white}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M505 379C528 356 566 354 591 374C616 394 617 431 593 454C568 476 527 478 500 456C477 436 478 401 505 379Z" fill="${warm}" opacity="0.78"/>
+    <path d="M514 397L548 412L590 390" fill="none" stroke="${dark}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.22"/>
+  `.trim();
 }
 
 function screensaverSvg() {

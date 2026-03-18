@@ -1,15 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
   <rect width="720" height="540" fill="url(#bg)"/>
-  <circle cx="587" cy="121" r="88" fill="#E7C989" opacity="0.2"/>
-  <path d="M110 272C167 186 254 153 350 155C445 157 502 202 598 189C645 183 683 162 720 126V420H80L110 272Z" fill="rgba(255,255,255,0.16)"/>
-      <path d="M494 382C517 359 555 356 580 376C605 396 606 433 582 456C557 478 516 480 489 458C466 438 467 403 494 382Z" fill="rgba(231,201,137,0.72)"/>
+  <circle cx="590" cy="116" r="92" fill="#E7C989" opacity="0.18"/>
+  <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
+  <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
+  <path d="M94 290C144 208 236 157 340 157C437 157 520 197 610 188C647 184 685 173 720 152V418H82L94 290Z" fill="rgba(255,255,255,0.16)"/>
+    <path d="M128 304C187 235 259 201 348 201C419 201 486 230 565 228C616 226 668 210 720 177V430H116L128 304Z" fill="rgba(255,255,255,0.12)"/>
+    <path d="M202 265L244 252L289 274L334 249L391 266L448 241L493 265L548 250L603 270" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M505 379C528 356 566 354 591 374C616 394 617 431 593 454C568 476 527 478 500 456C477 436 478 401 505 379Z" fill="#E7C989" opacity="0.78"/>
+    <path d="M514 397L548 412L590 390" fill="none" stroke="#10243F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.22"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">LAMPEDUSA E LINOSA ILLUSTRATE</text>
   <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Esplora le Pelagie</text>
   <defs>
     <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
       <stop stop-color="#10243F"/>
       <stop offset="1" stop-color="#5BB7D4"/>
+    </linearGradient>
+    <linearGradient id="bottomFade" x1="360" y1="336" x2="360" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(16,36,63,0)"/>
+      <stop offset="1" stop-color="rgba(16,36,63,0.44)"/>
     </linearGradient>
   </defs>
 </svg>

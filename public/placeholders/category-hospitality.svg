@@ -1,21 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
   <rect width="720" height="540" fill="url(#bg)"/>
-  <circle cx="587" cy="121" r="88" fill="#F3E0B2" opacity="0.2"/>
-  <rect x="138" y="262" width="432" height="112" rx="34" fill="rgba(255,255,255,0.18)"/>
-      <rect x="164" y="228" width="138" height="92" rx="32" fill="rgba(255,255,255,0.28)"/>
-      <rect x="312" y="284" width="214" height="58" rx="29" fill="rgba(255,255,255,0.92)"/>
-      <rect x="312" y="348" width="228" height="34" rx="17" fill="#F3E0B2" opacity="0.72"/>
-      <path d="M502 150C502 120 527 95 557 95C544 108 537 124 537 140C537 166 556 189 582 195C574 200 563 204 551 204C524 204 502 181 502 150Z" fill="rgba(255,255,255,0.76)"/>
-      <rect x="170" y="122" width="124" height="84" rx="24" fill="rgba(255,255,255,0.14)"/>
-      <path d="M232 122V206" stroke="rgba(255,255,255,0.3)" stroke-width="8"/>
-      <path d="M170 164H294" stroke="rgba(255,255,255,0.3)" stroke-width="8"/>
+  <circle cx="590" cy="116" r="92" fill="#F3E0B2" opacity="0.18"/>
+  <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
+  <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
+  <path d="M112 368C160 314 221 286 292 286H510C541 286 570 299 592 322C615 345 628 376 628 410H112V368Z" fill="rgba(255,255,255,0.18)"/>
+      <path d="M154 235C154 196 186 164 226 164H499C539 164 572 196 572 235V410H154V235Z" fill="rgba(255,255,255,0.94)"/>
+      <path d="M154 242H572" stroke="rgba(16,36,63,0.08)" stroke-width="4"/>
+      <path d="M186 235C186 215 202 198 222 198H285V410H186V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M302 235C302 215 318 198 338 198H402C422 198 438 215 438 235V410H302V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M455 235C455 215 471 198 491 198H540V410H455V235Z" fill="rgba(16,36,63,0.05)"/>
+      <path d="M210 410V334C210 317 223 304 240 304H282V410H210Z" fill="rgba(255,255,255,0.94)" opacity="0.94"/>
+      <path d="M322 410V282C322 266 335 253 352 253C369 253 382 266 382 282V410H322Z" fill="rgba(255,255,255,0.94)" opacity="0.9"/>
+      <path d="M474 410V324C474 307 487 294 504 294H540V410H474Z" fill="rgba(255,255,255,0.94)" opacity="0.94"/>
+      <path d="M114 410H628" stroke="#F3E0B2" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+      <path d="M508 140C508 111 531 88 560 88C548 101 542 117 542 132C542 157 560 178 584 184C576 190 566 194 555 194C529 194 508 172 508 140Z" fill="rgba(255,255,255,0.76)"/>
+      <path d="M134 432C188 420 241 420 295 434" fill="none" stroke="rgba(255,255,255,0.48)" stroke-width="6" stroke-linecap="round"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">HOTEL, B&amp;B, CASE VACANZA</text>
   <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Ospitalità</text>
   <defs>
     <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
       <stop stop-color="#7A5A1A"/>
       <stop offset="1" stop-color="#C89A3D"/>
+    </linearGradient>
+    <linearGradient id="bottomFade" x1="360" y1="336" x2="360" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(16,36,63,0)"/>
+      <stop offset="1" stop-color="rgba(16,36,63,0.44)"/>
     </linearGradient>
   </defs>
 </svg>
