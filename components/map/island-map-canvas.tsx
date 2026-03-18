@@ -2,45 +2,11 @@
 
 import { useState } from "react";
 
-import { BackLink } from "@/components/back-link";
-import { poiLegend, pois } from "@/lib/totem-data";
+import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
 
-export function MapScreen() {
-  const [activePoiId, setActivePoiId] = useState(pois[0]?.id ?? "");
+export function IslandMapCanvas() {
+  const [activePoiId, setActivePoiId] = useState(pointsOfInterest[0]?.id ?? "");
 
-  return (
-    <section className="flex flex-1 flex-col gap-8">
-      <BackLink href="/" label="Home" />
-
-      <section className="glass-panel soft-outline rounded-[2rem] border p-7">
-        <div className="flex flex-wrap items-center gap-4">
-          <h1 className="text-4xl font-semibold text-navy-950">Mappa interattiva</h1>
-          {Object.entries(poiLegend).map(([label, color]) => (
-            <div key={label} className="flex items-center gap-2 rounded-full bg-slate-50 px-4 py-2 text-sm font-medium text-navy-900">
-              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-              {label}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-1">
-        <div className="glass-panel soft-outline relative min-h-[980px] w-full overflow-hidden rounded-[2rem] border p-6">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(91,183,212,0.15),transparent_28%),linear-gradient(180deg,#fdfefe_0%,#eff6f8_100%)]" />
-          <StylizedIslandMap activePoiId={activePoiId} onPoiPress={setActivePoiId} />
-        </div>
-      </section>
-    </section>
-  );
-}
-
-function StylizedIslandMap({
-  activePoiId,
-  onPoiPress
-}: {
-  activePoiId: string;
-  onPoiPress: (poiId: string) => void;
-}) {
   return (
     <div className="relative isolate h-full min-h-[650px] overflow-hidden rounded-[1.8rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.35),rgba(223,244,250,0.65))]">
       <div className="absolute inset-0 scale-[1.14] transform-gpu">
@@ -60,7 +26,6 @@ function StylizedIslandMap({
           </defs>
 
           <rect width="1000" height="720" fill="url(#seaGradient)" />
-
           <path
             d="M95.0 317.4 L103.1 328.3 L166.3 347.7 L201.8 343.2 L272.1 357.9 L284.6 349.2 L299.4 366.1 L310.1 358.9 L373.5 368.3 L385.2 395.1 L418.4 403.0 L423.1 384.6 L426.9 398.3 L446.0 403.8 L439.9 413.9 L464.6 406.0 L469.4 428.9 L495.6 413.3 L487.5 435.1 L499.6 439.8 L510.1 422.4 L511.8 442.6 L544.1 456.6 L546.4 436.2 L570.2 441.2 L554.7 424.5 L572.4 415.9 L571.2 434.5 L596.7 439.3 L567.6 452.1 L577.4 470.0 L594.2 469.9 L592.9 456.2 L618.5 454.6 L626.3 467.8 L640.7 460.2 L678.0 465.9 L673.0 455.6 L685.5 449.3 L695.5 466.5 L730.5 466.8 L707.6 452.4 L732.5 447.1 L720.8 434.3 L735.0 423.4 L709.8 424.6 L719.2 413.8 L669.6 406.1 L697.4 398.5 L673.1 365.7 L689.1 362.4 L694.4 345.6 L701.9 353.0 L726.3 345.5 L728.3 335.2 L663.9 309.3 L634.2 310.6 L630.6 319.0 L570.3 290.3 L544.8 298.1 L539.5 314.9 L508.1 318.8 L496.2 311.1 L497.9 318.1 L452.6 302.2 L376.3 301.1 L351.5 287.7 L299.9 295.7 L284.3 282.5 L170.8 271.2 L139.0 278.4 L95.0 317.4 Z"
             fill="url(#landGradient)"
@@ -71,13 +36,12 @@ function StylizedIslandMap({
             fill="#E5D4AF"
             filter="url(#mapShadow)"
           />
-
           <path d="M154 404C255 372 355 383 442 395" fill="none" stroke="#FFFFFF" strokeWidth="10" strokeLinecap="round" opacity="0.55" />
           <path d="M792 472C816 469 838 477 852 493" fill="none" stroke="#FFFFFF" strokeWidth="8" strokeLinecap="round" opacity="0.48" />
         </svg>
 
-        {pois.map((poi) => {
-          const color = poiLegend[poi.category];
+        {pointsOfInterest.map((poi) => {
+          const color = pointOfInterestLegend[poi.category];
           const isActive = poi.id === activePoiId;
 
           return (
@@ -86,12 +50,18 @@ function StylizedIslandMap({
               type="button"
               className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left: `${poi.x}%`, top: `${poi.y}%`, zIndex: isActive ? 40 : 10 }}
-              onClick={() => onPoiPress(poi.id)}
+              onClick={() => setActivePoiId(poi.id)}
               aria-label={poi.name}
+              aria-pressed={isActive}
+              aria-describedby={isActive ? `poi-tooltip-${poi.id}` : undefined}
             >
               <div className="relative flex flex-col items-center">
                 {isActive ? (
-                  <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-3 w-56 -translate-x-1/2 rounded-[1.2rem] bg-white/96 p-4 text-left shadow-[0_18px_40px_rgba(16,36,63,0.16)]">
+                  <div
+                    id={`poi-tooltip-${poi.id}`}
+                    role="tooltip"
+                    className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-3 w-56 -translate-x-1/2 rounded-[1.2rem] bg-white/96 p-4 text-left shadow-[0_18px_40px_rgba(16,36,63,0.16)]"
+                  >
                     <p className="text-sm font-semibold text-navy-950">{poi.name}</p>
                     <p className="mt-2 text-sm leading-6 text-navy-900/70">{poi.description}</p>
                   </div>

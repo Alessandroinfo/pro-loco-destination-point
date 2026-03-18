@@ -1,24 +1,7 @@
 import type { Metadata } from "next";
 
-import { HomeScreen } from "@/components/home-screen";
-
-const touristHubJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "TouristInformationCenter",
-  name: "Hub Turistico Pro Loco Lampedusa e Linosa",
-  description:
-    "Punto di accesso digitale della Pro Loco per scoprire aziende, esperienze, ospitalità e punti di interesse a Lampedusa e Linosa.",
-  areaServed: ["Lampedusa", "Linosa"],
-  availableLanguage: ["it", "en"],
-  audience: {
-    "@type": "Audience",
-    audienceType: "Turisti"
-  },
-  provider: {
-    "@type": "Organization",
-    name: "Pro Loco Lampedusa e Linosa"
-  }
-};
+import { HomePage } from "@/components/home/home-page";
+import { touristHubStructuredData } from "@/features/seo/structured-data";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -31,9 +14,9 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(touristHubJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(touristHubStructuredData) }}
       />
-      <HomeScreen />
+      <HomePage />
     </>
   );
 }

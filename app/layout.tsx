@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 
 import "@/app/globals.css";
+import { AppShell } from "@/components/layout/app-shell";
 import { PwaRegister } from "@/components/pwa-register";
-import { TotemShell } from "@/components/totem-shell";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -83,8 +83,14 @@ export default function RootLayout({
   return (
     <html lang="it">
       <body className={`${manrope.variable} ${cormorant.variable}`}>
+        <a
+          href="#main-content"
+          className="skip-link rounded-full bg-navy-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(16,36,63,0.22)]"
+        >
+          Vai al contenuto principale
+        </a>
         <PwaRegister />
-        <TotemShell>{children}</TotemShell>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

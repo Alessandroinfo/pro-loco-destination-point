@@ -34,6 +34,24 @@ body {
   background: #ffffff;
 }
 
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid rgba(91, 183, 212, 0.95);
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2147483647;
+  transform: translateY(-160%);
+  transition: transform 220ms var(--ease-fluid);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 button,
 a {
   touch-action: manipulation;
@@ -166,5 +184,26 @@ img {
   }
   to {
     background-position: -40% 0, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pulse-invite,
+  .float-layer,
+  .screen-fade,
+  .image-skeleton {
+    animation: none !important;
   }
 }
