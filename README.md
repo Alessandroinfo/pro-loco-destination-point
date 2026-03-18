@@ -16,13 +16,17 @@ Static Next.js kiosk application for the Pro Loco tourism hub of Lampedusa and L
 
 ## Functional Overview
 
-- Home page with featured map and category cards.
-- Category pages with business listings.
-- Business detail pages with gallery and WhatsApp booking QR.
-- Interactive offline-friendly island map.
-- Floating QR to continue the current page on a mobile device.
-- Screensaver mode for kiosk inactivity.
-- PWA support with service worker precaching for core routes and local assets.
+- Static App Router website optimized for a 1080x1920 outdoor touch kiosk.
+- SEO-friendly prerendered pages for home, map, category listings, and business details.
+- Home page with full-width hero, featured map entry point, and category discovery cards.
+- Category pages with visual business grids and touch-first navigation.
+- Business detail pages with hero media, image gallery, business info, and booking QR modal.
+- Floating QR button to continue the current page on a mobile device.
+- Interactive Pelagie map with offline local rendering, point-of-interest legend, and tooltips.
+- Screensaver overlay triggered by inactivity, with local video background and return-to-home flow.
+- PWA support with service worker precaching for routes and local assets.
+- Reusable modular architecture with shared UI, feature-based data modules, and English code conventions.
+- Accessibility baseline with skip link, keyboard-focus handling, accessible dialogs, and reduced-motion support.
 
 ## Commands
 
