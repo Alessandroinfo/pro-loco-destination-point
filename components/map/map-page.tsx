@@ -22,8 +22,8 @@ export function MapPage() {
       </section>
 
       <section className="flex flex-1">
-        <div className="glass-panel soft-outline relative min-h-[980px] w-full overflow-hidden rounded-[2rem] border p-6">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(91,183,212,0.15),transparent_28%),linear-gradient(180deg,#fdfefe_0%,#eff6f8_100%)]" />
+        <div className="glass-panel soft-outline relative h-[720px] w-full overflow-visible rounded-[2rem] border p-6">
+          <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,_rgba(91,183,212,0.15),transparent_28%),linear-gradient(180deg,#fdfefe_0%,#eff6f8_100%)]" />
           <IslandMapCanvas />
         </div>
       </section>

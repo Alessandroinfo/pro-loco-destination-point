@@ -25,7 +25,7 @@ export function FeaturedMapCard() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,36,63,0.05),rgba(16,36,63,0.84))]" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-7">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/60">Spiagge, cale, luoghi di interesse</p>
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-white/60">Spiagge, cale e punti di interesse</p>
             <h2 className="mt-3 text-4xl font-semibold text-white">Esplora le Pelagie</h2>
           </div>
           <div className="rounded-full bg-white/12 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
