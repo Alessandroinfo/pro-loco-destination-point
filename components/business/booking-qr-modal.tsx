@@ -72,7 +72,9 @@ export function BookingQrModal({
               )}
             </div>
 
-            <p className="mt-5 text-sm text-navy-900/55">{whatsappMessage}</p>
+            <p className="mt-5 text-sm text-navy-900/55">
+              <span className="font-semibold text-navy-950">Anteprima messaggio:</span> {whatsappMessage}
+            </p>
           </motion.div>
         </motion.div>
       ) : null}

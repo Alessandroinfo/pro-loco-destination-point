@@ -3,19 +3,17 @@
   <circle cx="590" cy="116" r="92" fill="#F6D9A6" opacity="0.18"/>
   <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
   <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
-  <ellipse cx="362" cy="282" rx="186" ry="112" fill="rgba(255,255,255,0.18)"/>
-      <circle cx="362" cy="276" r="98" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="14"/>
-      <circle cx="362" cy="276" r="70" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.34)" stroke-width="3"/>
-      <path d="M210 170V370" stroke="rgba(255,255,255,0.94)" stroke-width="12" stroke-linecap="round"/>
-      <path d="M184 170V228" stroke="rgba(255,255,255,0.94)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M210 170V228" stroke="rgba(255,255,255,0.94)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M236 170V228" stroke="rgba(255,255,255,0.94)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M520 168V370" stroke="rgba(255,255,255,0.94)" stroke-width="12" stroke-linecap="round"/>
-      <path d="M520 170C555 208 557 244 530 274" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="10" stroke-linecap="round"/>
-      <path d="M310 282C328 255 356 240 390 240C417 240 443 250 467 272C449 301 427 320 390 326C356 331 327 315 310 282Z" fill="#F6D9A6" opacity="0.9"/>
-      <path d="M310 282C329 294 352 301 380 301C409 301 432 292 452 277" fill="none" stroke="#4B2B18" stroke-width="4.5" stroke-linecap="round" opacity="0.18"/>
-      <path d="M343 240C353 219 370 205 395 198" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="548" cy="154" r="30" fill="#F6D9A6" opacity="0.22"/>
+  <ellipse cx="360" cy="246" rx="196" ry="118" fill="rgba(255,255,255,0.18)"/>
+      <circle cx="360" cy="246" r="102" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="12"/>
+      <circle cx="360" cy="246" r="70" fill="none" stroke="rgba(255,255,255,0.34)" stroke-width="3"/>
+      <path d="M205 156V352" stroke="rgba(255,255,255,0.94)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M182 156V211" stroke="rgba(255,255,255,0.94)" stroke-width="7.5" stroke-linecap="round"/>
+      <path d="M205 156V211" stroke="rgba(255,255,255,0.94)" stroke-width="7.5" stroke-linecap="round"/>
+      <path d="M228 156V211" stroke="rgba(255,255,255,0.94)" stroke-width="7.5" stroke-linecap="round"/>
+      <path d="M516 156V352" stroke="rgba(255,255,255,0.94)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M516 156C541 189 545 224 526 250" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="8.5" stroke-linecap="round"/>
+      <circle cx="360" cy="246" r="13" fill="#F6D9A6" opacity="0.88"/>
+      <path d="M268 338C298 325 329 319 360 319C393 319 423 325 454 338" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="5" stroke-linecap="round"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">RISTORANTI, PIZZERIE, TRATTORIE</text>

@@ -3,18 +3,19 @@
   <circle cx="590" cy="116" r="92" fill="#F3E0B2" opacity="0.18"/>
   <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
   <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
-  <path d="M112 368C160 314 221 286 292 286H510C541 286 570 299 592 322C615 345 628 376 628 410H112V368Z" fill="rgba(255,255,255,0.18)"/>
-      <path d="M154 235C154 196 186 164 226 164H499C539 164 572 196 572 235V410H154V235Z" fill="rgba(255,255,255,0.94)"/>
-      <path d="M154 242H572" stroke="rgba(16,36,63,0.08)" stroke-width="4"/>
-      <path d="M186 235C186 215 202 198 222 198H285V410H186V235Z" fill="rgba(16,36,63,0.05)"/>
-      <path d="M302 235C302 215 318 198 338 198H402C422 198 438 215 438 235V410H302V235Z" fill="rgba(16,36,63,0.05)"/>
-      <path d="M455 235C455 215 471 198 491 198H540V410H455V235Z" fill="rgba(16,36,63,0.05)"/>
-      <path d="M210 410V334C210 317 223 304 240 304H282V410H210Z" fill="rgba(255,255,255,0.94)" opacity="0.94"/>
-      <path d="M322 410V282C322 266 335 253 352 253C369 253 382 266 382 282V410H322Z" fill="rgba(255,255,255,0.94)" opacity="0.9"/>
-      <path d="M474 410V324C474 307 487 294 504 294H540V410H474Z" fill="rgba(255,255,255,0.94)" opacity="0.94"/>
-      <path d="M114 410H628" stroke="#F3E0B2" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
-      <path d="M508 140C508 111 531 88 560 88C548 101 542 117 542 132C542 157 560 178 584 184C576 190 566 194 555 194C529 194 508 172 508 140Z" fill="rgba(255,255,255,0.76)"/>
-      <path d="M134 432C188 420 241 420 295 434" fill="none" stroke="rgba(255,255,255,0.48)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M140 166C140 132 168 104 202 104H300V274H140V166Z" fill="rgba(255,255,255,0.1)"/>
+      <path d="M312 128C312 96 338 70 370 70H470V246H312V128Z" fill="rgba(255,255,255,0.12)"/>
+      <path d="M482 164C482 135 506 112 535 112H596V280H482V164Z" fill="rgba(255,255,255,0.18)"/>
+      <g transform="translate(146 206)">
+        <rect x="0" y="120" width="430" height="98" rx="32" fill="rgba(255,255,255,0.94)"/>
+        <rect x="0" y="64" width="134" height="82" rx="28" fill="rgba(255,255,255,0.72)"/>
+        <rect x="296" y="64" width="134" height="82" rx="28" fill="rgba(255,255,255,0.72)"/>
+        <rect x="118" y="108" width="194" height="86" rx="28" fill="rgba(255,255,255,0.86)"/>
+        <rect x="26" y="140" width="120" height="54" rx="24" fill="rgba(16,36,63,0.1)"/>
+        <rect x="284" y="140" width="120" height="54" rx="24" fill="rgba(16,36,63,0.1)"/>
+        <path d="M24 219C109 203 197 200 283 211C338 218 387 230 429 248" fill="none" stroke="#F3E0B2" stroke-width="7" stroke-linecap="round" opacity="0.84"/>
+      </g>
+      <path d="M518 128C518 102 539 81 565 81C554 93 548 107 548 121C548 143 565 161 586 166C579 171 570 174 560 174C537 174 518 155 518 128Z" fill="rgba(255,255,255,0.72)"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">HOTEL, B&amp;B, CASE VACANZA</text>

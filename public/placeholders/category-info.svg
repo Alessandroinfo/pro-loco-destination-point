@@ -3,17 +3,11 @@
   <circle cx="590" cy="116" r="92" fill="#D6E8F8" opacity="0.18"/>
   <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
   <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
-  <circle cx="360" cy="245" r="104" fill="rgba(255,255,255,0.18)"/>
-      <circle cx="360" cy="245" r="80" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="12"/>
-      <circle cx="360" cy="203" r="12" fill="#D6E8F8"/>
-      <path d="M360 234V303" stroke="rgba(255,255,255,0.94)" stroke-width="14" stroke-linecap="round"/>
-      <path d="M196 356C243 334 296 322 360 322C424 322 480 339 534 372" fill="none" stroke="rgba(255,255,255,0.38)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M176 176H252L284 152" stroke="rgba(255,255,255,0.94)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M176 220H274L304 245" stroke="rgba(255,255,255,0.66)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M460 182H552L578 160" stroke="rgba(255,255,255,0.94)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M446 226H542L575 251" stroke="rgba(255,255,255,0.66)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-      <rect x="164" y="154" width="20" height="94" rx="10" fill="rgba(255,255,255,0.3)"/>
-      <rect x="552" y="154" width="20" height="104" rx="10" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="360" cy="238" r="126" fill="rgba(255,255,255,0.18)"/>
+      <circle cx="360" cy="238" r="92" fill="none" stroke="rgba(255,255,255,0.94)" stroke-width="12"/>
+      <circle cx="360" cy="190" r="12" fill="#D6E8F8"/>
+      <path d="M360 222V306" stroke="rgba(255,255,255,0.94)" stroke-width="14" stroke-linecap="round"/>
+      <circle cx="360" cy="238" r="148" fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="2"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">TRASPORTI, ASSISTENZA, SERVIZI</text>

@@ -3,20 +3,27 @@
   <circle cx="590" cy="116" r="92" fill="#DCEFD9" opacity="0.18"/>
   <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
   <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
-  <path d="M0 356C81 334 170 333 260 351C343 368 429 391 517 392C592 392 662 377 720 350V540H0V356Z" fill="rgba(255,255,255,0.1)"/>
-      <path d="M152 348H424C451 348 474 366 480 392H138C142 367 129 348 152 348Z" fill="rgba(255,255,255,0.94)"/>
-      <path d="M184 308C217 272 251 254 294 254H365C401 254 432 267 458 291L485 322H171L184 308Z" fill="rgba(255,255,255,0.1)"/>
-      <circle cx="221" cy="398" r="36" fill="#DCEFD9" opacity="0.92"/>
-      <circle cx="221" cy="398" r="18" fill="#1E5A38"/>
-      <circle cx="413" cy="398" r="36" fill="#DCEFD9" opacity="0.92"/>
-      <circle cx="413" cy="398" r="18" fill="#1E5A38"/>
-      <path d="M507 231L571 284H463L507 231Z" fill="rgba(255,255,255,0.94)"/>
-      <path d="M507 232V338" stroke="rgba(255,255,255,0.94)" stroke-width="7" stroke-linecap="round"/>
-      <path d="M482 343C531 334 579 336 627 352" fill="none" stroke="#DCEFD9" stroke-width="7" stroke-linecap="round" opacity="0.78"/>
-      <circle cx="618" cy="370" r="45" fill="rgba(255,255,255,0.14)"/>
-      <circle cx="618" cy="370" r="26" stroke="rgba(255,255,255,0.94)" stroke-width="8"/>
-      <path d="M618 326V414" stroke="rgba(255,255,255,0.94)" stroke-width="6" stroke-linecap="round"/>
-      <path d="M574 370H662" stroke="rgba(255,255,255,0.94)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M0 380C96 355 190 353 278 370C367 388 457 406 548 404C609 402 667 389 720 368V540H0V380Z" fill="rgba(255,255,255,0.1)"/>
+      <g transform="translate(352 124)">
+        <rect x="0" y="56" width="206" height="118" rx="30" fill="rgba(255,255,255,0.18)"/>
+        <rect x="20" y="77" width="58" height="34" rx="10" fill="rgba(255,255,255,0.46)"/>
+        <rect x="88" y="77" width="58" height="34" rx="10" fill="rgba(255,255,255,0.46)"/>
+        <rect x="156" y="77" width="30" height="34" rx="10" fill="rgba(255,255,255,0.46)"/>
+        <path d="M20 134H186" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="46" cy="184" r="22" fill="#DCEFD9" opacity="0.9"/>
+        <circle cx="46" cy="184" r="11" fill="#1E5A38"/>
+        <circle cx="160" cy="184" r="22" fill="#DCEFD9" opacity="0.9"/>
+        <circle cx="160" cy="184" r="11" fill="#1E5A38"/>
+      </g>
+      <g transform="translate(138 236)">
+        <circle cx="78" cy="120" r="34" fill="#DCEFD9" opacity="0.92"/>
+        <circle cx="78" cy="120" r="16" fill="#1E5A38"/>
+        <circle cx="246" cy="120" r="34" fill="#DCEFD9" opacity="0.92"/>
+        <circle cx="246" cy="120" r="16" fill="#1E5A38"/>
+        <path d="M89 74C112 46 136 32 170 32H210C231 32 248 39 260 54L285 87H180C161 87 147 95 136 108L120 128H92C77 128 65 117 65 102C65 89 75 78 89 74Z" fill="rgba(255,255,255,0.94)"/>
+        <path d="M169 32L148 84H254" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M126 128H217" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round"/>
+      </g>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">BARCHE, SCOOTER, AUTO, BICI</text>

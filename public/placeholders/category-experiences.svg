@@ -3,17 +3,20 @@
   <circle cx="590" cy="116" r="92" fill="#C89A3D" opacity="0.18"/>
   <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
   <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
-  <path d="M0 304C77 280 159 277 239 294C317 310 392 339 476 343C552 347 633 327 720 277V540H0V304Z" fill="rgba(255,255,255,0.12)"/>
-      <path d="M0 344C88 322 176 322 264 343C350 363 432 390 517 389C589 388 657 370 720 334V540H0V344Z" fill="rgba(91,183,212,0.2)"/>
-      <path d="M132 400C213 381 287 383 357 407C435 434 518 446 607 432C650 425 688 414 720 397" fill="none" stroke="#C89A3D" stroke-width="7" stroke-linecap="round" opacity="0.78"/>
-      <path d="M122 366C196 347 270 347 344 370C425 395 513 409 604 399C647 394 687 384 720 370" fill="none" stroke="rgba(255,255,255,0.56)" stroke-width="9" stroke-linecap="round"/>
-      <path d="M210 310C240 262 294 231 360 231C406 231 444 245 474 273C503 300 518 336 519 377H205C204 352 205 332 210 310Z" fill="rgba(255,255,255,0.94)"/>
-      <path d="M218 376C251 390 293 399 341 401C415 405 484 390 532 352" fill="none" stroke="#16365D" stroke-width="4.5" stroke-linecap="round" opacity="0.18"/>
-      <path d="M334 156L414 305H268L334 156Z" fill="rgba(255,255,255,0.94)"/>
-      <path d="M338 144V385" stroke="rgba(255,255,255,0.94)" stroke-width="8" stroke-linecap="round"/>
-      <path d="M338 217L432 306" stroke="#C89A3D" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
-      <path d="M232 388C270 372 319 367 376 372C431 377 473 393 506 420" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="6" stroke-linecap="round"/>
-      <path d="M238 402C270 395 299 397 326 405C349 412 372 427 390 445" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M0 324C88 301 179 299 267 316C354 333 440 356 525 355C595 354 661 339 720 312V540H0V324Z" fill="rgba(255,255,255,0.12)"/>
+      <path d="M0 364C94 345 184 346 271 364C357 382 447 398 539 395C601 393 661 382 720 359V540H0V364Z" fill="rgba(91,183,212,0.2)"/>
+      <path d="M112 378C184 362 253 362 323 377C404 394 491 403 583 393C632 388 678 379 720 364" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M136 410C202 399 266 400 332 414C409 430 493 438 583 429C632 424 678 416 720 400" fill="none" stroke="#C89A3D" stroke-width="6" stroke-linecap="round" opacity="0.82"/>
+      <g transform="translate(144 124)">
+        <ellipse cx="212" cy="140" rx="172" ry="102" fill="rgba(255,255,255,0.18)"/>
+        <path d="M214 80V248" stroke="rgba(255,255,255,0.94)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M214 88L314 246H214V88Z" fill="rgba(255,255,255,0.94)"/>
+        <path d="M214 116L148 234H214V116Z" fill="rgba(255,255,255,0.82)"/>
+        <path d="M116 248H388C377 274 352 293 314 305C266 319 203 321 151 308C116 299 90 283 76 261C69 251 76 248 116 248Z" fill="rgba(255,255,255,0.94)"/>
+        <path d="M146 248C178 240 212 236 251 236C296 236 335 241 372 252" fill="none" stroke="rgba(16,36,63,0.16)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M165 278C196 271 227 268 262 268C297 268 328 272 358 280" fill="none" stroke="rgba(255,255,255,0.56)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M150 247H300" stroke="#C89A3D" stroke-width="5" stroke-linecap="round" opacity="0.76"/>
+      </g>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
   <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">MARE, SPORT E LUCE</text>
