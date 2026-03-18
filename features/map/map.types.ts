@@ -6,7 +6,7 @@ export type PointOfInterest = {
   category: PointOfInterestCategory;
   description: string;
   imageSrc: string;
-  x: number;
-  y: number;
+  mapX: number;
+  mapY: number;
   island: "Lampedusa" | "Linosa";
 };

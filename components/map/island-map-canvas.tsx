@@ -6,21 +6,124 @@ import { createPortal } from "react-dom";
 
 import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
 
+const SVG_VIEWBOX_WIDTH = 14731.64444;
+const SVG_VIEWBOX_HEIGHT = 8286.55;
+const SVG_PADDING_X = 3200;
+const SVG_PADDING_Y = 2000;
+const SVG_SCENE_MIN_X = -SVG_PADDING_X;
+const SVG_SCENE_MIN_Y = -SVG_PADDING_Y;
+const SVG_SCENE_WIDTH = SVG_VIEWBOX_WIDTH + SVG_PADDING_X * 2;
+const SVG_SCENE_HEIGHT = SVG_VIEWBOX_HEIGHT + SVG_PADDING_Y * 2;
+const DEFAULT_ZOOM_INDEX = 3;
+const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84];
+
+const mapPaths = {
+  lampedusa:
+    "M 500 4725.15 L 607.17 4869.28 L 758.78 4870.55 L 829.15 4963.79 L 982.69 4971.03 L 1058.55 5066.1 L 1282.85 5068.34 L 1355.97 5162.49 L 1510.23 5168.89 L 1577.8 5263.75 L 1732.04 5270.99 L 1890.37 5086.93 L 1961.04 5085.31 L 2036.87 5182.06 L 2263.16 5187.71 L 2334.2 5282.65 L 2714.9 5288.75 L 2790.09 5383.78 L 3090.44 5391.26 L 3160.83 5484.47 L 3312.45 5485.7 L 3388.37 5579.9 L 3617.21 5594.89 L 3685.66 5682.98 L 3990.86 5690.54 L 4068.85 5784.78 L 4290.32 5790.26 L 4366.22 5885.3 L 4817.39 5898.98 L 4854.39 5943.08 L 4854.11 6038.77 L 4925.19 6132.84 L 4925.06 6222.61 L 5033.07 6364.16 L 5186.72 6367.95 L 5254.98 6464.48 L 5330.48 6463.8 L 5408.11 6376.78 L 5637.2 6382.41 L 5750.15 6520.69 L 5745.05 6615.42 L 5782.04 6660.37 L 6087.27 6667.85 L 6233.55 6859.45 L 6379.76 6856.26 L 6462.94 6768.52 L 6538.3 6773.75 L 6569.77 6817.71 L 6570.2 6913.42 L 6494.55 7004.73 L 6492.23 7099.53 L 6411.99 7180.56 L 6448.86 7230.58 L 6677.88 7239.57 L 6714.3 7194.73 L 6716.64 7099.09 L 6753.08 7053.4 L 6831.13 7062.08 L 6944.1 7200.34 L 6936.83 7384.79 L 7047.04 7522.98 L 7122.49 7524.82 L 7198.44 7619.83 L 7273.97 7618.28 L 7502.76 7352.85 L 7580.29 7354.74 L 7616.72 7309.05 L 7623.9 7213.53 L 7738.63 7080.82 L 7814.16 7079.27 L 7853.23 7124.26 L 7846.08 7218.93 L 7885.03 7269 L 8036.7 7269.3 L 8075.78 7314.28 L 7953.98 7452.75 L 7883.44 7448.5 L 7686.02 7677.44 L 7681.53 7861.95 L 7718.39 7912.81 L 7796.67 7912.18 L 7865.06 8005.3 L 7947.51 7918.38 L 8018.18 7917.56 L 8176.44 7732.55 L 8481.56 7745.88 L 8513.02 7790.68 L 8513.5 7885.54 L 8549.81 7930.46 L 8855.08 7937.85 L 8932.7 7849.96 L 9008.23 7848.4 L 9076.59 7943.21 L 9381.73 7955.66 L 9420.38 7904.08 L 9420.59 7809.24 L 9542.23 7676.68 L 9693.06 7682.85 L 9725.25 7726.82 L 9725.02 7822.51 L 9764.82 7866.66 L 9840.27 7868.48 L 9910.71 7963.33 L 10215.86 7975.75 L 10330.01 7837.07 L 10334.67 7556.87 L 10417.2 7465.7 L 10416.71 7370.84 L 10495 7282.95 L 10494.39 7193.17 L 10576.95 7100.3 L 10537.86 7055.33 L 10316.44 7047.46 L 10277.33 7003.33 L 10284.07 6723.18 L 10247.04 6679.1 L 9788.17 6668.05 L 9751.83 6623.99 L 9870.9 6482.04 L 9948.97 6489.85 L 9985.53 6438.23 L 9992.76 6252.93 L 9877.68 6114.66 L 9801.47 6116.21 L 9618.11 5880.59 L 9701.47 5783.52 L 9700.84 5694.58 L 9744.79 5652.45 L 9815.46 5650.77 L 9859.63 5599.33 L 9859 5510.39 L 9898.11 5468.14 L 10049.05 5468.39 L 10124.62 5377.9 L 10278.19 5384.14 L 10392.17 5251.38 L 10284.91 5104.84 L 10131.23 5103.68 L 10055.25 5009.54 L 9904.48 5002.52 L 9833.36 4908.49 L 8772.55 4882.85 L 8704.06 4794.81 L 8475.24 4779.95 L 8399.14 4691.72 L 8253.22 4684.79 L 8174.5 4590.56 L 8106.6 4592.3 L 8030.74 4494.76 L 7955.23 4496.31 L 7877.64 4583.34 L 7801.45 4584.88 L 7565.66 4856.07 L 7192.74 4844.43 L 7110.22 4934.73 L 6963.43 4934.53 L 6888.27 4837 L 6583.04 4832.07 L 6512.62 4738.88 L 6207.46 4731.41 L 6131.55 4636.38 L 5229.98 4610.84 L 5154.13 4514.12 L 5000.36 4516.25 L 4924.82 4603.32 L 4773.89 4602.98 L 4702.82 4508.91 L 4627.39 4507.05 L 4551.48 4412.86 L 4397.95 4405.68 L 4326.9 4310.76 L 4176.12 4304.49 L 4100.32 4401.7 L 3649.93 4387.15 L 3571.28 4292.04 L 3266.82 4284.48 L 3198.52 4191.32 L 3044.84 4190.03 L 2968.94 4095.83 L 2892.75 4097.32 L 2822.49 3999.02 L 2747.14 3994.61 L 2676.01 3903.91 L 2600.67 3898.64 L 2522.04 3803.52 L 2449.38 3801.71 L 2378.32 3708.47 L 1997.7 3701.5 L 1922.75 3791.94 L 1844.56 3789.99 L 1686.4 3968.12 L 1235.25 3956.81 L 1159.5 4050.62 L 1084 4052.11 L 1006.49 4133.17 L 930.98 4134.66 L 619.32 4496.09 L 543.89 4494.19 L 504.66 4539.79 L 500 4725.15 Z",
+  linosa:
+    "M 11155.93444 1292.3 L 11194.81444 1342.27 L 11423.54444 1347.31 L 11530.72444 1488.54 L 11519.88444 1855.81 L 11595.65444 1952.32 L 11595.75444 2042.08 L 11818.34444 2327.26 L 11811.57444 2416.02 L 11850.44444 2466.84 L 11925.60444 2465.95 L 11996.55444 2562.35 L 12299.73444 2568.99 L 12376.86444 2478.38 L 12527.82444 2479.15 L 12673.92444 2670.33 L 12751.85444 2668.65 L 12903.92444 2492.45 L 13431.15444 2498.87 L 13499.44444 2591.81 L 13730.19444 2600.22 L 13798.45444 2694.85 L 14104.39444 2701.5 L 14217.59444 2567.62 L 14231.64444 1920.15 L 14160.67444 1823.77 L 14160.62444 1730.62 L 14089.65444 1634.24 L 14104.39444 1082.47 L 14064.81444 1032.49 L 13989.72444 1030.86 L 13874.86444 892.88 L 13881.78444 796.5 L 13956.79444 706.68 L 13956.13444 610.13 L 13887.85444 517.19 L 13887.73444 427.43 L 13855.63444 382.7 L 13627.61444 377.74 L 13551.83444 281.25 L 13404.34444 281.42 L 13321.75444 371.07 L 13100.68444 363.71 L 13023.58444 454.32 L 12948.49444 452.68 L 12872.66444 358.73 L 12795.48444 452.73 L 12642.63444 445.99 L 12574.25444 358.12 L 12122.42444 344.83 L 12045.37444 432.9 L 11970.20444 434.64 L 11932.00444 479.52 L 11932.02444 572.67 L 11886.37444 611.47 L 11818.11444 612.51 L 11736.08444 707.24 L 11512.87444 702.33 L 11435.83444 789.54 L 11359.88444 701.5 L 11245.96444 835.32 L 11233.08444 1200.85 L 11155.93444 1292.3 Z",
+  rabbitIslet:
+    "M 3717.63 6013.22 L 3824.99 6152.23 L 3903.2 6154.17 L 3939.65 6108.49 L 3946.84 6013.81 L 4022.51 5922.53 L 3915.13 5784.36 L 3764.34 5777.24 L 3725.12 5822.85 L 3717.63 6013.22 Z"
+} as const;
+
 type TooltipPosition = {
   top: number;
   left: number;
 };
 
+type PanPosition = {
+  x: number;
+  y: number;
+};
+
+type ViewportSize = {
+  width: number;
+  height: number;
+};
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function getClampedPan(pan: PanPosition, zoom: number, viewportSize: ViewportSize): PanPosition {
+  if (!viewportSize.width || !viewportSize.height) {
+    return { x: 0, y: 0 };
+  }
+
+  const maxX = Math.max(0, (viewportSize.width * zoom - viewportSize.width) / 2);
+  const maxY = Math.max(0, (viewportSize.height * zoom - viewportSize.height) / 2);
+
+  return {
+    x: clamp(pan.x, -maxX, maxX),
+    y: clamp(pan.y, -maxY, maxY)
+  };
+}
+
 export function IslandMapCanvas() {
   const [activePoiId, setActivePoiId] = useState(pointsOfInterest[0]?.id ?? "");
   const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const markerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [zoomLevelIndex, setZoomLevelIndex] = useState(DEFAULT_ZOOM_INDEX);
+  const [pan, setPan] = useState<PanPosition>({ x: 0, y: 0 });
+  const [viewportSize, setViewportSize] = useState<ViewportSize>({ width: 0, height: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const markerRefs = useRef<Record<string, SVGGElement | null>>({});
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const dragStateRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originPan: PanPosition;
+  } | null>(null);
+
+  const zoom = ZOOM_LEVELS[zoomLevelIndex];
+  const activePoi = pointsOfInterest.find((poi) => poi.id === activePoiId);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    const viewportElement = viewportRef.current;
+
+    if (!viewportElement) {
+      return;
+    }
+
+    const updateViewportSize = () => {
+      const rect = viewportElement.getBoundingClientRect();
+
+      setViewportSize({
+        width: rect.width,
+        height: rect.height
+      });
+    };
+
+    updateViewportSize();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateViewportSize);
+
+      return () => {
+        window.removeEventListener("resize", updateViewportSize);
+      };
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateViewportSize();
+    });
+
+    resizeObserver.observe(viewportElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    setPan((currentPan) => getClampedPan(currentPan, zoom, viewportSize));
+  }, [zoom, viewportSize]);
 
   useEffect(() => {
     if (!activePoiId) {
@@ -91,80 +194,240 @@ export function IslandMapCanvas() {
       window.removeEventListener("resize", updateTooltipPosition);
       window.removeEventListener("scroll", updateTooltipPosition, true);
     };
-  }, [activePoiId, isClient]);
+  }, [activePoiId, isClient, pan, viewportSize, zoom]);
 
-  const activePoi = pointsOfInterest.find((poi) => poi.id === activePoiId);
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    if (event.target.closest("[data-poi-marker='true']") || event.target.closest("[data-map-control='true']")) {
+      return;
+    }
+
+    if (event.button !== 0 && event.pointerType === "mouse") {
+      return;
+    }
+
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originPan: pan
+    };
+
+    setIsPanning(true);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const dragState = dragStateRef.current;
+
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const nextPan = getClampedPan(
+      {
+        x: dragState.originPan.x + (event.clientX - dragState.startX),
+        y: dragState.originPan.y + (event.clientY - dragState.startY)
+      },
+      zoom,
+      viewportSize
+    );
+
+    setPan(nextPan);
+  };
+
+  const endPan = (event?: React.PointerEvent<HTMLDivElement>) => {
+    if (event && event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    dragStateRef.current = null;
+    setIsPanning(false);
+  };
+
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    setPan((currentPan) =>
+      getClampedPan(
+        {
+          x: currentPan.x - event.deltaX,
+          y: currentPan.y - event.deltaY
+        },
+        zoom,
+        viewportSize
+      )
+    );
+  };
+
+  const togglePoi = (poiId: string) => {
+    setActivePoiId((currentPoiId) => (currentPoiId === poiId ? "" : poiId));
+  };
+
+  const zoomIn = () => {
+    setZoomLevelIndex((currentIndex) => Math.min(currentIndex + 1, ZOOM_LEVELS.length - 1));
+  };
+
+  const zoomOut = () => {
+    setZoomLevelIndex((currentIndex) => Math.max(currentIndex - 1, 0));
+  };
 
   return (
     <div className="relative isolate h-full overflow-visible">
-      <div className="absolute inset-0 overflow-hidden rounded-[1.8rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.35),rgba(223,244,250,0.65))]">
-        <div className="absolute inset-0 scale-[1.14] transform-gpu">
-          <svg viewBox="0 0 1000 720" className="absolute inset-0 h-full w-full" aria-label="Mappa stilizzata di Lampedusa e Linosa" role="img">
+      <div className="absolute inset-0 overflow-hidden rounded-[1.8rem] border border-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]">
+        <div
+          ref={viewportRef}
+          className={`absolute inset-0 touch-none select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"}`}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endPan}
+          onPointerCancel={endPan}
+          onWheel={handleWheel}
+        >
+          <svg
+            viewBox={`${SVG_SCENE_MIN_X} ${SVG_SCENE_MIN_Y} ${SVG_SCENE_WIDTH} ${SVG_SCENE_HEIGHT}`}
+            className={`absolute inset-0 h-full w-full will-change-transform ${isPanning ? "" : "transition-transform duration-300 ease-out"}`}
+            style={{
+              transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})`,
+              transformOrigin: "50% 50%"
+            }}
+            preserveAspectRatio="xMidYMid meet"
+            aria-label="Mappa interattiva di Lampedusa e Linosa"
+            role="img"
+          >
             <defs>
               <linearGradient id="seaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#EAF7FB" />
-                <stop offset="100%" stopColor="#CFEAF2" />
+                <stop offset="0%" stopColor="#0f5670" />
+                <stop offset="38%" stopColor="#176987" />
+                <stop offset="68%" stopColor="#1d7fa2" />
+                <stop offset="100%" stopColor="#22799a" />
               </linearGradient>
-              <linearGradient id="landGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#F8F2E6" />
-                <stop offset="100%" stopColor="#E4D4B0" />
+              <radialGradient id="seaGlow" cx="34%" cy="58%" r="60%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.16" />
+                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id="lampedusaGradient" x1="0%" y1="16%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#d9c89e" />
+                <stop offset="48%" stopColor="#bea779" />
+                <stop offset="100%" stopColor="#9f8961" />
               </linearGradient>
-              <filter id="mapShadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="24" stdDeviation="30" floodColor="#10243f" floodOpacity="0.16" />
+              <linearGradient id="linosaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#d5c39c" />
+                <stop offset="48%" stopColor="#b9a174" />
+                <stop offset="100%" stopColor="#99825e" />
+              </linearGradient>
+              <linearGradient id="rabbitIsletGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#d3c095" />
+                <stop offset="100%" stopColor="#9a8460" />
+              </linearGradient>
+              <filter id="islandShadow" x="-18%" y="-18%" width="140%" height="150%">
+                <feDropShadow dx="0" dy="110" stdDeviation="120" floodColor="#163448" floodOpacity="0.18" />
+              </filter>
+              <filter id="markerShadow" x="-200%" y="-200%" width="400%" height="400%">
+                <feDropShadow dx="0" dy="55" stdDeviation="70" floodColor="#11263a" floodOpacity="0.28" />
               </filter>
             </defs>
 
-            <rect width="1000" height="720" fill="url(#seaGradient)" />
-            <path
-              d="M95.0 317.4 L103.1 328.3 L166.3 347.7 L201.8 343.2 L272.1 357.9 L284.6 349.2 L299.4 366.1 L310.1 358.9 L373.5 368.3 L385.2 395.1 L418.4 403.0 L423.1 384.6 L426.9 398.3 L446.0 403.8 L439.9 413.9 L464.6 406.0 L469.4 428.9 L495.6 413.3 L487.5 435.1 L499.6 439.8 L510.1 422.4 L511.8 442.6 L544.1 456.6 L546.4 436.2 L570.2 441.2 L554.7 424.5 L572.4 415.9 L571.2 434.5 L596.7 439.3 L567.6 452.1 L577.4 470.0 L594.2 469.9 L592.9 456.2 L618.5 454.6 L626.3 467.8 L640.7 460.2 L678.0 465.9 L673.0 455.6 L685.5 449.3 L695.5 466.5 L730.5 466.8 L707.6 452.4 L732.5 447.1 L720.8 434.3 L735.0 423.4 L709.8 424.6 L719.2 413.8 L669.6 406.1 L697.4 398.5 L673.1 365.7 L689.1 362.4 L694.4 345.6 L701.9 353.0 L726.3 345.5 L728.3 335.2 L663.9 309.3 L634.2 310.6 L630.6 319.0 L570.3 290.3 L544.8 298.1 L539.5 314.9 L508.1 318.8 L496.2 311.1 L497.9 318.1 L452.6 302.2 L376.3 301.1 L351.5 287.7 L299.9 295.7 L284.3 282.5 L170.8 271.2 L139.0 278.4 L95.0 317.4 Z"
-              fill="url(#landGradient)"
-              filter="url(#mapShadow)"
-            />
-            <path
-              d="M760.0 451.1 L770.2 458.5 L775.1 453.3 L782.9 455.4 L781.3 464.6 L786.9 472.7 L776.2 471.4 L780.4 479.0 L787.5 482.6 L793.2 497.9 L804.5 506.3 L808.7 507.2 L810.2 503.7 L822.3 505.6 L824.7 500.5 L830.2 504.2 L825.6 504.8 L842.4 506.2 L852.2 502.1 L855.0 503.8 L863.2 498.0 L876.7 507.8 L879.1 504.9 L882.9 507.3 L890.3 504.7 L899.5 510.0 L909.2 498.3 L910.0 486.6 L896.2 460.4 L900.4 453.1 L891.6 451.1 L893.8 448.9 L891.0 441.7 L894.8 441.0 L890.6 437.6 L897.5 430.7 L890.6 431.0 L885.6 422.5 L867.6 420.2 L865.2 424.1 L849.9 421.8 L830.2 423.8 L819.1 418.8 L807.9 419.7 L807.8 424.1 L798.7 425.0 L783.1 437.2 L764.9 437.5 L760.0 451.1 Z"
-              fill="#E5D4AF"
-              filter="url(#mapShadow)"
-            />
-            <path d="M154 404C255 372 355 383 442 395" fill="none" stroke="#FFFFFF" strokeWidth="10" strokeLinecap="round" opacity="0.55" />
-            <path d="M792 472C816 469 838 477 852 493" fill="none" stroke="#FFFFFF" strokeWidth="8" strokeLinecap="round" opacity="0.48" />
+            <rect x={SVG_SCENE_MIN_X} y={SVG_SCENE_MIN_Y} width={SVG_SCENE_WIDTH} height={SVG_SCENE_HEIGHT} fill="url(#seaGradient)" />
+            <rect x={SVG_SCENE_MIN_X} y={SVG_SCENE_MIN_Y} width={SVG_SCENE_WIDTH} height={SVG_SCENE_HEIGHT} fill="url(#seaGlow)" />
+            <ellipse cx="3760" cy="6680" rx="1800" ry="900" fill="#6ad6f1" opacity="0.06" />
+            <ellipse cx="9040" cy="6480" rx="2400" ry="1100" fill="#5ecde7" opacity="0.05" />
+            <ellipse cx="12860" cy="1860" rx="1400" ry="820" fill="#70d8ef" opacity="0.07" />
+
+            <g opacity="0.88">
+              <path d={mapPaths.lampedusa} fill="none" stroke="#79dff1" strokeOpacity="0.28" strokeWidth="280" strokeLinejoin="round" />
+              <path d={mapPaths.linosa} fill="none" stroke="#79dff1" strokeOpacity="0.3" strokeWidth="240" strokeLinejoin="round" />
+              <path d={mapPaths.rabbitIslet} fill="none" stroke="#79dff1" strokeOpacity="0.22" strokeWidth="170" strokeLinejoin="round" />
+              <path d={mapPaths.lampedusa} fill="none" stroke="#9cecff" strokeOpacity="0.18" strokeWidth="140" strokeLinejoin="round" />
+              <path d={mapPaths.linosa} fill="none" stroke="#9cecff" strokeOpacity="0.18" strokeWidth="120" strokeLinejoin="round" />
+              <path d={mapPaths.rabbitIslet} fill="none" stroke="#9cecff" strokeOpacity="0.14" strokeWidth="84" strokeLinejoin="round" />
+            </g>
+
+            <g filter="url(#islandShadow)">
+              <path d={mapPaths.lampedusa} fill="url(#lampedusaGradient)" stroke="#f3e6c7" strokeWidth="14" strokeLinejoin="round" />
+              <path d={mapPaths.rabbitIslet} fill="url(#rabbitIsletGradient)" stroke="#f3e6c7" strokeWidth="10" strokeLinejoin="round" />
+              <path d={mapPaths.linosa} fill="url(#linosaGradient)" stroke="#f3e6c7" strokeWidth="14" strokeLinejoin="round" />
+            </g>
+
+            <path d={mapPaths.lampedusa} fill="none" stroke="#726a4f" strokeOpacity="0.18" strokeWidth="10" strokeLinejoin="round" />
+            <path d={mapPaths.linosa} fill="none" stroke="#726a4f" strokeOpacity="0.18" strokeWidth="10" strokeLinejoin="round" />
+            <path d={mapPaths.rabbitIslet} fill="none" stroke="#726a4f" strokeOpacity="0.14" strokeWidth="8" strokeLinejoin="round" />
+
+            {pointsOfInterest.map((poi) => {
+              const color = pointOfInterestLegend[poi.category];
+              const isActive = poi.id === activePoiId;
+
+              return (
+                <g
+                  key={poi.id}
+                  ref={(element) => {
+                    markerRefs.current[poi.id] = element;
+                  }}
+                  transform={`translate(${poi.mapX} ${poi.mapY})`}
+                  data-poi-marker="true"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={poi.name}
+                  aria-pressed={isActive}
+                  aria-describedby={isActive ? `poi-tooltip-${poi.id}` : undefined}
+                  className="cursor-pointer focus:outline-none"
+                  onClick={() => togglePoi(poi.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      togglePoi(poi.id);
+                    }
+                  }}
+                >
+                  <circle r={isActive ? 190 : 150} fill={color} opacity={0.22} filter="url(#markerShadow)" />
+                  <circle r={isActive ? 112 : 94} fill={color} stroke="#ffffff" strokeWidth="34" />
+                  <circle r={28} fill="#ffffff" opacity="0.82" />
+                </g>
+              );
+            })}
           </svg>
         </div>
       </div>
 
-      <div className="absolute inset-0 z-10 scale-[1.14] transform-gpu">
-        {pointsOfInterest.map((poi) => {
-          const color = pointOfInterestLegend[poi.category];
-          const isActive = poi.id === activePoiId;
+      <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-white/76 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur">
+        Trascina con mouse o touch
+      </div>
 
-          return (
-            <button
-              key={poi.id}
-              type="button"
-              ref={(element) => {
-                markerRefs.current[poi.id] = element;
-              }}
-              data-poi-marker="true"
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: `${poi.x}%`, top: `${poi.y}%`, zIndex: isActive ? 40 : 10 }}
-              onClick={() => setActivePoiId((currentPoiId) => (currentPoiId === poi.id ? "" : poi.id))}
-              aria-label={poi.name}
-              aria-pressed={isActive}
-              aria-describedby={isActive ? `poi-tooltip-${poi.id}` : undefined}
-            >
-              <div className="relative flex flex-col items-center">
-                <span className="absolute h-5 w-5 rounded-full opacity-25 blur-md" style={{ backgroundColor: color }} />
-                <span
-                  className={`relative flex h-5 w-5 items-center justify-center rounded-full border-2 border-white text-[0.45rem] text-white shadow-[0_10px_24px_rgba(16,36,63,0.18)] transition ${
-                    isActive ? "scale-110" : ""
-                  }`}
-                  style={{ backgroundColor: color }}
-                >
-                  •
-                </span>
-              </div>
-            </button>
-          );
-        })}
+      <div data-map-control="true" className="absolute right-4 top-4 z-20 flex flex-col items-center gap-3">
+        <div className="overflow-hidden rounded-[1.2rem] border border-white/55 bg-white/84 shadow-[0_18px_40px_rgba(16,36,63,0.16)] backdrop-blur">
+          <button
+            type="button"
+            className="flex h-12 w-12 items-center justify-center text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:text-navy-950/30"
+            onClick={zoomIn}
+            disabled={zoomLevelIndex === ZOOM_LEVELS.length - 1}
+            aria-label="Aumenta lo zoom"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <div className="h-px bg-navy-950/10" />
+          <button
+            type="button"
+            className="flex h-12 w-12 items-center justify-center text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:text-navy-950/30"
+            onClick={zoomOut}
+            disabled={zoomLevelIndex === 0}
+            aria-label="Riduci lo zoom"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+        </div>
+        <div className="rounded-full border border-white/50 bg-white/76 px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/55 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur">
+          {zoomLevelIndex + 1} / {ZOOM_LEVELS.length}
+        </div>
       </div>
 
       {isClient && activePoi
