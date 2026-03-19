@@ -1,21 +1,21 @@
 "use client";
 
+import Link, { type LinkProps } from "next/link";
+
 import { useAppMode } from "@/components/providers/app-mode-provider";
-import { withBasePath } from "@/lib/site";
 
 type AppModeLinkProps = React.PropsWithChildren<
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
-    href: string;
-  }
+  LinkProps &
+    Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">
 >;
 
 export function AppModeLink({ href, children, ...props }: AppModeLinkProps) {
   const { getModeAwareHref } = useAppMode();
-  const nextHref = withBasePath(getModeAwareHref(href));
+  const nextHref = typeof href === "string" ? getModeAwareHref(href) : href;
 
   return (
-    <a href={nextHref} {...props}>
+    <Link href={nextHref} {...props}>
       {children}
-    </a>
+    </Link>
   );
 }
