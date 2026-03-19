@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
+import Script from "next/script";
 
 import "@/app/globals.css";
 import { AppShell } from "@/components/layout/app-shell";
@@ -83,6 +84,36 @@ export default function RootLayout({
   return (
     <html lang="it">
       <body className={`${manrope.variable} ${cormorant.variable}`}>
+        <Script id="cleanup-local-sw" strategy="beforeInteractive">
+          {`(() => {
+  const hostname = window.location.hostname;
+  const isLocalEnvironment =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]" ||
+    hostname.endsWith(".local");
+
+  if (!isLocalEnvironment) {
+    return;
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+      });
+    }).catch(() => {});
+  }
+
+  if ("caches" in window) {
+    caches.keys().then((keys) => {
+      keys.forEach((key) => {
+        caches.delete(key);
+      });
+    }).catch(() => {});
+  }
+})();`}
+        </Script>
         <a
           href="#main-content"
           className="skip-link rounded-full bg-navy-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(16,36,63,0.22)]"

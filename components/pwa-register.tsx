@@ -10,12 +10,28 @@ export function PwaRegister() {
       return;
     }
 
-    if (process.env.NODE_ENV !== "production") {
+    const hostname = window.location.hostname;
+    const isLocalEnvironment =
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "[::1]" ||
+      hostname.endsWith(".local");
+
+    if (process.env.NODE_ENV !== "production" || isLocalEnvironment) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((registration) => {
           registration.unregister();
         });
       });
+
+      if ("caches" in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            caches.delete(key);
+          });
+        });
+      }
+
       return;
     }
 

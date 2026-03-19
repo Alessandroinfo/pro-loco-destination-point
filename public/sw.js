@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-hub-v7";
+const CACHE_NAME = "pro-loco-hub-v8";
 
 const STATIC_ROUTES = [
   "/",
@@ -114,6 +114,25 @@ function getPrecacheEntries() {
   return [...standardRoutes, ...totemRoutes, ...coreAssets, ...businessAssets];
 }
 
+function shouldBypassRuntimeCache(requestUrl) {
+  const basePath = getBasePath();
+  const nextAssetPrefix = `${basePath}/_next/`;
+
+  if (requestUrl.pathname.startsWith(nextAssetPrefix)) {
+    return true;
+  }
+
+  if (requestUrl.pathname === withBasePath("/sw.js")) {
+    return true;
+  }
+
+  if (/\.(?:js|css|map|txt)$/i.test(requestUrl.pathname)) {
+    return true;
+  }
+
+  return false;
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(getPrecacheEntries())));
   self.skipWaiting();
@@ -141,8 +160,14 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  const requestUrl = new URL(event.request.url);
+
+  if (shouldBypassRuntimeCache(requestUrl)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   if (event.request.mode === "navigate") {
-    const requestUrl = new URL(event.request.url);
     const totemRoot = withBasePath("/totem", { route: true }).replace(/\/$/, "");
     const totemFallbackRoute = withBasePath("/totem/", { route: true });
     const standardFallbackRoute = withBasePath("/", { route: true });
