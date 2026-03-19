@@ -104,7 +104,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
               <button
                 ref={closeButtonRef}
                 type="button"
-                className="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full border border-navy-950/10 bg-white text-xl text-navy-950"
+                className="absolute right-5 top-5 flex h-14 w-14 items-center justify-center rounded-full border border-navy-950/10 bg-white text-[2rem] leading-none text-navy-950"
                 onClick={() => setIsOpen(false)}
                 aria-label="Chiudi modale"
               >
