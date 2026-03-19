@@ -4,17 +4,21 @@ import { join } from "node:path";
 const root = process.cwd();
 const placeholdersDir = join(root, "public", "placeholders");
 const iconsDir = join(root, "public", "icons");
+const totemDir = join(root, "public", "totem");
 
 mkdirSync(placeholdersDir, { recursive: true });
 mkdirSync(iconsDir, { recursive: true });
+mkdirSync(totemDir, { recursive: true });
 
 const siteDescription = "Destination Point della Pro Loco di Lampedusa e Linosa.";
+const basePath = getBasePath();
 
 const assets = [
   ["public/logo-pro-loco.svg", logoSvg()],
   ["public/logo-pro-loco-white.svg", logoWhiteSvg()],
   ["public/og-image.svg", ogImageSvg()],
   ["public/icons/app-icon.svg", appIconSvg()],
+  ["public/totem/manifest.webmanifest", JSON.stringify(createTotemManifest(), null, 2)],
   ["public/placeholders/category-experiences.svg", scenicSvg("Esperienze", "Mare, sport e luce", "#16365D", "#5BB7D4", "#C89A3D", "sea")],
   ["public/placeholders/category-dining.svg", scenicSvg("Ristorazione", "Ristoranti, Pizzerie, Trattorie", "#4B2B18", "#C89A3D", "#F6D9A6", "dining")],
   ["public/placeholders/category-hospitality.svg", scenicSvg("Ospitalità", "Hotel, B&B, Case vacanza", "#7A5A1A", "#C89A3D", "#F3E0B2", "hospitality")],
@@ -52,6 +56,58 @@ function escapeXml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&apos;");
+}
+
+function getBasePath() {
+  const configuredBasePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim();
+
+  if (!configuredBasePath || configuredBasePath === "/") {
+    return "";
+  }
+
+  const normalizedBasePath = configuredBasePath.startsWith("/") ? configuredBasePath : `/${configuredBasePath}`;
+
+  return normalizedBasePath.replace(/\/+$/g, "");
+}
+
+function withBasePath(pathname) {
+  if (!basePath) {
+    return pathname;
+  }
+
+  return pathname === "/" ? `${basePath}/` : `${basePath}${pathname}`;
+}
+
+function createTotemManifest() {
+  return {
+    name: "Pro Loco - Lampedusa e Linosa - Destination Point",
+    short_name: "Destination Point",
+    description: siteDescription,
+    start_url: withBasePath("/totem/"),
+    scope: withBasePath("/totem/"),
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#10243f",
+    orientation: "portrait",
+    icons: [
+      {
+        src: withBasePath("/icons/icon-192.png"),
+        sizes: "192x192",
+        type: "image/png"
+      },
+      {
+        src: withBasePath("/icons/icon-512.png"),
+        sizes: "512x512",
+        type: "image/png"
+      },
+      {
+        src: withBasePath("/icons/icon-512-maskable.png"),
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable"
+      }
+    ]
+  };
 }
 
 function logoSvg() {
@@ -92,7 +148,7 @@ function ogImageSvg() {
   <circle cx="952" cy="146" r="104" fill="#C89A3D" opacity="0.18"/>
   <circle cx="188" cy="506" r="140" fill="#5BB7D4" opacity="0.16"/>
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
-  <image href="/logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
+  <image href="logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="302" fill="#FFFFFF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
   <text x="94" y="358" fill="#E7C989" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa -</text>
   <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>

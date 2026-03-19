@@ -9,6 +9,7 @@ import { useAppMode } from "@/components/providers/app-mode-provider";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
 import { getCanonicalPathname } from "@/lib/app-mode";
 import { getCurrentRouteLabel } from "@/lib/routes";
+import { getRuntimeAbsoluteUrl } from "@/lib/site";
 
 export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
@@ -29,8 +30,12 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
 
     const url = new URL(window.location.href);
     const canonicalPathname = getCanonicalPathname(url.pathname);
+    const canonicalPageUrl = new URL(getRuntimeAbsoluteUrl(url.origin, canonicalPathname));
 
-    setCurrentPageUrl(`${url.origin}${canonicalPathname}${url.search}${url.hash}`);
+    canonicalPageUrl.search = url.search;
+    canonicalPageUrl.hash = url.hash;
+
+    setCurrentPageUrl(canonicalPageUrl.toString());
   }, [currentPath]);
 
   useEffect(() => {

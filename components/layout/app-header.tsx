@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { withBasePath } from "@/lib/site";
+
 export function AppHeader() {
   return (
     <header className="glass-panel soft-outline sticky top-0 z-30 border-b">
@@ -7,7 +9,7 @@ export function AppHeader() {
         <div className="flex items-center gap-4">
           <div className="relative h-16 w-16 overflow-hidden rounded-[1.4rem] bg-white shadow-[0_14px_36px_rgba(16,36,63,0.12)]">
             <Image
-              src="/logo-pro-loco.svg"
+              src={withBasePath("/logo-pro-loco.svg")}
               alt="Logo Pro Loco - Lampedusa e Linosa - Destination Point"
               fill
               sizes="64px"

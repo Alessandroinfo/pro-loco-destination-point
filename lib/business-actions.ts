@@ -120,20 +120,11 @@ export function getBusinessActionQrModalContent(action: BusinessAction, business
       return {
         eyebrow: "Navigazione",
         title: `Portami a ${businessName}`,
-        description:
-          "Inquadra il QR Code con il telefono per aprire Google Maps e raggiungere direttamente questa attivita.",
-        previewLabel: "Coordinate Google Maps mock:",
-        previewValue: `${formatCoordinate(action.latitude)}, ${formatCoordinate(action.longitude)}`,
-        actionHref: getBusinessActionHref(action),
-        actionHrefLabel: "Apri in Google Maps"
+        description: "Inquadra il QR Code con il telefono per aprire Google Maps e raggiungere direttamente questa attivita."
       };
     default:
       return exhaustiveCheck(action);
   }
-}
-
-function formatCoordinate(value: number) {
-  return value.toFixed(6);
 }
 
 function exhaustiveCheck(value: never): never {

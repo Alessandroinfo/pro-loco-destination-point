@@ -1,16 +1,16 @@
 import type { MetadataRoute } from "next";
 
+import { getAbsoluteUrl, withBasePath } from "@/lib/site";
+
 export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
-      disallow: ["/totem", "/totem/"]
+      allow: withBasePath("/"),
+      disallow: [withBasePath("/totem"), withBasePath("/totem/")]
     },
-    sitemap: siteUrl ? `${siteUrl}/sitemap.xml` : undefined
+    sitemap: getAbsoluteUrl("/sitemap.xml")
   };
 }

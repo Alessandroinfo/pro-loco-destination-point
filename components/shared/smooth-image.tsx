@@ -3,6 +3,8 @@
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 
+import { withBasePath } from "@/lib/site";
+
 type SmoothImageProps = ImageProps & {
   skeletonClassName?: string;
 };
@@ -20,6 +22,7 @@ export function SmoothImage({
 }: SmoothImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const isSvgAsset = typeof src === "string" && src.endsWith(".svg");
+  const resolvedSrc = typeof src === "string" ? withBasePath(src) : src;
 
   useEffect(() => {
     setIsLoaded(isSvgAsset);
@@ -29,7 +32,7 @@ export function SmoothImage({
     return (
       <Image
         {...props}
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         unoptimized={unoptimized ?? true}
         onLoad={onLoad}
@@ -48,7 +51,7 @@ export function SmoothImage({
       />
       <Image
         {...props}
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         unoptimized={unoptimized ?? isSvgAsset}
         onLoadingComplete={(image) => {

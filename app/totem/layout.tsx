@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
+import { withBasePath } from "@/lib/site";
+
 export const metadata: Metadata = {
-  manifest: "/totem/manifest.webmanifest",
+  manifest: withBasePath("/totem/manifest.webmanifest"),
   robots: {
     index: false,
     follow: false,

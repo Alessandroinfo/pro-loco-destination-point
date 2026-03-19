@@ -1,4 +1,5 @@
-const CACHE_NAME = "pro-loco-hub-v6";
+const CACHE_NAME = "pro-loco-hub-v7";
+
 const STATIC_ROUTES = [
   "/",
   "/map/",
@@ -39,7 +40,6 @@ const STATIC_ROUTES = [
   "/categories/info/pelagie-help-desk/",
   "/categories/info/mobilita-pelagie/"
 ];
-const TOTEM_STATIC_ROUTES = STATIC_ROUTES.map((route) => (route === "/" ? "/totem/" : `/totem${route}`));
 
 const CORE_ASSETS = [
   "/manifest.webmanifest",
@@ -65,10 +65,57 @@ const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "shop
   Array.from({ length: 6 }, (_, index) => `/placeholders/business-${prefix}-${index + 1}.svg`)
 );
 
-self.addEventListener("install", (event) => {
-  const precacheEntries = [...STATIC_ROUTES, ...TOTEM_STATIC_ROUTES, ...CORE_ASSETS, ...BUSINESS_ASSETS];
+function normalizeRoute(pathname) {
+  if (!pathname || pathname === "/") {
+    return "/";
+  }
 
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(precacheEntries)));
+  return pathname.endsWith("/") ? pathname : `${pathname}/`;
+}
+
+function normalizeAsset(pathname) {
+  if (!pathname || pathname === "/") {
+    return "/";
+  }
+
+  return pathname.startsWith("/") ? pathname : `/${pathname}`;
+}
+
+function getBasePath() {
+  const scopeUrl = new URL(self.registration.scope);
+  const normalizedScopePath = scopeUrl.pathname.endsWith("/") ? scopeUrl.pathname.slice(0, -1) : scopeUrl.pathname;
+
+  return normalizedScopePath === "" ? "" : normalizedScopePath;
+}
+
+function withBasePath(pathname, { route = false } = {}) {
+  const basePath = getBasePath();
+  const normalizedPathname = route ? normalizeRoute(pathname) : normalizeAsset(pathname);
+
+  if (!basePath) {
+    return normalizedPathname;
+  }
+
+  if (normalizedPathname === "/") {
+    return `${basePath}/`;
+  }
+
+  return `${basePath}${normalizedPathname}`;
+}
+
+function getPrecacheEntries() {
+  const standardRoutes = STATIC_ROUTES.map((route) => withBasePath(route, { route: true }));
+  const totemRoutes = STATIC_ROUTES.map((route) =>
+    withBasePath(route === "/" ? "/totem/" : `/totem${route}`, { route: true })
+  );
+  const coreAssets = CORE_ASSETS.map((asset) => withBasePath(asset));
+  const businessAssets = BUSINESS_ASSETS.map((asset) => withBasePath(asset));
+
+  return [...standardRoutes, ...totemRoutes, ...coreAssets, ...businessAssets];
+}
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(getPrecacheEntries())));
   self.skipWaiting();
 });
 
@@ -96,7 +143,13 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     const requestUrl = new URL(event.request.url);
-    const fallbackRoute = requestUrl.pathname.startsWith("/totem/") || requestUrl.pathname === "/totem" ? "/totem/" : "/";
+    const totemRoot = withBasePath("/totem", { route: true }).replace(/\/$/, "");
+    const totemFallbackRoute = withBasePath("/totem/", { route: true });
+    const standardFallbackRoute = withBasePath("/", { route: true });
+    const fallbackRoute =
+      requestUrl.pathname === totemRoot || requestUrl.pathname.startsWith(totemFallbackRoute)
+        ? totemFallbackRoute
+        : standardFallbackRoute;
 
     event.respondWith(
       fetch(event.request)
@@ -105,11 +158,12 @@ self.addEventListener("fetch", (event) => {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           }
+
           return response;
         })
         .catch(async () => {
           const cachedPage = await caches.match(event.request);
-          return cachedPage ?? caches.match(fallbackRoute) ?? caches.match("/");
+          return cachedPage ?? caches.match(fallbackRoute) ?? caches.match(standardFallbackRoute);
         })
     );
     return;
@@ -127,9 +181,10 @@ self.addEventListener("fetch", (event) => {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           }
+
           return response;
         })
-        .catch(() => caches.match("/"));
+        .catch(() => caches.match(withBasePath("/", { route: true })));
     })
   );
 });

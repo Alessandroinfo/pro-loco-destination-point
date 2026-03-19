@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { withBasePath } from "@/lib/site";
+
 export function PwaRegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) {
@@ -17,7 +19,9 @@ export function PwaRegister() {
       return;
     }
 
-    navigator.serviceWorker.register("/sw.js").catch(() => {
+    navigator.serviceWorker.register(withBasePath("/sw.js"), {
+      scope: withBasePath("/")
+    }).catch(() => {
       // Registration failure should not block the kiosk experience.
     });
   }, []);

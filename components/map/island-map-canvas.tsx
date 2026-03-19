@@ -9,6 +9,7 @@ import { PoiRouteQrModal, getGoogleMapsUrl } from "@/components/map/poi-route-qr
 import { useAppMode } from "@/components/providers/app-mode-provider";
 import type { PointOfInterest } from "@/features/map/map.types";
 import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
+import { withBasePath } from "@/lib/site";
 
 const SVG_VIEWBOX_WIDTH = 14731.64444;
 const SVG_VIEWBOX_HEIGHT = 8286.55;
@@ -692,7 +693,7 @@ export function IslandMapCanvas({
             >
               <div className="relative h-52 overflow-hidden rounded-[1rem] bg-slate-100">
                 <Image
-                  src={activePoi.imageSrc}
+                  src={withBasePath(activePoi.imageSrc)}
                   alt=""
                   aria-hidden="true"
                   fill

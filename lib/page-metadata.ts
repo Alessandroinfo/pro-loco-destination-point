@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import type { AppMode } from "@/lib/app-mode";
 import type { Business, Category } from "@/features/catalog/catalog.types";
-import { getAbsoluteUrl } from "@/lib/site";
+import { getAbsoluteRouteUrl } from "@/lib/site";
 import { SITE_DESCRIPTION, SITE_SHORT_NAME } from "@/lib/site-brand";
 import { publicRoutes } from "@/lib/routes";
 
@@ -40,7 +40,7 @@ function createModeAwareMetadata({
     title,
     description,
     alternates: {
-      canonical: getAbsoluteUrl(canonicalPathname)
+      canonical: getAbsoluteRouteUrl(canonicalPathname)
     },
     robots: getTotemRobots(mode)
   };

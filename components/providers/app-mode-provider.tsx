@@ -10,6 +10,7 @@ import {
   getModeAwareHref,
   resolveAppModeFromPathname
 } from "@/lib/app-mode";
+import { stripBasePath } from "@/lib/site";
 
 type AppPageContext = {
   actualPathname: string;
@@ -31,7 +32,7 @@ type WindowWithPageContext = Window & {
 const AppModeContext = createContext<AppModeContextValue | null>(null);
 
 export function AppModeProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() ?? "/";
+  const pathname = stripBasePath(usePathname() ?? "/");
   const mode = resolveAppModeFromPathname(pathname);
   const canonicalPathname = getCanonicalPathname(pathname);
 

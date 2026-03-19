@@ -4,7 +4,10 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
-const SCREENSAVER_VIDEO = "/boat-video.mp4";
+import { withBasePath } from "@/lib/site";
+
+const SCREENSAVER_VIDEO = withBasePath("/boat-video.mp4");
+const SCREENSAVER_POSTER = withBasePath("/placeholders/screensaver-poster.svg");
 
 export function ScreensaverOverlay({
   isActive,
@@ -47,7 +50,7 @@ export function ScreensaverOverlay({
           }}
         >
           <div className="absolute inset-0">
-            <video className="h-full w-full object-cover" autoPlay muted loop playsInline poster="/placeholders/screensaver-poster.svg" aria-hidden="true">
+            <video className="h-full w-full object-cover" autoPlay muted loop playsInline poster={SCREENSAVER_POSTER} aria-hidden="true">
               <source src={SCREENSAVER_VIDEO} type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,36,63,0.25),rgba(16,36,63,0.75))]" />
@@ -56,7 +59,7 @@ export function ScreensaverOverlay({
           <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
             <div className="relative h-28 w-28 overflow-hidden border-white/20">
               <Image
-                src="/logo-pro-loco-white.svg"
+                src={withBasePath("/logo-pro-loco-white.svg")}
                 alt="Logo Pro Loco"
                 fill
                 sizes="112px"

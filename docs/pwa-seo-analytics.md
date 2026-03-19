@@ -14,12 +14,14 @@
 - Standard manifest: `/manifest.webmanifest`
 - Totem manifest: `/totem/manifest.webmanifest`
 - The totem manifest uses `start_url` and `scope` under `/totem/`.
+- Manifest URLs, icons, service worker registration, and asset URLs are base-path aware.
 
 This allows the public app and the kiosk app to be installable with the correct startup context.
 
 ## Offline Support
 
 - The shared service worker is registered from `/sw.js`.
+- When the app is hosted under a subpath, the registration and cache scope are automatically adjusted to that base path.
 - It precaches:
   - public routes
   - `/totem` routes

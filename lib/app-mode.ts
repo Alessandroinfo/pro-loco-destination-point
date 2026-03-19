@@ -1,3 +1,5 @@
+import { stripBasePath } from "@/lib/site";
+
 export type AppMode = "standard" | "totem";
 
 export const TOTEM_ROUTE_PREFIX = "/totem";
@@ -7,7 +9,13 @@ function normalizeAppPath(pathname: string | null | undefined) {
     return "/";
   }
 
-  return pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const pathnameWithoutBasePath = stripBasePath(pathname);
+  const pathnameWithoutTrailingSlash =
+    pathnameWithoutBasePath !== "/" && pathnameWithoutBasePath.endsWith("/")
+      ? pathnameWithoutBasePath.slice(0, -1)
+      : pathnameWithoutBasePath;
+
+  return pathnameWithoutTrailingSlash.startsWith("/") ? pathnameWithoutTrailingSlash : `/${pathnameWithoutTrailingSlash}`;
 }
 
 export function resolveAppModeFromPathname(pathname: string | null | undefined): AppMode {

@@ -5,9 +5,9 @@
   "scripts": {
     "assets:generate": "node scripts/generate-assets.mjs",
     "dev": "next dev",
-    "build": "next build",
-    "start": "npx serve out",
-    "serve": "npx serve out"
+    "build": "npm run assets:generate && next build",
+    "start": "node scripts/serve-export.mjs",
+    "serve": "node scripts/serve-export.mjs"
   },
   "dependencies": {
     "framer-motion": "12.38.0",

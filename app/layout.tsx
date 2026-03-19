@@ -6,6 +6,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { PwaRegister } from "@/components/pwa-register";
 import { AppModeProvider } from "@/components/providers/app-mode-provider";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-brand";
+import { getAbsoluteUrl, getSiteUrl, withBasePath } from "@/lib/site";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -21,7 +22,7 @@ const cormorant = Cormorant_Garamond({
   weight: ["400", "500", "600", "700"]
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
     locale: "it_IT",
     images: [
       {
-        url: "/og-image.svg",
+        url: getAbsoluteUrl("/og-image.svg"),
         width: 1200,
         height: 630,
         alt: SITE_NAME
@@ -68,10 +69,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/og-image.svg"]
+    images: [getAbsoluteUrl("/og-image.svg")]
   },
   category: "travel",
-  manifest: "/manifest.webmanifest"
+  manifest: withBasePath("/manifest.webmanifest")
 };
 
 export default function RootLayout({

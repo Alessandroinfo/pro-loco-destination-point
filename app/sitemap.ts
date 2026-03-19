@@ -3,17 +3,14 @@ import type { MetadataRoute } from "next";
 import { businesses } from "@/features/catalog/businesses.data";
 import { categories } from "@/features/catalog/categories.data";
 import { getBusinessRoute, getCategoryRoute, getMapRoute, getHomeRoute } from "@/lib/routes";
-
-const fallbackSiteUrl = "https://example.com";
+import { getAbsoluteRouteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? fallbackSiteUrl;
-
   const routes: MetadataRoute.Sitemap = [
     {
-      url: `${siteUrl}${getHomeRoute("standard")}`,
+      url: getAbsoluteRouteUrl(getHomeRoute("standard")),
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1
@@ -22,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   categories.forEach((category) => {
     routes.push({
-      url: `${siteUrl}${getCategoryRoute(category.id)}`,
+      url: getAbsoluteRouteUrl(getCategoryRoute(category.id)),
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8
@@ -31,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   businesses.forEach((business) => {
     routes.push({
-      url: `${siteUrl}${getBusinessRoute(business.categoryId, business.id)}`,
+      url: getAbsoluteRouteUrl(getBusinessRoute(business.categoryId, business.id)),
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7
@@ -39,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
 
   routes.push({
-    url: `${siteUrl}${getMapRoute("standard")}`,
+    url: getAbsoluteRouteUrl(getMapRoute("standard")),
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.75

@@ -4,7 +4,7 @@
   <circle cx="952" cy="146" r="104" fill="#C89A3D" opacity="0.18"/>
   <circle cx="188" cy="506" r="140" fill="#5BB7D4" opacity="0.16"/>
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
-  <image href="/logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
+  <image href="logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="302" fill="#FFFFFF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
   <text x="94" y="358" fill="#E7C989" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa -</text>
   <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
