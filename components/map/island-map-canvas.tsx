@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { PoiRouteQrModal, getGoogleMapsUrl } from "@/components/map/poi-route-qr-modal";
+import { useAppMode } from "@/components/providers/app-mode-provider";
 import type { PointOfInterest } from "@/features/map/map.types";
 import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
 
@@ -59,6 +61,7 @@ type IslandMapCanvasProps = {
   points?: PointOfInterest[];
   onMapCoordinatePick?: (coordinates: MapCoordinate) => void;
   pointInsertionMode?: boolean;
+  highlightedPoiId?: string | null;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -115,7 +118,12 @@ function getPanForCenteredCoordinate(coordinate: MapCoordinate, zoom: number, vi
   );
 }
 
-export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick, pointInsertionMode = false }: IslandMapCanvasProps) {
+export function IslandMapCanvas({
+  points = pointsOfInterest,
+  onMapCoordinatePick,
+  pointInsertionMode = false,
+  highlightedPoiId = null
+}: IslandMapCanvasProps) {
   const [activePoiId, setActivePoiId] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition | null>(null);
   const [isClient, setIsClient] = useState(false);
@@ -124,6 +132,7 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
   const [pan, setPan] = useState<PanPosition>({ x: 0, y: 0 });
   const [viewportSize, setViewportSize] = useState<ViewportSize>({ width: 0, height: 0 });
   const [isPanning, setIsPanning] = useState(false);
+  const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const markerRefs = useRef<Record<string, SVGGElement | null>>({});
@@ -140,6 +149,7 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
   const zoom = ZOOM_LEVELS[zoomLevelIndex];
   const tooltipEnabled = !pointInsertionMode;
   const activePoi = points.find((poi) => poi.id === activePoiId);
+  const { isTotemMode } = useAppMode();
 
   useEffect(() => {
     setIsClient(true);
@@ -166,6 +176,16 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
       setTooltipPosition(null);
     }
   }, [pointInsertionMode]);
+
+  useEffect(() => {
+    if (!routeQrTarget) {
+      return;
+    }
+
+    if (!points.some((poi) => poi.id === routeQrTarget.id)) {
+      setRouteQrTarget(null);
+    }
+  }, [points, routeQrTarget]);
 
   useLayoutEffect(() => {
     const viewportElement = viewportRef.current;
@@ -230,6 +250,10 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
       }
 
       if (event.target.closest("[data-poi-marker='true']")) {
+        return;
+      }
+
+      if (event.target.closest("[data-poi-tooltip='true']")) {
         return;
       }
 
@@ -422,6 +446,24 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
     setActivePoiId((currentPoiId) => (currentPoiId === poiId ? "" : poiId));
   };
 
+  const handleRouteAction = (poi: PointOfInterest) => {
+    const googleMapsUrl = getGoogleMapsUrl(poi);
+
+    if (!googleMapsUrl) {
+      return;
+    }
+
+    setActivePoiId("");
+    setTooltipPosition(null);
+
+    if (isTotemMode) {
+      setRouteQrTarget(poi);
+      return;
+    }
+
+    window.open(googleMapsUrl, "_blank", "noopener,noreferrer");
+  };
+
   const zoomIn = () => {
     hasUserAdjustedViewRef.current = true;
     setZoomLevelIndex((currentIndex) => Math.min(currentIndex + 1, ZOOM_LEVELS.length - 1));
@@ -557,7 +599,8 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
 
             {points.map((poi) => {
               const color = pointOfInterestLegend[poi.category];
-              const isActive = tooltipEnabled && poi.id === activePoiId;
+              const isActive = (tooltipEnabled && poi.id === activePoiId) || poi.id === highlightedPoiId;
+              const isTooltipOpen = tooltipEnabled && poi.id === activePoiId;
 
               return (
                 <g
@@ -571,7 +614,7 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
                   tabIndex={pointInsertionMode ? -1 : 0}
                   aria-label={poi.name}
                   aria-pressed={isActive}
-                  aria-describedby={isActive ? `poi-tooltip-${poi.id}` : undefined}
+                  aria-describedby={isTooltipOpen ? `poi-tooltip-${poi.id}` : undefined}
                   className="cursor-pointer focus:outline-none"
                   onClick={() => {
                     if (!pointInsertionMode) {
@@ -637,7 +680,8 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
               ref={tooltipRef}
               id={`poi-tooltip-${activePoi.id}`}
               role="tooltip"
-              className="pointer-events-none fixed z-[80] w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[1.35rem] bg-white/96 p-3 text-left shadow-[0_18px_40px_rgba(16,36,63,0.16)]"
+              data-poi-tooltip="true"
+              className="pointer-events-auto fixed z-[80] w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[1.35rem] bg-white/96 p-3 text-left shadow-[0_18px_40px_rgba(16,36,63,0.16)]"
               style={{
                 left: tooltipPosition?.left ?? -9999,
                 top: tooltipPosition?.top ?? -9999,
@@ -658,11 +702,23 @@ export function IslandMapCanvas({ points = pointsOfInterest, onMapCoordinatePick
               <div className="px-1 pb-1 pt-3">
                 <p className="text-sm font-semibold text-navy-950">{activePoi.name}</p>
                 <p className="mt-2 text-sm leading-6 text-navy-900/70">{activePoi.description}</p>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleRouteAction(activePoi)}
+                    disabled={activePoi.latitude === null || activePoi.longitude === null}
+                    className="inline-flex items-center justify-center rounded-full bg-navy-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:cursor-not-allowed disabled:bg-navy-950/20 disabled:text-navy-950/35"
+                  >
+                    Portami li
+                  </button>
+                </div>
               </div>
             </div>,
             document.body
           )
         : null}
+
+      <PoiRouteQrModal isOpen={Boolean(routeQrTarget)} point={routeQrTarget} onClose={() => setRouteQrTarget(null)} />
     </div>
   );
 }

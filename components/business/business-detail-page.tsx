@@ -3,12 +3,18 @@
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 
+import {
+  getBusinessActionHref,
+  getBusinessActionLabel,
+  getBusinessActionQrModalContent,
+  getBusinessActionTotemBehavior
+} from "@/lib/business-actions";
 import type { Business, Category } from "@/features/catalog/catalog.types";
 import { getCategoryRoute } from "@/lib/routes";
 import { useAppMode } from "@/components/providers/app-mode-provider";
 import { BackLink } from "@/components/shared/back-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
-import { BookingQrModal } from "@/components/business/booking-qr-modal";
+import { BusinessActionQrModal } from "@/components/business/business-action-qr-modal";
 
 export function BusinessDetailPage({
   business,
@@ -22,19 +28,22 @@ export function BusinessDetailPage({
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const { isTotemMode } = useAppMode();
 
-  const whatsappLink = `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(business.whatsappMessage)}`;
+  const actionLabel = getBusinessActionLabel(business.primaryAction);
+  const actionHref = getBusinessActionHref(business.primaryAction);
+  const shouldOpenQrInTotem = isTotemMode && getBusinessActionTotemBehavior(business.primaryAction) === "qr";
+  const qrModalContent = getBusinessActionQrModalContent(business.primaryAction, business.name);
 
   useEffect(() => {
     setSelectedImage(business.heroImage);
   }, [business.heroImage]);
 
   useEffect(() => {
-    if (!isTotemMode || !isQrOpen) {
+    if (!shouldOpenQrInTotem || !isQrOpen) {
       setQrCodeDataUrl("");
       return;
     }
 
-    QRCode.toDataURL(whatsappLink, {
+    QRCode.toDataURL(actionHref, {
       margin: 1,
       width: 320,
       color: {
@@ -44,7 +53,7 @@ export function BusinessDetailPage({
     })
       .then(setQrCodeDataUrl)
       .catch(() => setQrCodeDataUrl(""));
-  }, [isQrOpen, isTotemMode, whatsappLink]);
+  }, [actionHref, isQrOpen, shouldOpenQrInTotem]);
 
   return (
     <>
@@ -115,7 +124,7 @@ export function BusinessDetailPage({
               <InfoRow icon={<PinIcon />} label="Indirizzo" value={business.address} />
             </div>
 
-            {isTotemMode ? (
+            {shouldOpenQrInTotem ? (
               <button
                 type="button"
                 className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
@@ -123,28 +132,34 @@ export function BusinessDetailPage({
                 aria-haspopup="dialog"
                 aria-expanded={isQrOpen}
               >
-                Prenota
+                {actionLabel}
               </button>
             ) : (
               <a
-                href={whatsappLink}
+                href={actionHref}
                 target="_blank"
                 rel="noreferrer"
                 className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
               >
-                Prenota
+                {actionLabel}
               </a>
             )}
           </aside>
         </section>
       </section>
 
-      {isTotemMode ? (
-        <BookingQrModal
+      {shouldOpenQrInTotem ? (
+        <BusinessActionQrModal
           isOpen={isQrOpen}
           qrCodeDataUrl={qrCodeDataUrl}
-          businessName={business.name}
-          whatsappMessage={business.whatsappMessage}
+          actionAltText={`QR Code per ${business.name}`}
+          eyebrow={qrModalContent.eyebrow}
+          title={qrModalContent.title}
+          description={qrModalContent.description}
+          previewLabel={qrModalContent.previewLabel}
+          previewValue={qrModalContent.previewValue}
+          actionHref={qrModalContent.actionHref}
+          actionHrefLabel={qrModalContent.actionHrefLabel}
           onClose={() => setIsQrOpen(false)}
         />
       ) : null}

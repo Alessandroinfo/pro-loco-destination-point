@@ -1,32 +1,56 @@
 "use client";
 
+import QRCode from "qrcode";
 import { AnimatePresence, motion } from "framer-motion";
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 
+import type { PointOfInterest } from "@/features/map/map.types";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
 
-export function BookingQrModal({
-  isOpen,
-  qrCodeDataUrl,
-  businessName,
-  whatsappMessage,
-  onClose
-}: {
+type PoiRouteQrModalProps = {
   isOpen: boolean;
-  qrCodeDataUrl: string;
-  businessName: string;
-  whatsappMessage: string;
+  point: PointOfInterest | null;
   onClose: () => void;
-}) {
+};
+
+export function getGoogleMapsUrl(point: PointOfInterest | null) {
+  if (!point || point.latitude === null || point.longitude === null) {
+    return "";
+  }
+
+  return `https://www.google.com/maps/search/?api=1&query=${point.latitude},${point.longitude}`;
+}
+
+export function PoiRouteQrModal({ isOpen, point, onClose }: PoiRouteQrModalProps) {
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const titleId = useId();
   const descriptionId = useId();
   const { closeButtonRef, dialogRef } = useDialogAccessibility(isOpen, onClose);
+  const googleMapsUrl = getGoogleMapsUrl(point);
+
+  useEffect(() => {
+    if (!isOpen || !googleMapsUrl) {
+      setQrCodeDataUrl("");
+      return;
+    }
+
+    QRCode.toDataURL(googleMapsUrl, {
+      margin: 1,
+      width: 320,
+      color: {
+        dark: "#10243f",
+        light: "#ffffff"
+      }
+    })
+      .then(setQrCodeDataUrl)
+      .catch(() => setQrCodeDataUrl(""));
+  }, [googleMapsUrl, isOpen]);
 
   return (
     <AnimatePresence>
-      {isOpen ? (
+      {isOpen && point && googleMapsUrl ? (
         <motion.div
-          className="fixed inset-0 z-40 flex items-center justify-center bg-navy-950/45 px-6 backdrop-blur-lg"
+          className="fixed inset-0 z-[2147483646] flex items-center justify-center bg-navy-950/45 px-6 backdrop-blur-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -54,27 +78,22 @@ export function BookingQrModal({
             >
               ×
             </button>
-            <p className="text-sm uppercase tracking-[0.3em] text-navy-900/55">Prenotazione</p>
             <h2 id={titleId} className="mt-3 text-3xl font-semibold text-navy-950">
-              Apri QR per inviare richiesta disponibilita
+              Portami a {point.name}
             </h2>
             <p id={descriptionId} className="mt-4 text-lg leading-8 text-navy-900/70">
-              Inquadra il QR Code con il telefono per aprire WhatsApp e inviare subito una richiesta di disponibilita alla struttura.
+              Inquadra il QR Code per aprire Google Maps sul telefono e raggiungere direttamente questo punto.
             </p>
 
             <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
               {qrCodeDataUrl ? (
-                <img src={qrCodeDataUrl} alt={`QR Code per ${businessName}`} width={288} height={288} />
+                <img src={qrCodeDataUrl} alt={`QR Code per ${point.name}`} width={288} height={288} />
               ) : (
                 <div className="flex h-full w-full items-center justify-center rounded-[1.5rem] border border-dashed border-navy-950/12 text-sm font-medium text-navy-900/55">
                   Generazione QR Code...
                 </div>
               )}
             </div>
-
-            <p className="mt-5 text-sm text-navy-900/55">
-              <span className="font-semibold text-navy-950">Anteprima messaggio:</span> {whatsappMessage}
-            </p>
           </motion.div>
         </motion.div>
       ) : null}
