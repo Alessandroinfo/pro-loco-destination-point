@@ -7,20 +7,6 @@
     <rect x="120" y="132" width="484" height="210" rx="105" fill="rgba(91,183,212,0.14)"/>
     <path d="M162 316C226 297 290 296 352 310C422 325 493 328 566 313" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="7" stroke-linecap="round"/>
     <path d="M176 340C234 328 292 328 350 340C409 352 468 354 529 345" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="6" stroke-linecap="round"/>
-    <g transform="translate(154 238.1) scale(0.0275)">
-      <path
-        d="M -1396.39 625.44 L -1477.99 736.23 L -1505.19 917.21 L -1551.58 1061.82 L -1577.98 1135.4 L -1578.78 1240.27 L -1561.98 1323.99 L -1615.58 1419.56 L -1564.38 1553.18 L -1465.99 1638.59 L -1357.99 1698.64 L -1258.8 1704.56 L -1159.6 1655.51 L -1098.8 1594.62 L -1091.6 1451.69 L -990.81 1374.73 L -970.01 1347.67 L -874.01 1313.84 L -842.02 1213.21 L -846.82 1177.69 L -764.42 1160.77 L -771.62 1076.2 L -863.62 1011.08 L -948.41 873.23 L -1077.21 823.34 L -1396.39 625.44 Z"
-        fill="#F2DFB4"
-        fill-opacity="0.92"
-      />
-      <path
-        d="M -1490 1110C-1405 1058 -1288 1058 -1162 1102"
-        fill="none"
-        stroke="rgba(255,255,255,0.52)"
-        stroke-width="24"
-        stroke-linecap="round"
-      />
-    </g>
     <g transform="translate(150 166) scale(0.41)">
       <path
         d="M95.0 317.4 L103.1 328.3 L166.3 347.7 L201.8 343.2 L272.1 357.9 L284.6 349.2 L299.4 366.1 L310.1 358.9 L373.5 368.3 L385.2 395.1 L418.4 403.0 L423.1 384.6 L426.9 398.3 L446.0 403.8 L439.9 413.9 L464.6 406.0 L469.4 428.9 L495.6 413.3 L487.5 435.1 L499.6 439.8 L510.1 422.4 L511.8 442.6 L544.1 456.6 L546.4 436.2 L570.2 441.2 L554.7 424.5 L572.4 415.9 L571.2 434.5 L596.7 439.3 L567.6 452.1 L577.4 470.0 L594.2 469.9 L592.9 456.2 L618.5 454.6 L626.3 467.8 L640.7 460.2 L678.0 465.9 L673.0 455.6 L685.5 449.3 L695.5 466.5 L730.5 466.8 L707.6 452.4 L732.5 447.1 L720.8 434.3 L735.0 423.4 L709.8 424.6 L719.2 413.8 L669.6 406.1 L697.4 398.5 L673.1 365.7 L689.1 362.4 L694.4 345.6 L701.9 353.0 L726.3 345.5 L728.3 335.2 L663.9 309.3 L634.2 310.6 L630.6 319.0 L570.3 290.3 L544.8 298.1 L539.5 314.9 L508.1 318.8 L496.2 311.1 L497.9 318.1 L452.6 302.2 L376.3 301.1 L351.5 287.7 L299.9 295.7 L284.3 282.5 L170.8 271.2 L139.0 278.4 L95.0 317.4 Z"
@@ -42,7 +28,7 @@
     <circle cx="590" cy="244" r="10" fill="#E7C989" opacity="0.9"/>
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
-  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">PELAGIE ILLUSTRATE</text>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">LAMPEDUSA E LINOSA ILLUSTRATE</text>
   <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Esplora le Pelagie</text>
   <defs>
     <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">

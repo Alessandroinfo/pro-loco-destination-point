@@ -5,6 +5,7 @@ import "@/app/globals.css";
 import { AppShell } from "@/components/layout/app-shell";
 import { PwaRegister } from "@/components/pwa-register";
 import { AppModeProvider } from "@/components/providers/app-mode-provider";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-brand";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -25,11 +26,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Pro Loco - Destination Point",
-    template: "%s | Pro Loco - Destination Point"
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`
   },
-  description:
-    "Totem turistico ufficiale della Pro Loco di Lampedusa e Linosa con categorie, aziende, mappa offline e accesso rapido via WhatsApp.",
+  description: SITE_DESCRIPTION,
   keywords: [
     "Lampedusa",
     "Linosa",
@@ -39,11 +39,11 @@ export const metadata: Metadata = {
     "vacanze Lampedusa",
     "attività Lampedusa"
   ],
-  applicationName: "Pro Loco - Destination Point",
+  applicationName: SITE_NAME,
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Destination Point"
+    title: SITE_NAME
   },
   formatDetection: {
     email: false,
@@ -51,9 +51,8 @@ export const metadata: Metadata = {
     telephone: false
   },
   openGraph: {
-    title: "Pro Loco - Destination Point",
-    description:
-      "Un hub digitale elegante e offline-friendly per scoprire esperienze, ospitalità, ristorazione, trasporti e mappa dell'isola.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
     type: "website",
     locale: "it_IT",
     images: [
@@ -61,15 +60,14 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Pro Loco - Destination Point"
+        alt: SITE_NAME
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pro Loco - Destination Point",
-    description:
-      "PWA statica per totem touch screen outdoor dedicata al turismo di Lampedusa e Linosa.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
     images: ["/og-image.svg"]
   },
   category: "travel",

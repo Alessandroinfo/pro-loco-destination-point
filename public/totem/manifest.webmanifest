@@ -1,7 +1,7 @@
 {
-  "name": "Pro Loco - Destination Point Totem",
-  "short_name": "Destination Totem",
-  "description": "Hub turistico offline-ready per il totem della Pro Loco di Lampedusa e Linosa.",
+  "name": "Pro Loco - Lampedusa e Linosa - Destination Point",
+  "short_name": "Destination Point",
+  "description": "Destination Point della Pro Loco di Lampedusa e Linosa.",
   "start_url": "/totem/",
   "scope": "/totem/",
   "display": "standalone",

@@ -8,6 +8,8 @@ const iconsDir = join(root, "public", "icons");
 mkdirSync(placeholdersDir, { recursive: true });
 mkdirSync(iconsDir, { recursive: true });
 
+const siteDescription = "Destination Point della Pro Loco di Lampedusa e Linosa.";
+
 const assets = [
   ["public/logo-pro-loco.svg", logoSvg()],
   ["public/logo-pro-loco-white.svg", logoWhiteSvg()],
@@ -28,6 +30,7 @@ const businessThemes = [
   ["dining", "#5A3520", "#D39C42", "#F6E0B0"],
   ["hospitality", "#6E5520", "#C89A3D", "#F6EAD0"],
   ["renting", "#255B3D", "#58AE72", "#DAF1E1"],
+  ["shopping", "#8D4935", "#C96F53", "#F7D7CB"],
   ["info", "#173B63", "#5B8CB9", "#E3EEF9"],
 ];
 
@@ -90,10 +93,10 @@ function ogImageSvg() {
   <circle cx="188" cy="506" r="140" fill="#5BB7D4" opacity="0.16"/>
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
   <image href="/logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
-  <text x="94" y="274" fill="#E7C989" font-size="28" font-family="Georgia, serif" font-style="italic">Lampedusa</text>
-  <text x="94" y="334" fill="#FFFFFF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
-  <text x="94" y="394" fill="#D5E9EF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
-  <text x="94" y="468" fill="#FFFFFF" fill-opacity="0.78" font-size="28" font-family="Manrope, Arial, sans-serif">PWA statica per totem touch screen con mappa offline e QR WhatsApp.</text>
+  <text x="94" y="302" fill="#FFFFFF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
+  <text x="94" y="358" fill="#E7C989" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa -</text>
+  <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
+  <text x="94" y="482" fill="#FFFFFF" fill-opacity="0.78" font-size="28" font-family="Manrope, Arial, sans-serif">${escapeXml(siteDescription)}</text>
   <defs>
     <linearGradient id="panel" x1="62" y1="54" x2="1150" y2="578" gradientUnits="userSpaceOnUse">
       <stop stop-color="#10243F"/>

@@ -8,7 +8,7 @@ export function AppHeader() {
           <div className="relative h-16 w-16 overflow-hidden rounded-[1.4rem] bg-white shadow-[0_14px_36px_rgba(16,36,63,0.12)]">
             <Image
               src="/logo-pro-loco.svg"
-              alt="Logo Pro Loco Lampedusa e Linosa"
+              alt="Logo Pro Loco - Lampedusa e Linosa - Destination Point"
               fill
               sizes="64px"
               className="object-contain p-2"
@@ -25,7 +25,7 @@ export function AppHeader() {
         </div>
 
         <div className="rounded-full border border-navy-950/10 bg-white/70 px-6 py-4 text-right shadow-[0_10px_30px_rgba(16,36,63,0.08)]">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-navy-950">Discovery Point</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-navy-950">Destination Point</p>
         </div>
       </div>
     </header>

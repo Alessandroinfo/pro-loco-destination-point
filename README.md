@@ -1,4 +1,4 @@
-# Pro Loco - Destination Point
+# Pro Loco - Lampedusa e Linosa - Destination Point
 
 Static Next.js tourism hub for the Pro Loco of Lampedusa and Linosa, with a public experience and a dedicated `/totem` kiosk mode.
 

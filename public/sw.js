@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-hub-v5";
+const CACHE_NAME = "pro-loco-hub-v6";
 const STATIC_ROUTES = [
   "/",
   "/map/",
@@ -16,6 +16,26 @@ const STATIC_ROUTES = [
   "/categories/hospitality/linosa-casa-luce/",
   "/categories/renting/island-rent-premium/",
   "/categories/renting/vento-lounge-charter/",
+  "/categories/shopping/isola-di-lino/",
+  "/categories/shopping/bottega-del-porto/",
+  "/categories/shopping/coralli-boutique/",
+  "/categories/shopping/pelagie-concept-store/",
+  "/categories/shopping/casa-grecale/",
+  "/categories/shopping/sette-venti/",
+  "/categories/shopping/cala-bianca-souvenir/",
+  "/categories/shopping/lab-mediterraneo/",
+  "/categories/shopping/sabbia-chiara-kids/",
+  "/categories/shopping/via-roma-boutique/",
+  "/categories/shopping/blu-cobalto-atelier/",
+  "/categories/shopping/porto-piccolo-market/",
+  "/categories/shopping/pozzolana-store/",
+  "/categories/shopping/linosa-made/",
+  "/categories/shopping/isola-sunwear/",
+  "/categories/shopping/filo-di-sale/",
+  "/categories/shopping/marea-boutique/",
+  "/categories/shopping/tramontana-shop/",
+  "/categories/shopping/nasse-e-trame/",
+  "/categories/shopping/pelagos-wear/",
   "/categories/info/pelagie-help-desk/",
   "/categories/info/mobilita-pelagie/"
 ];
@@ -41,7 +61,7 @@ const CORE_ASSETS = [
   "/placeholders/screensaver-poster.svg"
 ];
 
-const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "info"].flatMap((prefix) =>
+const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "shopping", "info"].flatMap((prefix) =>
   Array.from({ length: 6 }, (_, index) => `/placeholders/business-${prefix}-${index + 1}.svg`)
 );
 

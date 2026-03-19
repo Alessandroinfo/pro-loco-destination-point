@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" fill="none">
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="432" cy="168" r="92" fill="#F7D7CB" opacity="0.24"/>
+  <path d="M0 268C151 200 300 188 458 248C625 310 744 345 920 288C1038 250 1128 252 1200 268" fill="rgba(255,255,255,0.1)"/>
+  <path d="M0 380C179 310 298 324 467 386C648 452 816 486 972 433C1070 400 1140 392 1200 404V900H0V380Z" fill="#C96F53" opacity="0.4"/>
+  <path d="M0 458C155 414 289 427 463 491C646 559 836 632 1200 565V900H0V458Z" fill="rgba(16,36,63,0.34)"/>
+  <rect x="60" y="60" width="1080" height="780" rx="36" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <text x="82" y="728" fill="#FFFFFF" fill-opacity="0.66" font-size="28" letter-spacing="7" font-family="Arial, sans-serif">PLACEHOLDER VISUAL</text>
+  <text x="82" y="788" fill="#FFFFFF" font-size="64" font-weight="700" font-family="Arial, sans-serif">Shopping 4</text>
+  <defs>
+    <linearGradient id="bg" x1="42" y1="48" x2="1120" y2="852" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8D4935"/>
+      <stop offset="1" stop-color="#C96F53"/>
+    </linearGradient>
+  </defs>
+</svg>

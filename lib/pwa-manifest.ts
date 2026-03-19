@@ -1,15 +1,15 @@
 import type { MetadataRoute } from "next";
 
 import type { AppMode } from "@/lib/app-mode";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_SHORT_NAME } from "@/lib/site-brand";
 
 export function createManifest(mode: AppMode): MetadataRoute.Manifest {
   const isTotemMode = mode === "totem";
 
   return {
-    name: isTotemMode ? "Pro Loco - Destination Point Totem" : "Pro Loco - Destination Point",
-    short_name: isTotemMode ? "Destination Totem" : "Destination Point",
-    description:
-      "Hub turistico offline-ready per il totem della Pro Loco di Lampedusa e Linosa.",
+    name: SITE_NAME,
+    short_name: SITE_SHORT_NAME,
+    description: SITE_DESCRIPTION,
     start_url: isTotemMode ? "/totem/" : "/",
     scope: isTotemMode ? "/totem/" : "/",
     display: "standalone",
