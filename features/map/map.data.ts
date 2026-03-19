@@ -1,99 +1,693 @@
 import type { PointOfInterest } from "@/features/map/map.types";
 
-const defaultPointOfInterestImage = "/placeholders/category-map.svg";
-
-type PointSeed = {
-  id: string;
-  name: string;
-  category: PointOfInterest["category"];
-  latitude: number | null;
-  longitude: number | null;
-  mapX: number;
-  mapY: number;
-  island: PointOfInterest["island"];
-};
-
 export const pointOfInterestLegend = {
   "Spiagge e Cale": "#56C1D9",
   "Luoghi di interesse": "#C89A3D"
 } as const;
 
-const coastalPointSeeds: PointSeed[] = [
-  { id: "isola-dei-conigli", name: "Isola dei Conigli", category: "Spiagge e Cale", latitude: 35.51345, longitude: 12.5575, mapX: 8030, mapY: 4495, island: "Lampedusa" },
-  { id: "le-grottacce", name: "Le Grottacce", category: "Spiagge e Cale", latitude: 35.49414, longitude: 12.61539, mapX: 3350, mapY: 6480, island: "Lampedusa" },
-  { id: "cala-greca", name: "Cala Greca", category: "Spiagge e Cale", latitude: 35.50475, longitude: 12.58467, mapX: 1159, mapY: 4051, island: "Lampedusa" },
-  { id: "cala-creta", name: "Cala Creta", category: "Spiagge e Cale", latitude: 35.51076, longitude: 12.6242, mapX: 9802, mapY: 6116, island: "Lampedusa" },
-  { id: "cala-pisana", name: "Cala Pisana", category: "Spiagge e Cale", latitude: 35.50436, longitude: 12.62391, mapX: 4300, mapY: 5790, island: "Lampedusa" },
-  { id: "spiaggia-della-guitgia", name: "Spiaggia della Guitgia", category: "Spiagge e Cale", latitude: 35.49864, longitude: 12.59907, mapX: 6495, mapY: 7005, island: "Lampedusa" },
-  { id: "punta-sottile", name: "Punta Sottile", category: "Spiagge e Cale", latitude: 35.49357, longitude: 12.63304, mapX: 1923, mapY: 3792, island: "Lampedusa" },
-  { id: "cala-galera", name: "Cala Galera", category: "Spiagge e Cale", latitude: 35.5087, longitude: 12.57674, mapX: 8773, mapY: 4883, island: "Lampedusa" },
-  { id: "la-tabaccara", name: "La Tabaccara", category: "Spiagge e Cale", latitude: 35.51109, longitude: 12.56814, mapX: 3045, mapY: 4190, island: "Lampedusa" },
-  { id: "cala-madonna", name: "Cala Madonna", category: "Spiagge e Cale", latitude: 35.50346, longitude: 12.59045, mapX: 8549, mapY: 7930, island: "Lampedusa" },
-  { id: "cala-croce", name: "Cala Croce", category: "Spiagge e Cale", latitude: 35.50164, longitude: 12.59338, mapX: 620, mapY: 4496, island: "Lampedusa" },
-  { id: "scoglio-a-vela", name: "Scoglio a Vela", category: "Spiagge e Cale", latitude: 35.52903, longitude: 12.5441, mapX: 9970, mapY: 6490, island: "Lampedusa" },
-  { id: "cala-pulcino", name: "Cala Pulcino", category: "Spiagge e Cale", latitude: 35.51522, longitude: 12.55179, mapX: 2375, mapY: 3710, island: "Lampedusa" },
-  { id: "sciatu-persu", name: "Sciatu Persu", category: "Spiagge e Cale", latitude: 35.49567, longitude: 12.62264, mapX: 10316, mapY: 7047, island: "Lampedusa" },
-  { id: "scoglio-del-sacramento", name: "Scoglio del Sacramento", category: "Spiagge e Cale", latitude: 35.52907, longitude: 12.52776, mapX: 9320, mapY: 6670, island: "Lampedusa" },
-  { id: "mare-morto", name: "Mare Morto", category: "Spiagge e Cale", latitude: 35.51483, longitude: 12.62586, mapX: 3718, mapY: 6013, island: "Lampedusa" },
-  { id: "muro-vecchio", name: "Muro Vecchio", category: "Spiagge e Cale", latitude: 35.5258, longitude: 12.55323, mapX: 5745, mapY: 6520, island: "Lampedusa" },
-  { id: "spiaggia-di-portu-ntoni", name: "Spiaggia di Portu 'Ntoni", category: "Spiagge e Cale", latitude: 35.50166, longitude: 12.592, mapX: 4550, mapY: 5940, island: "Lampedusa" },
-  { id: "cala-uccello", name: "Cala Uccello", category: "Spiagge e Cale", latitude: 35.5013, longitude: 12.62942, mapX: 9460, mapY: 4570, island: "Lampedusa" },
-  { id: "cala-francese", name: "Cala Francese", category: "Spiagge e Cale", latitude: 35.49686, longitude: 12.62528, mapX: 1235, mapY: 3957, island: "Lampedusa" },
-  { id: "cala-spugne", name: "Cala Spugne", category: "Spiagge e Cale", latitude: 35.49548, longitude: 12.60778, mapX: 6888, mapY: 4837, island: "Lampedusa" },
-  { id: "cala-stretta", name: "Cala Stretta", category: "Spiagge e Cale", latitude: null, longitude: null, mapX: 5150, mapY: 4515, island: "Lampedusa" },
-  { id: "cala-calandra", name: "Cala Calandra", category: "Spiagge e Cale", latitude: null, longitude: null, mapX: 1670, mapY: 3950, island: "Lampedusa" },
-  { id: "spiaggia-dei-conigli", name: "Spiaggia dei Conigli", category: "Spiagge e Cale", latitude: null, longitude: null, mapX: 7780, mapY: 4585, island: "Lampedusa" }
-];
-
-const landmarkPointSeeds: PointSeed[] = [
-  { id: "aeroporto-internazionale-di-lampedusa", name: "Aeroporto Internazionale di Lampedusa", category: "Luoghi di interesse", latitude: 35.50094, longitude: 12.61856, mapX: 5501, mapY: 5737, island: "Lampedusa" },
-  { id: "albero-sole", name: "Albero Sole", category: "Luoghi di interesse", latitude: 35.52828, longitude: 12.54066, mapX: 9681, mapY: 6447, island: "Lampedusa" },
-  { id: "archivio-storico-lampedusa", name: "Archivio Storico Lampedusa", category: "Luoghi di interesse", latitude: 35.5005, longitude: 12.60564, mapX: 5635, mapY: 5630, island: "Lampedusa" },
-  { id: "cimitero", name: "Cimitero", category: "Luoghi di interesse", latitude: 35.504, longitude: 12.62206, mapX: 4578, mapY: 5752, island: "Lampedusa" },
-  { id: "vasche-romane", name: "Vasche Romane", category: "Luoghi di interesse", latitude: 35.50011, longitude: 12.60525, mapX: 5500, mapY: 5535, island: "Lampedusa" },
-  { id: "santuario-di-cala-madonna", name: "Santuario di Cala Madonna", category: "Luoghi di interesse", latitude: 35.50619, longitude: 12.59069, mapX: 6013, mapY: 6710, island: "Lampedusa" },
-  { id: "statua-della-madonna-di-porto-salvo", name: "Statua della Madonna di Porto Salvo", category: "Luoghi di interesse", latitude: 35.49975, longitude: 12.60535, mapX: 5480, mapY: 5655, island: "Lampedusa" },
-  { id: "strada-panoramica", name: "Strada Panoramica", category: "Luoghi di interesse", latitude: 35.5236, longitude: 12.57696, mapX: 5508, mapY: 4734, island: "Lampedusa" },
-  { id: "via-roma", name: "Via Roma", category: "Luoghi di interesse", latitude: 35.5025, longitude: 12.60884, mapX: 5310, mapY: 5485, island: "Lampedusa" },
-  { id: "museo-archeologico-delle-pelagie", name: "Museo Archeologico delle Pelagie", category: "Luoghi di interesse", latitude: 35.5006, longitude: 12.60565, mapX: 5750, mapY: 5480, island: "Lampedusa" },
-  { id: "porto-nuovo", name: "Porto Nuovo", category: "Luoghi di interesse", latitude: 35.50215, longitude: 12.60271, mapX: 5575, mapY: 6030, island: "Lampedusa" },
-  { id: "riserva-naturale-orientata", name: "Riserva Naturale Orientata", category: "Luoghi di interesse", latitude: 35.51267, longitude: 12.56892, mapX: 3234, mapY: 4207, island: "Lampedusa" },
-  { id: "obelisco-cassodoro", name: "Obelisco Cassodoro", category: "Luoghi di interesse", latitude: 35.50253, longitude: 12.60914, mapX: 5390, mapY: 5615, island: "Lampedusa" },
-  { id: "centro-recupero-tartarughe", name: "Centro Recupero Tartarughe", category: "Luoghi di interesse", latitude: 35.49505, longitude: 12.62943, mapX: 3485, mapY: 4361, island: "Lampedusa" },
-  { id: "fontana-cascella", name: "Fontana Cascella", category: "Luoghi di interesse", latitude: 35.50306, longitude: 12.60865, mapX: 5285, mapY: 5560, island: "Lampedusa" },
-  { id: "faro-di-capo-grecale", name: "Faro di Capo Grecale", category: "Luoghi di interesse", latitude: 35.51749, longitude: 12.63178, mapX: 5128, mapY: 5906, island: "Lampedusa" },
-  { id: "chiesa", name: "Chiesa", category: "Luoghi di interesse", latitude: 35.50333, longitude: 12.60935, mapX: 5415, mapY: 5505, island: "Lampedusa" },
-  { id: "forestale", name: "Forestale", category: "Luoghi di interesse", latitude: 35.52039, longitude: 12.54045, mapX: 7097, mapY: 5668, island: "Lampedusa" },
-  { id: "porta-d-europa", name: "Porta d'Europa", category: "Luoghi di interesse", latitude: 35.49368, longitude: 12.60562, mapX: 4500, mapY: 5900, island: "Lampedusa" },
-  { id: "sede-area-marina-protetta", name: "Sede Area Marina Protetta", category: "Luoghi di interesse", latitude: 35.50318, longitude: 12.60566, mapX: 5670, mapY: 5565, island: "Lampedusa" },
-  { id: "la-madonna-del-mare", name: "La Madonna del mare", category: "Luoghi di interesse", latitude: 35.5075, longitude: 12.5579, mapX: 5144, mapY: 5191, island: "Lampedusa" },
-  { id: "casa-teresa", name: "Casa Teresa", category: "Luoghi di interesse", latitude: 35.5236, longitude: 12.54049, mapX: 8405, mapY: 6144, island: "Lampedusa" },
-  { id: "porto-vecchio", name: "Porto Vecchio", category: "Luoghi di interesse", latitude: 35.49689, longitude: 12.60515, mapX: 5035, mapY: 5610, island: "Lampedusa" }
-];
-
-function buildPointDescription(point: PointSeed) {
-  if (point.latitude === null || point.longitude === null) {
-    return point.category === "Spiagge e Cale"
-      ? "Punto costiero in fase di posizionamento."
-      : "Luogo di interesse in fase di posizionamento.";
+export const pointsOfInterest: PointOfInterest[] = [
+  {
+    id: "isola-dei-conigli",
+    name: "Isola dei Conigli",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51345,
+    longitude: 12.5575,
+    mapX: 3847,
+    mapY: 5976,
+    island: "Lampedusa"
+  },
+  {
+    id: "le-grottacce",
+    name: "Le Grottacce",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49414,
+    longitude: 12.61539,
+    mapX: 8979,
+    mapY: 7817,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-greca",
+    name: "Cala Greca",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50475,
+    longitude: 12.58467,
+    mapX: 6107,
+    mapY: 6694,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-creta",
+    name: "Cala Creta",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51076,
+    longitude: 12.6242,
+    mapX: 9803,
+    mapY: 6148,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-pisana",
+    name: "Cala Pisana",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50436,
+    longitude: 12.62391,
+    mapX: 9781,
+    mapY: 6613,
+    island: "Lampedusa"
+  },
+  {
+    id: "spiaggia-della-guitgia",
+    name: "Spiaggia della Guitgia",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49864,
+    longitude: 12.59907,
+    mapX: 7461,
+    mapY: 7373,
+    island: "Lampedusa"
+  },
+  {
+    id: "punta-sottile",
+    name: "Punta Sottile",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49357,
+    longitude: 12.63304,
+    mapX: 10218,
+    mapY: 7913,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-galera",
+    name: "Cala Galera",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5087,
+    longitude: 12.57674,
+    mapX: 5612,
+    mapY: 6398,
+    island: "Lampedusa"
+  },
+  {
+    id: "la-tabaccara",
+    name: "La Tabaccara",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51109,
+    longitude: 12.56814,
+    mapX: 4740,
+    mapY: 5992,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-madonna",
+    name: "Cala Madonna",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50346,
+    longitude: 12.59045,
+    mapX: 6506,
+    mapY: 6786,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-croce",
+    name: "Cala Croce",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50164,
+    longitude: 12.59338,
+    mapX: 6936,
+    mapY: 7085,
+    island: "Lampedusa"
+  },
+  {
+    id: "scoglio-a-vela",
+    name: "Scoglio a Vela",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.52903,
+    longitude: 12.5441,
+    mapX: 3224,
+    mapY: 4106,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-pulcino",
+    name: "Cala Pulcino",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51522,
+    longitude: 12.55179,
+    mapX: 3490,
+    mapY: 5604,
+    island: "Lampedusa"
+  },
+  {
+    id: "sciatu-persu",
+    name: "Sciatu Persu",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49567,
+    longitude: 12.62264,
+    mapX: 9473,
+    mapY: 7703,
+    island: "Lampedusa"
+  },
+  {
+    id: "scoglio-del-sacramento",
+    name: "Scoglio del Sacramento",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.528925,
+    longitude: 12.528242,
+    mapX: 1898,
+    mapY: 3644,
+    island: "Lampedusa"
+  },
+  {
+    id: "mare-morto",
+    name: "Mare Morto",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51483,
+    longitude: 12.62586,
+    mapX: 9826,
+    mapY: 5566,
+    island: "Lampedusa"
+  },
+  {
+    id: "muro-vecchio",
+    name: "Muro Vecchio",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5258,
+    longitude: 12.55323,
+    mapX: 3675,
+    mapY: 4323,
+    island: "Lampedusa"
+  },
+  {
+    id: "spiaggia-di-portu-ntoni",
+    name: "Spiaggia di Portu 'Ntoni",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50166,
+    longitude: 12.592,
+    mapX: 6682,
+    mapY: 7047,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-uccello",
+    name: "Cala Uccello",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5013,
+    longitude: 12.62942,
+    mapX: 10317,
+    mapY: 6991,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-francese",
+    name: "Cala Francese",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49686,
+    longitude: 12.62528,
+    mapX: 9703,
+    mapY: 7702,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-spugne",
+    name: "Cala Spugne",
+    category: "Spiagge e Cale",
+    description: "Punto costiero di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49548,
+    longitude: 12.60778,
+    mapX: 8152,
+    mapY: 7741,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-stretta",
+    name: "Cala Stretta",
+    category: "Spiagge e Cale",
+    description: "Punto costiero in fase di posizionamento.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.505131,
+    longitude: 12.581444,
+    mapX: 5765,
+    mapY: 6496,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-calandra",
+    name: "Cala Calandra",
+    category: "Spiagge e Cale",
+    description: "Punto costiero in fase di posizionamento.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.513916,
+    longitude: 12.625474,
+    mapX: 9671,
+    mapY: 5796,
+    island: "Lampedusa"
+  },
+  {
+    id: "spiaggia-dei-conigli",
+    name: "Spiaggia dei Conigli",
+    category: "Spiagge e Cale",
+    description: "Punto costiero in fase di posizionamento.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.513303,
+    longitude: 12.557376,
+    mapX: 3776,
+    mapY: 5646,
+    island: "Lampedusa"
+  },
+  {
+    id: "aeroporto-internazionale-di-lampedusa",
+    name: "Aeroporto Internazionale di Lampedusa",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50094,
+    longitude: 12.61856,
+    mapX: 9437,
+    mapY: 7267,
+    island: "Lampedusa"
+  },
+  {
+    id: "albero-sole",
+    name: "Albero Sole",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.52828,
+    longitude: 12.54066,
+    mapX: 2943,
+    mapY: 4141,
+    island: "Lampedusa"
+  },
+  {
+    id: "archivio-storico-lampedusa",
+    name: "Archivio Storico Lampedusa",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5005,
+    longitude: 12.60564,
+    mapX: 8022,
+    mapY: 7106,
+    island: "Lampedusa"
+  },
+  {
+    id: "cimitero",
+    name: "Cimitero",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.504,
+    longitude: 12.62206,
+    mapX: 9565,
+    mapY: 6777,
+    island: "Lampedusa"
+  },
+  {
+    id: "vasche-romane",
+    name: "Vasche Romane",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50011,
+    longitude: 12.60525,
+    mapX: 7834,
+    mapY: 7303,
+    island: "Lampedusa"
+  },
+  {
+    id: "santuario-di-cala-madonna",
+    name: "Santuario di Cala Madonna",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50619,
+    longitude: 12.59069,
+    mapX: 6353,
+    mapY: 6538,
+    island: "Lampedusa"
+  },
+  {
+    id: "statua-della-madonna-di-porto-salvo",
+    name: "Statua della Madonna di Porto Salvo",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49975,
+    longitude: 12.60535,
+    mapX: 6583,
+    mapY: 6523,
+    island: "Lampedusa"
+  },
+  {
+    id: "strada-panoramica",
+    name: "Strada Panoramica",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5236,
+    longitude: 12.57696,
+    mapX: 4960,
+    mapY: 4838,
+    island: "Lampedusa"
+  },
+  {
+    id: "via-roma",
+    name: "Via Roma",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5025,
+    longitude: 12.60884,
+    mapX: 8095,
+    mapY: 6870,
+    island: "Lampedusa"
+  },
+  {
+    id: "museo-archeologico-delle-pelagie",
+    name: "Museo Archeologico delle Pelagie",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5006,
+    longitude: 12.60565,
+    mapX: 7852,
+    mapY: 6951,
+    island: "Lampedusa"
+  },
+  {
+    id: "porto-nuovo",
+    name: "Porto Nuovo",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50215,
+    longitude: 12.60271,
+    mapX: 7656,
+    mapY: 7148,
+    island: "Lampedusa"
+  },
+  {
+    id: "riserva-naturale-orientata",
+    name: "Riserva Naturale Orientata",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51267,
+    longitude: 12.56892,
+    mapX: 3866,
+    mapY: 5093,
+    island: "Lampedusa"
+  },
+  {
+    id: "obelisco-cassodoro",
+    name: "Obelisco Cassodoro",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50253,
+    longitude: 12.60914,
+    mapX: 8257,
+    mapY: 6695,
+    island: "Lampedusa"
+  },
+  {
+    id: "centro-recupero-tartarughe",
+    name: "Centro Recupero Tartarughe",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50313,
+    longitude: 12.605642,
+    mapX: 7796,
+    mapY: 6694,
+    island: "Lampedusa"
+  },
+  {
+    id: "fontana-cascella",
+    name: "Fontana Cascella",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50306,
+    longitude: 12.60865,
+    mapX: 8240,
+    mapY: 6447,
+    island: "Lampedusa"
+  },
+  {
+    id: "faro-di-capo-grecale",
+    name: "Faro di Capo Grecale",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.51749,
+    longitude: 12.63178,
+    mapX: 10218,
+    mapY: 5117,
+    island: "Lampedusa"
+  },
+  {
+    id: "chiesa",
+    name: "Chiesa",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50333,
+    longitude: 12.60935,
+    mapX: 8139,
+    mapY: 6220,
+    island: "Lampedusa"
+  },
+  {
+    id: "forestale",
+    name: "Forestale",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.520385,
+    longitude: 12.540416,
+    mapX: 1807,
+    mapY: 4783,
+    island: "Lampedusa"
+  },
+  {
+    id: "porta-d-europa",
+    name: "Porta d'Europa",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49368,
+    longitude: 12.60562,
+    mapX: 7857,
+    mapY: 7787,
+    island: "Lampedusa"
+  },
+  {
+    id: "sede-area-marina-protetta",
+    name: "Sede Area Marina Protetta",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.50318,
+    longitude: 12.60566,
+    mapX: 8026,
+    mapY: 6593,
+    island: "Lampedusa"
+  },
+  {
+    id: "la-madonna-del-mare",
+    name: "La Madonna del mare",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5075,
+    longitude: 12.5579,
+    mapX: 3673,
+    mapY: 6283,
+    island: "Lampedusa"
+  },
+  {
+    id: "casa-teresa",
+    name: "Casa Teresa",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5236,
+    longitude: 12.54049,
+    mapX: 2843,
+    mapY: 4683,
+    island: "Lampedusa"
+  },
+  {
+    id: "porto-vecchio",
+    name: "Porto Vecchio",
+    category: "Luoghi di interesse",
+    description: "Luogo di interesse di Lampedusa.",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49689,
+    longitude: 12.60515,
+    mapX: 8034,
+    mapY: 7402,
+    island: "Lampedusa"
+  },
+  {
+    id: "cala-maluk",
+    name: "Cala Maluk",
+    category: "Spiagge e Cale",
+    description: "Cala Maluk",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.49535,
+    longitude: 12.613721,
+    mapX: 8432,
+    mapY: 7760,
+    island: "Lampedusa"
+  },
+  {
+    id: "grotta-respiro",
+    name: "Grotta Respiro",
+    category: "Luoghi di interesse",
+    description: "Grotta Respiro",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.52143,
+    longitude: 12.623339,
+    mapX: 9402,
+    mapY: 4944,
+    island: "Lampedusa"
+  },
+  {
+    id: "scala-colorata",
+    name: "Scala colorata",
+    category: "Luoghi di interesse",
+    description: "Scala colorata",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.5,
+    longitude: 13.6,
+    mapX: 8252,
+    mapY: 7161,
+    island: "Lampedusa"
+  },
+  {
+    id: "villa-modugno",
+    name: "Villa di Domenico Modugno",
+    category: "Spiagge e Cale",
+    description: "Villa di Domenico Modugno",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.514146,
+    longitude: 12.557032,
+    mapX: 3673,
+    mapY: 5400,
+    island: "Lampedusa"
+  },
+  {
+    id: "isola-lampione",
+    name: "Isola di Lampione",
+    category: "Luoghi di interesse",
+    description: "Isola di Lampione",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.550616,
+    longitude: 12.318315,
+    mapX: -1255,
+    mapY: 1194,
+    island: "Lampione"
+  },
+  {
+    id: "linosa",
+    name: "Linosa",
+    category: "Luoghi di interesse",
+    description: "Linosa",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.866184,
+    longitude: 12.868725,
+    mapX: 12895,
+    mapY: 1484,
+    island: "Linosa"
+  },
+  {
+    id: "pozzolana-ponente",
+    name: "Pozzolana di Ponente",
+    category: "Spiagge e Cale",
+    description: "Pozzolana di Ponente",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.863356,
+    longitude: 12.854822,
+    mapX: 11522,
+    mapY: 1736,
+    island: "Linosa"
+  },
+  {
+    id: "baia-conte",
+    name: "Baia del Conte",
+    category: "Spiagge e Cale",
+    description: "Baia del Conte",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.87166,
+    longitude: 12.879533,
+    mapX: 13926,
+    mapY: 765,
+    island: "Linosa"
+  },
+  {
+    id: "monte-vulcano",
+    name: "Monte Vulcano",
+    category: "Luoghi di interesse",
+    description: "Monte Vulcano",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.859904,
+    longitude: 12.873273,
+    mapX: 13254,
+    mapY: 1864,
+    island: "Linosa"
+  },
+  {
+    id: "piscina-naturale",
+    name: "Piscina Naturale",
+    category: "Spiagge e Cale",
+    description: "Piscina Naturale",
+    imageSrc: "/placeholders/category-map.svg",
+    latitude: 35.874748,
+    longitude: 12.878029,
+    mapX: 13800,
+    mapY: 461,
+    island: "Linosa"
   }
-
-  return point.category === "Spiagge e Cale"
-    ? `Punto costiero di ${point.island}.`
-    : `Luogo di interesse di ${point.island}.`;
-}
-
-const allPointSeeds = [...coastalPointSeeds, ...landmarkPointSeeds];
-
-export const pointsOfInterest: PointOfInterest[] = allPointSeeds.map((point) => ({
-  id: point.id,
-  name: point.name,
-  category: point.category,
-  description: buildPointDescription(point),
-  imageSrc: defaultPointOfInterestImage,
-  latitude: point.latitude,
-  longitude: point.longitude,
-  mapX: point.mapX,
-  mapY: point.mapY,
-  island: point.island
-}));
+];

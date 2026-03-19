@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { MapCompass } from "@/components/map/map-compass";
 import { PoiRouteQrModal, getGoogleMapsUrl } from "@/components/map/poi-route-qr-modal";
 import { useAppMode } from "@/components/providers/app-mode-provider";
 import type { PointOfInterest } from "@/features/map/map.types";
@@ -646,6 +647,7 @@ export function IslandMapCanvas({
       </div>
 
       <div data-map-control="true" className="absolute right-4 top-4 z-20 flex flex-col items-center gap-3">
+        <MapCompass />
         <div className="overflow-hidden rounded-[1.2rem] border border-white/55 bg-white/84 shadow-[0_18px_40px_rgba(16,36,63,0.16)] backdrop-blur">
           <button
             type="button"

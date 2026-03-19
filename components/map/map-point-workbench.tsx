@@ -194,12 +194,35 @@ export function MapPointWorkbench() {
     handleDraftFieldChange(field, Number.isFinite(parsedValue) ? parsedValue : null);
   };
 
+  const commitCurrentDraftToWorkingPoints = ({ allowCreate = false }: { allowCreate?: boolean } = {}) => {
+    if (!canPersistDraft) {
+      return;
+    }
+
+    setWorkingPoints((currentPoints) => {
+      if (editingPointId) {
+        return upsertPointById(currentPoints, normalizedDraft, editingPointId);
+      }
+
+      return allowCreate ? upsertPointById(currentPoints, normalizedDraft) : currentPoints;
+    });
+  };
+
   const loadPointIntoDraft = (point: PointOfInterest) => {
+    if (point.id === editingPointId) {
+      return;
+    }
+
+    commitCurrentDraftToWorkingPoints();
     setDraft(point);
     setEditingPointId(point.id);
   };
 
-  const resetDraft = () => {
+  const resetDraft = ({ commitCurrent = false }: { commitCurrent?: boolean } = {}) => {
+    if (commitCurrent) {
+      commitCurrentDraftToWorkingPoints();
+    }
+
     setDraft(createEmptyDraft());
     setEditingPointId(null);
   };
@@ -209,7 +232,7 @@ export function MapPointWorkbench() {
       return;
     }
 
-    setWorkingPoints((currentPoints) => upsertPointById(currentPoints, normalizedDraft, editingPointId));
+    commitCurrentDraftToWorkingPoints({ allowCreate: true });
     setDraft(normalizedDraft);
     setEditingPointId(normalizedDraft.id);
     setCopyFeedback("JSON completo aggiornato nella bozza locale.");
@@ -341,7 +364,7 @@ export function MapPointWorkbench() {
               <button
                 type="button"
                 className="rounded-[1.1rem] border border-dashed border-navy-950/20 bg-slate-50/85 px-4 py-3 text-left transition hover:border-navy-950/35 hover:bg-white"
-                onClick={resetDraft}
+                onClick={() => resetDraft({ commitCurrent: true })}
               >
                 <p className="text-sm font-semibold text-navy-950">Nuovo punto</p>
                 <p className="mt-2 text-sm text-navy-900/65">Apre una bozza vuota da posizionare sulla mappa.</p>
@@ -485,7 +508,7 @@ export function MapPointWorkbench() {
               </button>
               <button
                 type="button"
-                onClick={resetDraft}
+                onClick={() => resetDraft({ commitCurrent: true })}
                 className="rounded-full border border-navy-950/15 bg-white px-5 py-3 text-sm font-semibold text-navy-950 transition hover:border-navy-950/30 hover:bg-slate-50"
               >
                 Nuovo punto vuoto
