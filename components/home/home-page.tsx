@@ -12,7 +12,8 @@ export function HomePage() {
           <div className="mx-auto w-full max-w-[1080px] px-[var(--page-padding)] py-12">
             <p className="text-sm uppercase tracking-[0.34em] text-white/70">Benvenuti nelle Pelagie</p>
             <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-tight text-white sm:text-6xl">
-              Scopri <span className="font-title text-[4.3rem] italic text-gold-300 sm:text-[5.2rem]">Lampedusa</span> e Linosa
+              Scopri <span className="font-title text-[4.3rem] italic text-gold-300 sm:text-[5.2rem]">Lampedusa</span> e{" "}
+              <span className="font-title text-[4.3rem] italic text-gold-300 sm:text-[5.2rem]">Linosa</span>
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-white/76">
               Un accesso immediato alle migliori esperienze, ai luoghi da vivere e ai servizi da contattare in pochi tocchi.

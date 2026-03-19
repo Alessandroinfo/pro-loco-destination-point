@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { CategoryPage as CategoryPageView } from "@/components/category/category-page";
-import { categories } from "@/features/catalog/categories.data";
-import { getCategoryById } from "@/features/catalog/catalog.selectors";
-import { getAbsoluteUrl } from "@/lib/site";
+import { CategoryRouteView } from "@/components/routes/page-route-views";
+import { getCategoryStaticParams, resolveCategoryPageData } from "@/lib/catalog-route-helpers";
+import { createCategoryPageMetadata } from "@/lib/page-metadata";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return categories.map((category) => ({ categoryId: category.id }));
+  return getCategoryStaticParams();
 }
 
 export async function generateMetadata({
@@ -18,19 +17,13 @@ export async function generateMetadata({
   params: Promise<{ categoryId: string }>;
 }): Promise<Metadata> {
   const { categoryId } = await params;
-  const category = getCategoryById(categoryId);
+  const category = resolveCategoryPageData(categoryId);
 
   if (!category) {
     return {};
   }
 
-  return {
-    title: category.name,
-    description: `${category.tagline}. Esplora la sezione ${category.name} del totem turistico ufficiale di Lampedusa e Linosa.`,
-    alternates: {
-      canonical: getAbsoluteUrl(`/categories/${category.id}`)
-    }
-  };
+  return createCategoryPageMetadata(category, "standard");
 }
 
 export default async function CategoryPage({
@@ -39,11 +32,11 @@ export default async function CategoryPage({
   params: Promise<{ categoryId: string }>;
 }) {
   const { categoryId } = await params;
-  const category = getCategoryById(categoryId);
+  const category = resolveCategoryPageData(categoryId);
 
   if (!category) {
     notFound();
   }
 
-  return <CategoryPageView category={category} />;
+  return <CategoryRouteView category={category} />;
 }

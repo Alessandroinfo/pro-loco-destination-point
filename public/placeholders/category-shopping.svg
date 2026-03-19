@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" fill="none">
+  <rect width="720" height="540" fill="url(#bg)"/>
+  <circle cx="590" cy="116" r="92" fill="#F7D7CB" opacity="0.18"/>
+  <circle cx="132" cy="104" r="116" fill="#FFFFFF" opacity="0.05"/>
+  <path d="M0 392C84 352 176 340 264 349C339 357 406 381 479 387C555 394 634 380 720 332V540H0V392Z" fill="rgba(255,255,255,0.08)"/>
+  <ellipse cx="354" cy="236" rx="214" ry="128" fill="rgba(255,255,255,0.18)"/>
+      <circle cx="238" cy="172" r="88" fill="rgba(255,255,255,0.08)"/>
+      <circle cx="486" cy="204" r="110" fill="rgba(255,255,255,0.08)"/>
+      <g transform="translate(170 108)">
+        <path d="M78 74C78 42 101 18 132 18C163 18 186 42 186 74" stroke="rgba(255,255,255,0.78)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M38 92H226C240 92 251 103 251 117V251C251 265 240 276 226 276H38C24 276 13 265 13 251V117C13 103 24 92 38 92Z" fill="rgba(255,255,255,0.96)"/>
+        <path d="M66 92H198L186 66C181 55 170 48 158 48H106C94 48 83 55 78 66L66 92Z" fill="rgba(255,255,255,0.88)"/>
+        <path d="M60 142H204" stroke="#F7D7CB" stroke-width="9" stroke-linecap="round"/>
+        <path d="M60 174H204" stroke="#F7D7CB" stroke-width="9" stroke-linecap="round" opacity="0.56"/>
+        <path d="M60 206H160" stroke="#F7D7CB" stroke-width="9" stroke-linecap="round" opacity="0.34"/>
+      </g>
+      <g transform="translate(416 186)">
+        <path d="M42 60C42 34 61 14 86 14C111 14 130 34 130 60" stroke="rgba(255,255,255,0.78)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M18 76H154C166 76 176 86 176 98V204C176 216 166 226 154 226H18C6 226 -4 216 -4 204V98C-4 86 6 76 18 76Z" fill="rgba(255,255,255,0.94)"/>
+        <path d="M34 76H138L128 56C124 48 116 42 107 42H65C56 42 48 48 44 56L34 76Z" fill="rgba(255,255,255,0.86)"/>
+        <path d="M34 116H138" stroke="#F7D7CB" stroke-width="8" stroke-linecap="round"/>
+        <path d="M34 146H138" stroke="#F7D7CB" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+      </g>
+      <circle cx="474" cy="286" r="24" fill="#F7D7CB" opacity="0.92"/>
+      <path d="M464 286L472 294L487 278" stroke="#8D4935" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
+  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">SOUVENIR, BOUTIQUE, ARTIGIANATO, ABBIGLIAMENTO</text>
+  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">Shopping</text>
+  <defs>
+    <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8D4935"/>
+      <stop offset="1" stop-color="#C96F53"/>
+    </linearGradient>
+    <linearGradient id="bottomFade" x1="360" y1="336" x2="360" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(16,36,63,0)"/>
+      <stop offset="1" stop-color="rgba(16,36,63,0.44)"/>
+    </linearGradient>
+  </defs>
+</svg>

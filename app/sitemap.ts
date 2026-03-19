@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { businesses } from "@/features/catalog/businesses.data";
 import { categories } from "@/features/catalog/categories.data";
-import { getBusinessRoute, getCategoryRoute } from "@/lib/routes";
+import { getBusinessRoute, getCategoryRoute, getMapRoute, getHomeRoute } from "@/lib/routes";
 
 const fallbackSiteUrl = "https://example.com";
 
@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const routes: MetadataRoute.Sitemap = [
     {
-      url: siteUrl,
+      url: `${siteUrl}${getHomeRoute("standard")}`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1
@@ -39,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
 
   routes.push({
-    url: `${siteUrl}/map`,
+    url: `${siteUrl}${getMapRoute("standard")}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.75

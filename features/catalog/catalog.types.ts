@@ -1,4 +1,4 @@
-export type CategoryId = "experiences" | "dining" | "hospitality" | "renting" | "info";
+export type CategoryId = "experiences" | "dining" | "hospitality" | "renting" | "shopping" | "info";
 
 export type Category = {
   id: CategoryId;

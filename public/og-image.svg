@@ -6,8 +6,8 @@
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
   <image href="/logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="274" fill="#E7C989" font-size="28" font-family="Georgia, serif" font-style="italic">Lampedusa</text>
-  <text x="94" y="334" fill="#FFFFFF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Hub Turistico Pro Loco</text>
-  <text x="94" y="394" fill="#D5E9EF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa</text>
+  <text x="94" y="334" fill="#FFFFFF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
+  <text x="94" y="394" fill="#D5E9EF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
   <text x="94" y="468" fill="#FFFFFF" fill-opacity="0.78" font-size="28" font-family="Manrope, Arial, sans-serif">PWA statica per totem touch screen con mappa offline e QR WhatsApp.</text>
   <defs>
     <linearGradient id="panel" x1="62" y1="54" x2="1150" y2="578" gradientUnits="userSpaceOnUse">

@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { BusinessDetailPage } from "@/components/business/business-detail-page";
-import { businesses } from "@/features/catalog/businesses.data";
-import { getBusinessBySlug, getCategoryById } from "@/features/catalog/catalog.selectors";
-import { getBusinessStructuredData } from "@/features/seo/structured-data";
-import { getAbsoluteUrl } from "@/lib/site";
+import { BusinessRouteView } from "@/components/routes/page-route-views";
+import { getBusinessStaticParams, resolveBusinessPageData } from "@/lib/catalog-route-helpers";
+import { createBusinessPageMetadata } from "@/lib/page-metadata";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return businesses.map((business) => ({
-    categoryId: business.categoryId,
-    businessId: business.id
-  }));
+  return getBusinessStaticParams();
 }
 
 export async function generateMetadata({
@@ -22,19 +17,13 @@ export async function generateMetadata({
   params: Promise<{ categoryId: string; businessId: string }>;
 }): Promise<Metadata> {
   const { categoryId, businessId } = await params;
-  const business = getBusinessBySlug(categoryId, businessId);
+  const pageData = resolveBusinessPageData(categoryId, businessId);
 
-  if (!business) {
+  if (!pageData) {
     return {};
   }
 
-  return {
-    title: business.name,
-    description: `${business.shortDescription} ${business.description}`,
-    alternates: {
-      canonical: getAbsoluteUrl(`/categories/${categoryId}/${businessId}`)
-    }
-  };
+  return createBusinessPageMetadata(categoryId, pageData.business, "standard");
 }
 
 export default async function BusinessPage({
@@ -43,17 +32,11 @@ export default async function BusinessPage({
   params: Promise<{ categoryId: string; businessId: string }>;
 }) {
   const { categoryId, businessId } = await params;
-  const category = getCategoryById(categoryId);
-  const business = getBusinessBySlug(categoryId, businessId);
+  const pageData = resolveBusinessPageData(categoryId, businessId);
 
-  if (!category || !business) {
+  if (!pageData) {
     notFound();
   }
 
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(getBusinessStructuredData(business)) }} />
-      <BusinessDetailPage business={business} category={category} />
-    </>
-  );
+  return <BusinessRouteView business={pageData.business} category={pageData.category} />;
 }

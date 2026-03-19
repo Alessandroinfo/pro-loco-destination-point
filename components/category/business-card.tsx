@@ -1,7 +1,6 @@
-import Link from "next/link";
-
 import type { Business, CategoryId } from "@/features/catalog/catalog.types";
 import { getBusinessRoute } from "@/lib/routes";
+import { AppModeLink } from "@/components/shared/app-mode-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 
 export function BusinessCard({
@@ -14,7 +13,7 @@ export function BusinessCard({
   preload?: boolean;
 }) {
   return (
-    <Link
+    <AppModeLink
       href={getBusinessRoute(categoryId, business.id)}
       className="touch-card h-[320px] text-left"
       aria-label={`${business.name}, ${business.type}`}
@@ -34,6 +33,6 @@ export function BusinessCard({
         <p className="text-sm uppercase tracking-[0.24em] text-white/65">{business.type}</p>
         <h2 className="mt-2 text-3xl font-semibold text-white">{business.name}</h2>
       </div>
-    </Link>
+    </AppModeLink>
   );
 }

@@ -1,3 +1,5 @@
+import type { AppMode } from "@/lib/app-mode";
+import { getCanonicalPathname, getModeAwarePathname } from "@/lib/app-mode";
 import { getBusinessBySlug, getCategoryById } from "@/features/catalog/catalog.selectors";
 
 export const publicRoutes = {
@@ -5,26 +7,35 @@ export const publicRoutes = {
   map: "/map"
 } as const;
 
-export function getCategoryRoute(categoryId: string) {
-  return `/categories/${categoryId}`;
+export function getHomeRoute(mode: AppMode = "standard") {
+  return getModeAwarePathname(publicRoutes.home, mode);
 }
 
-export function getBusinessRoute(categoryId: string, businessId: string) {
-  return `/categories/${categoryId}/${businessId}`;
+export function getMapRoute(mode: AppMode = "standard") {
+  return getModeAwarePathname(publicRoutes.map, mode);
+}
+
+export function getCategoryRoute(categoryId: string, mode: AppMode = "standard") {
+  return getModeAwarePathname(`/categories/${categoryId}`, mode);
+}
+
+export function getBusinessRoute(categoryId: string, businessId: string, mode: AppMode = "standard") {
+  return getModeAwarePathname(`/categories/${categoryId}/${businessId}`, mode);
 }
 
 export function getCurrentRouteLabel(pathname: string) {
-  const normalizedPathname = pathname !== "/" && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const normalizedPathname = getCanonicalPathname(pathname);
+  const trimmedPathname = normalizedPathname !== "/" && normalizedPathname.endsWith("/") ? normalizedPathname.slice(0, -1) : normalizedPathname;
 
-  if (normalizedPathname === publicRoutes.home) {
+  if (trimmedPathname === publicRoutes.home) {
     return "Home";
   }
 
-  if (normalizedPathname === publicRoutes.map) {
+  if (trimmedPathname === publicRoutes.map) {
     return "Esplora le Pelagie";
   }
 
-  const segments = normalizedPathname.split("/").filter(Boolean);
+  const segments = trimmedPathname.split("/").filter(Boolean);
 
   if (segments[0] !== "categories") {
     return "Pagina corrente";

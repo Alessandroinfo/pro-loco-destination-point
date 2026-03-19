@@ -5,13 +5,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
+import { useAppMode } from "@/components/providers/app-mode-provider";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
+import { getCanonicalPathname } from "@/lib/app-mode";
 import { getCurrentRouteLabel } from "@/lib/routes";
 
 export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
   const currentPath = pathname ?? "/";
   const currentPageLabel = getCurrentRouteLabel(currentPath);
+  const { isTotemMode } = useAppMode();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
@@ -24,7 +27,10 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
       return;
     }
 
-    setCurrentPageUrl(window.location.href);
+    const url = new URL(window.location.href);
+    const canonicalPathname = getCanonicalPathname(url.pathname);
+
+    setCurrentPageUrl(`${url.origin}${canonicalPathname}${url.search}${url.hash}`);
   }, [currentPath]);
 
   useEffect(() => {
@@ -49,7 +55,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
       .catch(() => setQrCodeDataUrl(""));
   }, [currentPageUrl, isOpen]);
 
-  if (hidden) {
+  if (hidden || !isTotemMode) {
     return null;
   }
 

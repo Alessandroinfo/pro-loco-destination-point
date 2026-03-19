@@ -8,5 +8,5 @@ export type PointOfInterest = {
   imageSrc: string;
   mapX: number;
   mapY: number;
-  island: "Lampedusa" | "Linosa";
+  island: "Lampedusa" | "Linosa" | "Lampione";
 };

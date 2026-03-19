@@ -1,15 +1,14 @@
-import Link from "next/link";
-
 import type { Category } from "@/features/catalog/catalog.types";
 import { getBusinessesByCategoryId } from "@/features/catalog/catalog.selectors";
 import { getCategoryRoute } from "@/lib/routes";
+import { AppModeLink } from "@/components/shared/app-mode-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 
 export function CategoryCard({ category, preload = false }: { category: Category; preload?: boolean }) {
   const businessCount = getBusinessesByCategoryId(category.id).length;
 
   return (
-    <Link
+    <AppModeLink
       href={getCategoryRoute(category.id)}
       className="touch-card group h-[290px] text-left"
       aria-label={`${category.name}, ${businessCount} attività disponibili`}
@@ -37,6 +36,6 @@ export function CategoryCard({ category, preload = false }: { category: Category
           {businessCount} attività
         </div>
       </div>
-    </Link>
+    </AppModeLink>
   );
 }

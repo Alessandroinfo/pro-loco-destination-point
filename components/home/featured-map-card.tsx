@@ -1,13 +1,12 @@
-import Link from "next/link";
-
 import { pointsOfInterest } from "@/features/map/map.data";
 import { publicRoutes } from "@/lib/routes";
+import { AppModeLink } from "@/components/shared/app-mode-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 
 export function FeaturedMapCard() {
   return (
     <section className="mt-8">
-      <Link
+      <AppModeLink
         href={publicRoutes.map}
         className="touch-card block h-[320px] text-left"
         aria-label={`Esplora le Pelagie, ${pointsOfInterest.length} punti di interesse`}
@@ -32,7 +31,7 @@ export function FeaturedMapCard() {
             {pointsOfInterest.length} punti di interesse
           </div>
         </div>
-      </Link>
+      </AppModeLink>
     </section>
   );
 }

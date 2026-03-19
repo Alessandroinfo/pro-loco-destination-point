@@ -4,7 +4,7 @@ export const categories: Category[] = [
   {
     id: "experiences",
     name: "Esperienze",
-    shortLabel: "Mare, escursioni e avventure",
+    shortLabel: "Tour in barca, diving, escursioni",
     tagline: "Scopri il lato piu emozionante dell'isola",
     color: "#2E8AA5",
     image: "/placeholders/category-experiences.svg"
@@ -32,6 +32,14 @@ export const categories: Category[] = [
     tagline: "Muoviti con liberta tra costa e centro",
     color: "#4E9C63",
     image: "/placeholders/category-renting.svg"
+  },
+  {
+    id: "shopping",
+    name: "Shopping",
+    shortLabel: "Souvenir, Boutique, Artigianato, Abbigliamento",
+    tagline: "Indirizzi selezionati tra stile isolano, idee regalo e piccole botteghe da scoprire",
+    color: "#C96F53",
+    image: "/placeholders/category-shopping.svg"
   },
   {
     id: "info",

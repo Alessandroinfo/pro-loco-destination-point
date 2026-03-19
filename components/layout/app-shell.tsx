@@ -7,11 +7,14 @@ import { AppFooter } from "@/components/layout/app-footer";
 import { AppHeader } from "@/components/layout/app-header";
 import { FloatingRouteQr } from "@/components/layout/floating-route-qr";
 import { ScreensaverOverlay } from "@/components/layout/screensaver-overlay";
+import { useAppMode } from "@/components/providers/app-mode-provider";
+import { InstallAppBanner } from "@/components/pwa/install-app-banner";
 
 const INACTIVITY_TIMEOUT_MS = 80_000;
 const SCREENSAVER_DISMISS_GUARD_MS = 600;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const { isTotemMode } = useAppMode();
   const [isScreensaverActive, setIsScreensaverActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const lastInteractionAtRef = useRef(Date.now());
@@ -22,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const registerInteraction = useEffectEvent(() => {
-    if (isScreensaverActive) {
+    if (!isTotemMode || isScreensaverActive) {
       return;
     }
 
@@ -30,13 +33,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   });
 
   const openScreensaver = useEffectEvent(() => {
+    if (!isTotemMode) {
+      return;
+    }
+
     screensaverOpenedAtRef.current = Date.now();
     lastInteractionAtRef.current = Date.now();
     setIsScreensaverActive(true);
   });
 
   const checkInactivity = useEffectEvent(() => {
-    if (isScreensaverActive) {
+    if (!isTotemMode || isScreensaverActive) {
       return;
     }
 
@@ -48,6 +55,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
+    if (!isTotemMode) {
+      setIsScreensaverActive(false);
+      return;
+    }
+
     const events: Array<keyof WindowEventMap> = ["pointerdown", "pointermove", "touchstart"];
 
     registerInteraction();
@@ -75,7 +87,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.clearInterval(intervalId);
     };
-  }, [checkInactivity, registerInteraction]);
+  }, [checkInactivity, isTotemMode, registerInteraction]);
 
   useEffect(() => {
     document.body.style.overflow = isScreensaverActive ? "hidden" : "";
@@ -110,7 +122,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <AppFooter />
       </div>
 
-      {process.env.NODE_ENV === "development" && !isScreensaverActive ? (
+      {process.env.NODE_ENV === "development" && isTotemMode && !isScreensaverActive ? (
         <button
           type="button"
           className="fixed bottom-8 left-6 z-30 rounded-full bg-navy-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(16,36,63,0.16)]"
@@ -121,8 +133,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <FloatingRouteQr hidden={isScreensaverActive} />
+      <InstallAppBanner />
 
-      {isMounted
+      {isMounted && isTotemMode
         ? createPortal(<ScreensaverOverlay isActive={isScreensaverActive} onDismiss={dismissScreensaver} />, document.body)
         : null}
     </div>

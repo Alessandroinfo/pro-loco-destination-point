@@ -4,6 +4,7 @@ import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "@/app/globals.css";
 import { AppShell } from "@/components/layout/app-shell";
 import { PwaRegister } from "@/components/pwa-register";
+import { AppModeProvider } from "@/components/providers/app-mode-provider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -24,8 +25,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Hub Turistico Pro Loco Lampedusa e Linosa",
-    template: "%s | Pro Loco Lampedusa e Linosa"
+    default: "Pro Loco - Destination Point",
+    template: "%s | Pro Loco - Destination Point"
   },
   description:
     "Totem turistico ufficiale della Pro Loco di Lampedusa e Linosa con categorie, aziende, mappa offline e accesso rapido via WhatsApp.",
@@ -38,11 +39,11 @@ export const metadata: Metadata = {
     "vacanze Lampedusa",
     "attività Lampedusa"
   ],
-  applicationName: "Hub Turistico Pro Loco Lampedusa e Linosa",
+  applicationName: "Pro Loco - Destination Point",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Pro Loco Hub"
+    title: "Destination Point"
   },
   formatDetection: {
     email: false,
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     telephone: false
   },
   openGraph: {
-    title: "Hub Turistico Pro Loco Lampedusa e Linosa",
+    title: "Pro Loco - Destination Point",
     description:
       "Un hub digitale elegante e offline-friendly per scoprire esperienze, ospitalità, ristorazione, trasporti e mappa dell'isola.",
     type: "website",
@@ -60,13 +61,13 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Hub Turistico Pro Loco Lampedusa e Linosa"
+        alt: "Pro Loco - Destination Point"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hub Turistico Pro Loco Lampedusa e Linosa",
+    title: "Pro Loco - Destination Point",
     description:
       "PWA statica per totem touch screen outdoor dedicata al turismo di Lampedusa e Linosa.",
     images: ["/og-image.svg"]
@@ -90,7 +91,9 @@ export default function RootLayout({
           Vai al contenuto principale
         </a>
         <PwaRegister />
-        <AppShell>{children}</AppShell>
+        <AppModeProvider>
+          <AppShell>{children}</AppShell>
+        </AppModeProvider>
       </body>
     </html>
   );

@@ -3,7 +3,7 @@ import type { Business } from "@/features/catalog/catalog.types";
 export const touristHubStructuredData = {
   "@context": "https://schema.org",
   "@type": "TouristInformationCenter",
-  name: "Hub Turistico Pro Loco Lampedusa e Linosa",
+  name: "Pro Loco - Destination Point",
   description:
     "Punto di accesso digitale della Pro Loco per scoprire aziende, esperienze, ospitalità e punti di interesse a Lampedusa e Linosa.",
   areaServed: ["Lampedusa", "Linosa"],

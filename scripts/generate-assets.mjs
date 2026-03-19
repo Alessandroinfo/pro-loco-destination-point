@@ -17,6 +17,7 @@ const assets = [
   ["public/placeholders/category-dining.svg", scenicSvg("Ristorazione", "Ristoranti, Pizzerie, Trattorie", "#4B2B18", "#C89A3D", "#F6D9A6", "dining")],
   ["public/placeholders/category-hospitality.svg", scenicSvg("Ospitalità", "Hotel, B&B, Case vacanza", "#7A5A1A", "#C89A3D", "#F3E0B2", "hospitality")],
   ["public/placeholders/category-renting.svg", scenicSvg("Trasporti", "Barche, Scooter, auto, bici", "#1E5A38", "#4E9C63", "#DCEFD9", "renting")],
+  ["public/placeholders/category-shopping.svg", scenicSvg("Shopping", "Souvenir, Boutique, Artigianato, Abbigliamento", "#8D4935", "#C96F53", "#F7D7CB", "shopping")],
   ["public/placeholders/category-info.svg", scenicSvg("Info utili", "Trasporti, assistenza, servizi", "#16365D", "#5B8CB9", "#D6E8F8", "info")],
   ["public/placeholders/category-map.svg", scenicSvg("Esplora le Pelagie", "Lampedusa e Linosa illustrate", "#10243F", "#5BB7D4", "#E7C989", "map")],
   ["public/placeholders/screensaver-poster.svg", screensaverSvg()]
@@ -90,8 +91,8 @@ function ogImageSvg() {
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
   <image href="/logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="274" fill="#E7C989" font-size="28" font-family="Georgia, serif" font-style="italic">Lampedusa</text>
-  <text x="94" y="334" fill="#FFFFFF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Hub Turistico Pro Loco</text>
-  <text x="94" y="394" fill="#D5E9EF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa</text>
+  <text x="94" y="334" fill="#FFFFFF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
+  <text x="94" y="394" fill="#D5E9EF" font-size="56" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
   <text x="94" y="468" fill="#FFFFFF" fill-opacity="0.78" font-size="28" font-family="Manrope, Arial, sans-serif">PWA statica per totem touch screen con mappa offline e QR WhatsApp.</text>
   <defs>
     <linearGradient id="panel" x1="62" y1="54" x2="1150" y2="578" gradientUnits="userSpaceOnUse">
@@ -268,6 +269,31 @@ function scenicIllustration(mode, dark, accent, warm) {
     `.trim();
   }
 
+  if (mode === "shopping") {
+    return `
+      <ellipse cx="354" cy="236" rx="214" ry="128" fill="${soft}"/>
+      <circle cx="238" cy="172" r="88" fill="rgba(255,255,255,0.08)"/>
+      <circle cx="486" cy="204" r="110" fill="rgba(255,255,255,0.08)"/>
+      <g transform="translate(170 108)">
+        <path d="M78 74C78 42 101 18 132 18C163 18 186 42 186 74" stroke="rgba(255,255,255,0.78)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M38 92H226C240 92 251 103 251 117V251C251 265 240 276 226 276H38C24 276 13 265 13 251V117C13 103 24 92 38 92Z" fill="rgba(255,255,255,0.96)"/>
+        <path d="M66 92H198L186 66C181 55 170 48 158 48H106C94 48 83 55 78 66L66 92Z" fill="rgba(255,255,255,0.88)"/>
+        <path d="M60 142H204" stroke="${warm}" stroke-width="9" stroke-linecap="round"/>
+        <path d="M60 174H204" stroke="${warm}" stroke-width="9" stroke-linecap="round" opacity="0.56"/>
+        <path d="M60 206H160" stroke="${warm}" stroke-width="9" stroke-linecap="round" opacity="0.34"/>
+      </g>
+      <g transform="translate(416 186)">
+        <path d="M42 60C42 34 61 14 86 14C111 14 130 34 130 60" stroke="rgba(255,255,255,0.78)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M18 76H154C166 76 176 86 176 98V204C176 216 166 226 154 226H18C6 226 -4 216 -4 204V98C-4 86 6 76 18 76Z" fill="rgba(255,255,255,0.94)"/>
+        <path d="M34 76H138L128 56C124 48 116 42 107 42H65C56 42 48 48 44 56L34 76Z" fill="rgba(255,255,255,0.86)"/>
+        <path d="M34 116H138" stroke="${warm}" stroke-width="8" stroke-linecap="round"/>
+        <path d="M34 146H138" stroke="${warm}" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+      </g>
+      <circle cx="474" cy="286" r="24" fill="${warm}" opacity="0.92"/>
+      <path d="M464 286L472 294L487 278" stroke="${dark}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    `.trim();
+  }
+
   if (mode === "info") {
     return `
       <circle cx="360" cy="238" r="126" fill="${soft}"/>
@@ -279,15 +305,18 @@ function scenicIllustration(mode, dark, accent, warm) {
   }
 
   return `
-    <ellipse cx="356" cy="246" rx="238" ry="142" fill="${soft}"/>
-    <g transform="translate(118 148) scale(0.48)">
+    <rect x="94" y="108" width="532" height="258" rx="128" fill="rgba(91,183,212,0.24)"/>
+    <rect x="120" y="132" width="484" height="210" rx="105" fill="rgba(91,183,212,0.14)"/>
+    <path d="M162 316C226 297 290 296 352 310C422 325 493 328 566 313" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M176 340C234 328 292 328 350 340C409 352 468 354 529 345" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="6" stroke-linecap="round"/>
+    <g transform="translate(150 166) scale(0.41)">
       <path
         d="M95.0 317.4 L103.1 328.3 L166.3 347.7 L201.8 343.2 L272.1 357.9 L284.6 349.2 L299.4 366.1 L310.1 358.9 L373.5 368.3 L385.2 395.1 L418.4 403.0 L423.1 384.6 L426.9 398.3 L446.0 403.8 L439.9 413.9 L464.6 406.0 L469.4 428.9 L495.6 413.3 L487.5 435.1 L499.6 439.8 L510.1 422.4 L511.8 442.6 L544.1 456.6 L546.4 436.2 L570.2 441.2 L554.7 424.5 L572.4 415.9 L571.2 434.5 L596.7 439.3 L567.6 452.1 L577.4 470.0 L594.2 469.9 L592.9 456.2 L618.5 454.6 L626.3 467.8 L640.7 460.2 L678.0 465.9 L673.0 455.6 L685.5 449.3 L695.5 466.5 L730.5 466.8 L707.6 452.4 L732.5 447.1 L720.8 434.3 L735.0 423.4 L709.8 424.6 L719.2 413.8 L669.6 406.1 L697.4 398.5 L673.1 365.7 L689.1 362.4 L694.4 345.6 L701.9 353.0 L726.3 345.5 L728.3 335.2 L663.9 309.3 L634.2 310.6 L630.6 319.0 L570.3 290.3 L544.8 298.1 L539.5 314.9 L508.1 318.8 L496.2 311.1 L497.9 318.1 L452.6 302.2 L376.3 301.1 L351.5 287.7 L299.9 295.7 L284.3 282.5 L170.8 271.2 L139.0 278.4 L95.0 317.4 Z"
         fill="${white}"
       />
       <path d="M154 404C255 372 355 383 442 395" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="10" stroke-linecap="round" />
     </g>
-    <g transform="translate(308 92) scale(0.31)">
+    <g transform="translate(350 124) scale(0.26)">
       <path
         d="M760.0 451.1 L770.2 458.5 L775.1 453.3 L782.9 455.4 L781.3 464.6 L786.9 472.7 L776.2 471.4 L780.4 479.0 L787.5 482.6 L793.2 497.9 L804.5 506.3 L808.7 507.2 L810.2 503.7 L822.3 505.6 L824.7 500.5 L830.2 504.2 L825.6 504.8 L842.4 506.2 L852.2 502.1 L855.0 503.8 L863.2 498.0 L876.7 507.8 L879.1 504.9 L882.9 507.3 L890.3 504.7 L899.5 510.0 L909.2 498.3 L910.0 486.6 L896.2 460.4 L900.4 453.1 L891.6 451.1 L893.8 448.9 L891.0 441.7 L894.8 441.0 L890.6 437.6 L897.5 430.7 L890.6 431.0 L885.6 422.5 L867.6 420.2 L865.2 424.1 L849.9 421.8 L830.2 423.8 L819.1 418.8 L807.9 419.7 L807.8 424.1 L798.7 425.0 L783.1 437.2 L764.9 437.5 L760.0 451.1 Z"
         fill="${warm}"
@@ -295,10 +324,10 @@ function scenicIllustration(mode, dark, accent, warm) {
       />
       <path d="M792 472C816 469 838 477 852 493" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="8" stroke-linecap="round" />
     </g>
-    <circle cx="248" cy="300" r="10" fill="${warm}" opacity="0.9"/>
-    <circle cx="336" cy="290" r="10" fill="${warm}" opacity="0.9"/>
-    <circle cx="398" cy="328" r="10" fill="${warm}" opacity="0.9"/>
-    <circle cx="582" cy="238" r="10" fill="${warm}" opacity="0.9"/>
+    <circle cx="264" cy="294" r="10" fill="${warm}" opacity="0.9"/>
+    <circle cx="338" cy="286" r="10" fill="${warm}" opacity="0.9"/>
+    <circle cx="390" cy="316" r="10" fill="${warm}" opacity="0.9"/>
+    <circle cx="590" cy="244" r="10" fill="${warm}" opacity="0.9"/>
   `.trim();
 }
 

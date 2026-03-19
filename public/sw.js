@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-hub-v3";
+const CACHE_NAME = "pro-loco-hub-v5";
 const STATIC_ROUTES = [
   "/",
   "/map/",
@@ -6,6 +6,7 @@ const STATIC_ROUTES = [
   "/categories/dining/",
   "/categories/hospitality/",
   "/categories/renting/",
+  "/categories/shopping/",
   "/categories/info/",
   "/categories/experiences/mare-vivo-diving/",
   "/categories/experiences/vento-di-scirocco/",
@@ -18,9 +19,11 @@ const STATIC_ROUTES = [
   "/categories/info/pelagie-help-desk/",
   "/categories/info/mobilita-pelagie/"
 ];
+const TOTEM_STATIC_ROUTES = STATIC_ROUTES.map((route) => (route === "/" ? "/totem/" : `/totem${route}`));
 
 const CORE_ASSETS = [
   "/manifest.webmanifest",
+  "/totem/manifest.webmanifest",
   "/boat-video.mp4",
   "/logo-pro-loco.svg",
   "/logo-pro-loco-white.svg",
@@ -32,6 +35,7 @@ const CORE_ASSETS = [
   "/placeholders/category-dining.svg",
   "/placeholders/category-hospitality.svg",
   "/placeholders/category-renting.svg",
+  "/placeholders/category-shopping.svg",
   "/placeholders/category-info.svg",
   "/placeholders/category-map.svg",
   "/placeholders/screensaver-poster.svg"
@@ -42,7 +46,7 @@ const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "info
 );
 
 self.addEventListener("install", (event) => {
-  const precacheEntries = [...STATIC_ROUTES, ...CORE_ASSETS, ...BUSINESS_ASSETS];
+  const precacheEntries = [...STATIC_ROUTES, ...TOTEM_STATIC_ROUTES, ...CORE_ASSETS, ...BUSINESS_ASSETS];
 
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(precacheEntries)));
   self.skipWaiting();
@@ -71,6 +75,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (event.request.mode === "navigate") {
+    const requestUrl = new URL(event.request.url);
+    const fallbackRoute = requestUrl.pathname.startsWith("/totem/") || requestUrl.pathname === "/totem" ? "/totem/" : "/";
+
     event.respondWith(
       fetch(event.request)
         .then((response) => {
@@ -82,7 +89,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(async () => {
           const cachedPage = await caches.match(event.request);
-          return cachedPage ?? caches.match("/");
+          return cachedPage ?? caches.match(fallbackRoute) ?? caches.match("/");
         })
     );
     return;

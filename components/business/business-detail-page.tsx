@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import type { Business, Category } from "@/features/catalog/catalog.types";
 import { getCategoryRoute } from "@/lib/routes";
+import { useAppMode } from "@/components/providers/app-mode-provider";
 import { BackLink } from "@/components/shared/back-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 import { BookingQrModal } from "@/components/business/booking-qr-modal";
@@ -19,6 +20,7 @@ export function BusinessDetailPage({
   const [selectedImage, setSelectedImage] = useState(business.heroImage);
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
+  const { isTotemMode } = useAppMode();
 
   const whatsappLink = `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(business.whatsappMessage)}`;
 
@@ -27,7 +29,7 @@ export function BusinessDetailPage({
   }, [business.heroImage]);
 
   useEffect(() => {
-    if (!isQrOpen) {
+    if (!isTotemMode || !isQrOpen) {
       setQrCodeDataUrl("");
       return;
     }
@@ -42,7 +44,7 @@ export function BusinessDetailPage({
     })
       .then(setQrCodeDataUrl)
       .catch(() => setQrCodeDataUrl(""));
-  }, [isQrOpen, whatsappLink]);
+  }, [isQrOpen, isTotemMode, whatsappLink]);
 
   return (
     <>
@@ -113,26 +115,39 @@ export function BusinessDetailPage({
               <InfoRow icon={<PinIcon />} label="Indirizzo" value={business.address} />
             </div>
 
-            <button
-              type="button"
-              className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
-              onClick={() => setIsQrOpen(true)}
-              aria-haspopup="dialog"
-              aria-expanded={isQrOpen}
-            >
-              Prenota
-            </button>
+            {isTotemMode ? (
+              <button
+                type="button"
+                className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
+                onClick={() => setIsQrOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={isQrOpen}
+              >
+                Prenota
+              </button>
+            ) : (
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
+              >
+                Prenota
+              </a>
+            )}
           </aside>
         </section>
       </section>
 
-      <BookingQrModal
-        isOpen={isQrOpen}
-        qrCodeDataUrl={qrCodeDataUrl}
-        businessName={business.name}
-        whatsappMessage={business.whatsappMessage}
-        onClose={() => setIsQrOpen(false)}
-      />
+      {isTotemMode ? (
+        <BookingQrModal
+          isOpen={isQrOpen}
+          qrCodeDataUrl={qrCodeDataUrl}
+          businessName={business.name}
+          whatsappMessage={business.whatsappMessage}
+          onClose={() => setIsQrOpen(false)}
+        />
+      ) : null}
     </>
   );
 }

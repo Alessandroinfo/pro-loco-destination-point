@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import { useAppMode } from "@/components/providers/app-mode-provider";
+
 const SCREENSAVER_VIDEO = "/boat-video.mp4";
 
 export function ScreensaverOverlay({
@@ -16,6 +18,7 @@ export function ScreensaverOverlay({
 }) {
   const router = useRouter();
   const overlayRef = useRef<HTMLButtonElement>(null);
+  const { getModeAwareHref } = useAppMode();
 
   useEffect(() => {
     if (!isActive) {
@@ -40,14 +43,14 @@ export function ScreensaverOverlay({
           aria-label="Chiudi lo screensaver e torna alla home"
           onClick={() => {
             if (onDismiss()) {
-              router.push("/");
+              router.push(getModeAwareHref("/"));
             }
           }}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
               event.preventDefault();
               if (onDismiss()) {
-                router.push("/");
+                router.push(getModeAwareHref("/"));
               }
             }
           }}
