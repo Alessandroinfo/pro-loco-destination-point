@@ -26,7 +26,7 @@ const DEFAULT_VIEW_CENTER = {
   mapX: 6289,
   mapY: 4366
 } as const;
-const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84, 2.08, 2.36, 2.68];
+const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84, 2.08, 2.36, 2.68, 3.04, 3.44, 3.88, 4.36, 4.88, 5.44, 6.04, 6.68, 7.36];
 
 const mapPaths = {
   lampione:
@@ -140,6 +140,7 @@ export function IslandMapCanvas({
   const markerRefs = useRef<Record<string, SVGGElement | null>>({});
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const hasUserAdjustedViewRef = useRef(false);
+  const initialCenterRef = useRef<MapCoordinate>(DEFAULT_VIEW_CENTER);
   const dragStateRef = useRef<{
     pointerId: number;
     startX: number;
@@ -190,6 +191,13 @@ export function IslandMapCanvas({
   }, [points, routeQrTarget]);
 
   useLayoutEffect(() => {
+    if (window.innerWidth < 768) {
+      setZoomLevelIndex(ZOOM_LEVELS.length - 1);
+      initialCenterRef.current = { mapX: 6427, mapY: 6144 };
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     const viewportElement = viewportRef.current;
 
     if (!viewportElement) {
@@ -234,7 +242,7 @@ export function IslandMapCanvas({
     setPan((currentPan) =>
       hasUserAdjustedViewRef.current
         ? getClampedPan(currentPan, zoom, viewportSize)
-        : getPanForCenteredCoordinate(DEFAULT_VIEW_CENTER, zoom, viewportSize)
+        : getPanForCenteredCoordinate(initialCenterRef.current, zoom, viewportSize)
     );
     setIsViewReady(true);
   }, [viewportSize, zoom]);
