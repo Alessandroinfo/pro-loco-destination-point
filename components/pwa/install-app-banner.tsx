@@ -21,9 +21,19 @@ export function InstallAppBanner() {
   const [isIosSafari, setIsIosSafari] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
+
+    const mobileQuery = window.matchMedia("(pointer: coarse), (max-width: 767px)");
+    setIsMobile(mobileQuery.matches);
+    const handleMobileChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    mobileQuery.addEventListener("change", handleMobileChange);
+
+    return () => {
+      mobileQuery.removeEventListener("change", handleMobileChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -101,7 +111,7 @@ export function InstallAppBanner() {
 
   const canRender = isMounted && process.env.NODE_ENV === "production";
   const shouldShowBanner =
-    canRender && isStandardMode && !isDismissed && !isStandalone && (Boolean(installPromptEvent) || isIosSafari);
+    canRender && isMobile && isStandardMode && !isDismissed && !isStandalone && (Boolean(installPromptEvent) || isIosSafari);
 
   if (!shouldShowBanner) {
     return null;
