@@ -1,6 +1,6 @@
 {
-  "name": "Pro Loco - Lampedusa e Linosa - Destination Point",
-  "short_name": "Destination Point",
+  "name": "Destination Point - Pro Loco - Lampedusa e Linosa",
+  "short_name": "Destination Point - Pro Loco - Lampedusa e Linosa",
   "description": "Destination Point della Pro Loco di Lampedusa e Linosa.",
   "start_url": "/totem/",
   "scope": "/totem/",

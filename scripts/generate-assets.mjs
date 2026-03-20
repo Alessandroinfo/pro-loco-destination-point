@@ -5,6 +5,7 @@ const root = process.cwd();
 const placeholdersDir = join(root, "public", "placeholders");
 const iconsDir = join(root, "public", "icons");
 const totemDir = join(root, "public", "totem");
+const installableAppName = "Destination Point - Pro Loco - Lampedusa e Linosa";
 
 mkdirSync(placeholdersDir, { recursive: true });
 mkdirSync(iconsDir, { recursive: true });
@@ -80,8 +81,8 @@ function withBasePath(pathname) {
 
 function createTotemManifest() {
   return {
-    name: "Pro Loco - Lampedusa e Linosa - Destination Point",
-    short_name: "Destination Point",
+    name: installableAppName,
+    short_name: installableAppName,
     description: siteDescription,
     start_url: withBasePath("/totem/"),
     scope: withBasePath("/totem/"),
