@@ -108,27 +108,27 @@ export function InstallAppBanner() {
   }
 
   return (
-    <div className="fixed inset-x-4 bottom-6 z-40 mx-auto w-full max-w-[720px]">
-      <div className="glass-panel soft-outline flex flex-col gap-5 rounded-[1.8rem] border px-5 py-5 shadow-[0_22px_48px_rgba(16,36,63,0.18)] sm:flex-row sm:items-end sm:justify-between sm:px-6">
-        <div>
+    <div className="fixed inset-x-4 bottom-4 z-40 mx-auto max-w-[720px] sm:bottom-6">
+      <div className="glass-panel soft-outline flex flex-col gap-5 rounded-[1.8rem] border px-4 py-5 shadow-[0_22px_48px_rgba(16,36,63,0.18)] sm:flex-row sm:items-end sm:justify-between sm:px-6">
+        <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-navy-900/48">Installa l'app</p>
-          <h2 className="mt-2 text-2xl font-semibold text-navy-950">Usala offline sul tuo dispositivo</h2>
+          <h2 className="mt-2 text-xl font-semibold text-navy-950 sm:text-2xl">Usala offline sul tuo dispositivo</h2>
           <p className="mt-2 max-w-2xl text-base leading-7 text-navy-900/72">
             Aggiungi il sito alla schermata Home per aprirlo come app e consultarlo anche senza connessione.
           </p>
           {isIosSafari ? (
             <p className="mt-3 text-sm font-medium leading-6 text-navy-900/62">
-              Su Safari: tocca <span className="font-semibold text-navy-950">Condividi</span> e poi{" "}
+              Su iOS: tocca <span className="font-semibold text-navy-950">Condividi</span> e poi{" "}
               <span className="font-semibold text-navy-950">Aggiungi a Home</span>.
             </p>
           ) : null}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
           {installPromptEvent ? (
             <button
               type="button"
-              className="flex min-h-12 items-center justify-center rounded-full bg-navy-950 px-5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(16,36,63,0.18)]"
+              className="flex min-h-12 w-full items-center justify-center rounded-full bg-navy-950 px-5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(16,36,63,0.18)] sm:w-auto"
               onClick={() => {
                 void installApp();
               }}
@@ -139,7 +139,7 @@ export function InstallAppBanner() {
 
           <button
             type="button"
-            className="flex min-h-12 items-center justify-center rounded-full border border-navy-950/12 bg-white px-5 text-sm font-semibold text-navy-950"
+            className="flex min-h-12 w-full items-center justify-center rounded-full border border-navy-950/12 bg-white px-5 text-sm font-semibold text-navy-950 sm:w-auto"
             onClick={dismissBanner}
           >
             Non ora
