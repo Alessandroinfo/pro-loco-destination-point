@@ -32,6 +32,30 @@ This allows the public app and the kiosk app to be installable with the correct 
 
 The current route list is manually maintained in `public/sw.js`, so if new content routes are added later the precache list must be updated as part of that change.
 
+## Testing the PWA Locally
+
+The service worker is intentionally **disabled on localhost**. On every page load, a script in `app/layout.tsx` checks the hostname and, if it is `localhost`, `127.0.0.1`, `[::1]`, or any `.local` address, it deregisters all service workers and clears all caches.
+
+This prevents a cached production SW from intercepting the dev server's hot-reload requests and hiding code changes.
+
+As a result, the following things do **not** work with `npm run dev`:
+
+- Service worker registration
+- `beforeinstallprompt` (requires SW + HTTPS or localhost with SW)
+- Install app banner (requires the above)
+
+To test the full PWA experience locally, build and serve the static export instead:
+
+```bash
+npm run build && npm start
+```
+
+The install banner is also intentionally rendered only in `production` mode, so it is never shown while running the dev server even if the SW check were bypassed.
+
+To test from a **mobile device on the same network**, find your Mac's local IP address and open `http://<ip>:3000` on the device. Note that `beforeinstallprompt` requires HTTPS except on localhost, so Chrome on Android will not show the native install prompt over plain HTTP on a local IP; iOS Safari will still show the manual share-sheet instructions.
+
+
+
 ## Analytics Readiness
 
 - `AppModeProvider` writes `data-app-mode` and `data-canonical-path` on the `<html>` element.

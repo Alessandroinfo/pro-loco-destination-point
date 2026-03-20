@@ -44,11 +44,6 @@ type TooltipPosition = {
   left: number;
 };
 
-type PanPosition = {
-  x: number;
-  y: number;
-};
-
 type ViewportSize = {
   width: number;
   height: number;
@@ -70,54 +65,39 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getClampedPan(pan: PanPosition, zoom: number, viewportSize: ViewportSize): PanPosition {
-  if (!viewportSize.width || !viewportSize.height) {
-    return { x: 0, y: 0 };
-  }
-
-  const maxX = Math.max(0, (viewportSize.width * zoom - viewportSize.width) / 2);
-  const maxY = Math.max(0, (viewportSize.height * zoom - viewportSize.height) / 2);
+/** Clamps a center coordinate (SVG user units) so the viewBox never pans outside the scene. */
+function clampCenter(center: MapCoordinate, zoom: number): MapCoordinate {
+  const vbW = SVG_SCENE_WIDTH / zoom;
+  const vbH = SVG_SCENE_HEIGHT / zoom;
 
   return {
-    x: clamp(pan.x, -maxX, maxX),
-    y: clamp(pan.y, -maxY, maxY)
+    mapX: clamp(center.mapX, SVG_SCENE_MIN_X + vbW / 2, SVG_SCENE_MIN_X + SVG_SCENE_WIDTH - vbW / 2),
+    mapY: clamp(center.mapY, SVG_SCENE_MIN_Y + vbH / 2, SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT - vbH / 2)
   };
 }
 
-function getRenderedSceneMetrics(viewportSize: ViewportSize) {
-  if (!viewportSize.width || !viewportSize.height) {
-    return null;
-  }
-
-  const renderedScale = Math.min(viewportSize.width / SVG_SCENE_WIDTH, viewportSize.height / SVG_SCENE_HEIGHT);
-  const renderedWidth = SVG_SCENE_WIDTH * renderedScale;
-  const renderedHeight = SVG_SCENE_HEIGHT * renderedScale;
+/** Derives the SVG viewBox string values from a center + zoom level. */
+function getViewBox(center: MapCoordinate, zoom: number) {
+  const vbW = SVG_SCENE_WIDTH / zoom;
+  const vbH = SVG_SCENE_HEIGHT / zoom;
+  const clamped = clampCenter(center, zoom);
 
   return {
-    renderedScale,
-    renderedLeft: (viewportSize.width - renderedWidth) / 2,
-    renderedTop: (viewportSize.height - renderedHeight) / 2
+    x: clamped.mapX - vbW / 2,
+    y: clamped.mapY - vbH / 2,
+    w: vbW,
+    h: vbH
   };
 }
 
-function getPanForCenteredCoordinate(coordinate: MapCoordinate, zoom: number, viewportSize: ViewportSize): PanPosition {
-  const sceneMetrics = getRenderedSceneMetrics(viewportSize);
+/**
+ * Returns the uniform scale factor from SVG user units → CSS pixels
+ * for an SVG element with preserveAspectRatio="xMidYMid meet".
+ */
+function getSvgRenderedScale(viewportSize: ViewportSize, vbW: number, vbH: number): number {
+  if (!viewportSize.width || !viewportSize.height || !vbW || !vbH) return 1;
 
-  if (!sceneMetrics) {
-    return { x: 0, y: 0 };
-  }
-
-  const baseX = sceneMetrics.renderedLeft + (coordinate.mapX - SVG_SCENE_MIN_X) * sceneMetrics.renderedScale;
-  const baseY = sceneMetrics.renderedTop + (coordinate.mapY - SVG_SCENE_MIN_Y) * sceneMetrics.renderedScale;
-
-  return getClampedPan(
-    {
-      x: (viewportSize.width / 2 - baseX) * zoom,
-      y: (viewportSize.height / 2 - baseY) * zoom
-    },
-    zoom,
-    viewportSize
-  );
+  return Math.min(viewportSize.width / vbW, viewportSize.height / vbH);
 }
 
 export function IslandMapCanvas({
@@ -131,7 +111,7 @@ export function IslandMapCanvas({
   const [isClient, setIsClient] = useState(false);
   const [isViewReady, setIsViewReady] = useState(false);
   const [zoomLevelIndex, setZoomLevelIndex] = useState(DEFAULT_ZOOM_INDEX);
-  const [pan, setPan] = useState<PanPosition>({ x: 0, y: 0 });
+  const [center, setCenter] = useState<MapCoordinate>(DEFAULT_VIEW_CENTER);
   const [viewportSize, setViewportSize] = useState<ViewportSize>({ width: 0, height: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
@@ -145,11 +125,12 @@ export function IslandMapCanvas({
     pointerId: number;
     startX: number;
     startY: number;
-    originPan: PanPosition;
+    originCenter: MapCoordinate;
     didMove: boolean;
   } | null>(null);
 
   const zoom = ZOOM_LEVELS[zoomLevelIndex];
+  const vb = getViewBox(center, zoom);
   const tooltipEnabled = !pointInsertionMode;
   const activePoi = points.find((poi) => poi.id === activePoiId);
   const { isTotemMode } = useAppMode();
@@ -239,10 +220,10 @@ export function IslandMapCanvas({
       return;
     }
 
-    setPan((currentPan) =>
+    setCenter((currentCenter) =>
       hasUserAdjustedViewRef.current
-        ? getClampedPan(currentPan, zoom, viewportSize)
-        : getPanForCenteredCoordinate(initialCenterRef.current, zoom, viewportSize)
+        ? clampCenter(currentCenter, zoom)
+        : clampCenter(initialCenterRef.current, zoom)
     );
     setIsViewReady(true);
   }, [viewportSize, zoom]);
@@ -320,7 +301,7 @@ export function IslandMapCanvas({
       window.removeEventListener("resize", updateTooltipPosition);
       window.removeEventListener("scroll", updateTooltipPosition, true);
     };
-  }, [activePoiId, isClient, pan, viewportSize, zoom, tooltipEnabled]);
+  }, [activePoiId, isClient, center, viewportSize, zoom, tooltipEnabled]);
 
   const getMapCoordinatesFromClientPoint = (clientX: number, clientY: number): MapCoordinate | null => {
     const svgElement = svgRef.current;
@@ -335,9 +316,9 @@ export function IslandMapCanvas({
       return null;
     }
 
-    const renderedScale = Math.min(rect.width / SVG_SCENE_WIDTH, rect.height / SVG_SCENE_HEIGHT);
-    const renderedWidth = SVG_SCENE_WIDTH * renderedScale;
-    const renderedHeight = SVG_SCENE_HEIGHT * renderedScale;
+    const renderedScale = getSvgRenderedScale({ width: rect.width, height: rect.height }, vb.w, vb.h);
+    const renderedWidth = vb.w * renderedScale;
+    const renderedHeight = vb.h * renderedScale;
     const renderedLeft = rect.left + (rect.width - renderedWidth) / 2;
     const renderedTop = rect.top + (rect.height - renderedHeight) / 2;
 
@@ -346,8 +327,8 @@ export function IslandMapCanvas({
     }
 
     return {
-      mapX: Math.round(clamp(SVG_SCENE_MIN_X + (clientX - renderedLeft) / renderedScale, SVG_SCENE_MIN_X, SVG_SCENE_MIN_X + SVG_SCENE_WIDTH)),
-      mapY: Math.round(clamp(SVG_SCENE_MIN_Y + (clientY - renderedTop) / renderedScale, SVG_SCENE_MIN_Y, SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT))
+      mapX: Math.round(clamp(vb.x + (clientX - renderedLeft) / renderedScale, SVG_SCENE_MIN_X, SVG_SCENE_MIN_X + SVG_SCENE_WIDTH)),
+      mapY: Math.round(clamp(vb.y + (clientY - renderedTop) / renderedScale, SVG_SCENE_MIN_Y, SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT))
     };
   };
 
@@ -376,7 +357,7 @@ export function IslandMapCanvas({
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      originPan: pan,
+      originCenter: center,
       didMove: false
     };
 
@@ -395,16 +376,16 @@ export function IslandMapCanvas({
       hasUserAdjustedViewRef.current = true;
     }
 
-    const nextPan = getClampedPan(
+    const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
+    const nextCenter = clampCenter(
       {
-        x: dragState.originPan.x + (event.clientX - dragState.startX),
-        y: dragState.originPan.y + (event.clientY - dragState.startY)
+        mapX: dragState.originCenter.mapX - (event.clientX - dragState.startX) / renderedScale,
+        mapY: dragState.originCenter.mapY - (event.clientY - dragState.startY) / renderedScale
       },
-      zoom,
-      viewportSize
+      zoom
     );
 
-    setPan(nextPan);
+    setCenter(nextCenter);
   };
 
   const endPan = (event?: React.PointerEvent<HTMLDivElement>) => {
@@ -440,14 +421,15 @@ export function IslandMapCanvas({
     setActivePoiId("");
     hasUserAdjustedViewRef.current = true;
 
-    setPan((currentPan) =>
-      getClampedPan(
+    const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
+
+    setCenter((currentCenter) =>
+      clampCenter(
         {
-          x: currentPan.x - event.deltaX,
-          y: currentPan.y - event.deltaY
+          mapX: currentCenter.mapX + event.deltaX / renderedScale,
+          mapY: currentCenter.mapY + event.deltaY / renderedScale
         },
-        zoom,
-        viewportSize
+        zoom
       )
     );
   };
@@ -503,13 +485,9 @@ export function IslandMapCanvas({
         >
           <svg
             ref={svgRef}
-            viewBox={`${SVG_SCENE_MIN_X} ${SVG_SCENE_MIN_Y} ${SVG_SCENE_WIDTH} ${SVG_SCENE_HEIGHT}`}
-            className={`absolute inset-0 h-full w-full will-change-transform ${isPanning || !isViewReady ? "" : "transition-transform duration-300 ease-out"}`}
-            style={{
-              transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})`,
-              transformOrigin: "50% 50%",
-              visibility: isViewReady ? "visible" : "hidden"
-            }}
+            viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
+            className="absolute inset-0 h-full w-full"
+            style={{ visibility: isViewReady ? "visible" : "hidden" }}
             preserveAspectRatio="xMidYMid meet"
             aria-label="Mappa interattiva di Lampedusa, Linosa e Lampione"
             role="img"
