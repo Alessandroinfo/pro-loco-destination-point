@@ -52,14 +52,18 @@ export function getModeAwareHref(href: string, mode: AppMode) {
   const [pathAndQuery, hash = ""] = href.split("#");
   const [pathname, queryString = ""] = pathAndQuery.split("?");
   const modeAwarePathname = getModeAwarePathname(pathname || "/", mode);
+  const withTrailingSlash = modeAwarePathname === "/" ? "/" : 
+    (modeAwarePathname.endsWith("/") ? modeAwarePathname : `${modeAwarePathname}/`);
 
-  return `${modeAwarePathname}${queryString ? `?${queryString}` : ""}${hash ? `#${hash}` : ""}`;
+  return `${withTrailingSlash}${queryString ? `?${queryString}` : ""}${hash ? `#${hash}` : ""}`;
 }
 
 export function getCanonicalHref(href: string) {
   const [pathAndQuery, hash = ""] = href.split("#");
   const [pathname, queryString = ""] = pathAndQuery.split("?");
   const canonicalPathname = getCanonicalPathname(pathname || "/");
+  const withTrailingSlash = canonicalPathname === "/" ? "/" : 
+    (canonicalPathname.endsWith("/") ? canonicalPathname : `${canonicalPathname}/`);
 
-  return `${canonicalPathname}${queryString ? `?${queryString}` : ""}${hash ? `#${hash}` : ""}`;
+  return `${withTrailingSlash}${queryString ? `?${queryString}` : ""}${hash ? `#${hash}` : ""}`;
 }

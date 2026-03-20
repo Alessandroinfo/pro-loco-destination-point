@@ -26,7 +26,7 @@ const DEFAULT_VIEW_CENTER = {
   mapX: 6289,
   mapY: 4366
 } as const;
-const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84];
+const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84, 2.08, 2.36, 2.68];
 
 const mapPaths = {
   lampione:
