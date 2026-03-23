@@ -126,12 +126,27 @@ export function IslandMapCanvas({
     startX: number;
     startY: number;
     originCenter: MapCoordinate;
+    /** Live center updated on every pointermove — synced to React state only on pointerup. */
+    currentCenter: MapCoordinate;
     didMove: boolean;
   } | null>(null);
+  /**
+   * Tracks the authoritative live center outside React state.
+   * Updated during drag and wheel so that accumulated wheel deltas
+   * read the correct base value without depending on React's async state.
+   */
+  const liveCenterRef = useRef<MapCoordinate>(DEFAULT_VIEW_CENTER);
 
   const zoom = ZOOM_LEVELS[zoomLevelIndex];
   const vb = getViewBox(center, zoom);
   const tooltipEnabled = !pointInsertionMode;
+
+  // Keep liveCenterRef in sync with React state when center changes
+  // (zoom adjustments, initial setup, post-pan state sync).
+  // The guard prevents overwriting the live panning value mid-drag.
+  if (!dragStateRef.current) {
+    liveCenterRef.current = center;
+  }
   const activePoi = points.find((poi) => poi.id === activePoiId);
   const { isTotemMode } = useAppMode();
 
@@ -358,6 +373,7 @@ export function IslandMapCanvas({
       startX: event.clientX,
       startY: event.clientY,
       originCenter: center,
+      currentCenter: center,
       didMove: false
     };
 
@@ -376,6 +392,8 @@ export function IslandMapCanvas({
       hasUserAdjustedViewRef.current = true;
     }
 
+    // vb.w and vb.h depend only on zoom (constant during a drag gesture),
+    // so reading them from the render closure is safe and avoids extra computation.
     const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
     const nextCenter = clampCenter(
       {
@@ -385,7 +403,15 @@ export function IslandMapCanvas({
       zoom
     );
 
-    setCenter(nextCenter);
+    // Bypass React state entirely during the drag.
+    // Writing the viewBox attribute directly on the SVG DOM node is a
+    // single attribute mutation — no React reconciliation, no component
+    // re-render, no SVG tree diff. React state is synced once in endPan.
+    dragState.currentCenter = nextCenter;
+    liveCenterRef.current = nextCenter;
+
+    const nextVb = getViewBox(nextCenter, zoom);
+    svgRef.current?.setAttribute("viewBox", `${nextVb.x} ${nextVb.y} ${nextVb.w} ${nextVb.h}`);
   };
 
   const endPan = (event?: React.PointerEvent<HTMLDivElement>) => {
@@ -412,9 +438,18 @@ export function IslandMapCanvas({
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
+    // Sync the final pan position back to React state in a single update.
+    // This triggers one re-render that reconciles the viewBox JSX attribute
+    // with the value already set on the DOM — no visual snap.
+    if (dragState?.didMove) {
+      setCenter(dragState.currentCenter);
+    }
+
     dragStateRef.current = null;
     setIsPanning(false);
   };
+
+  const wheelFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -422,16 +457,27 @@ export function IslandMapCanvas({
     hasUserAdjustedViewRef.current = true;
 
     const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
-
-    setCenter((currentCenter) =>
-      clampCenter(
-        {
-          mapX: currentCenter.mapX + event.deltaX / renderedScale,
-          mapY: currentCenter.mapY + event.deltaY / renderedScale
-        },
-        zoom
-      )
+    const nextCenter = clampCenter(
+      {
+        mapX: liveCenterRef.current.mapX + event.deltaX / renderedScale,
+        mapY: liveCenterRef.current.mapY + event.deltaY / renderedScale
+      },
+      zoom
     );
+
+    // Same bypass as pointer drag: direct DOM update + debounced React state sync.
+    // liveCenterRef accumulates deltas so each wheel event reads the correct base.
+    liveCenterRef.current = nextCenter;
+    const nextVb = getViewBox(nextCenter, zoom);
+    svgRef.current?.setAttribute("viewBox", `${nextVb.x} ${nextVb.y} ${nextVb.w} ${nextVb.h}`);
+
+    if (wheelFlushTimerRef.current !== null) {
+      clearTimeout(wheelFlushTimerRef.current);
+    }
+    wheelFlushTimerRef.current = setTimeout(() => {
+      setCenter(liveCenterRef.current);
+      wheelFlushTimerRef.current = null;
+    }, 150);
   };
 
   const togglePoi = (poiId: string) => {
