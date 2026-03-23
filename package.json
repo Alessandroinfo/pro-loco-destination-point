@@ -5,7 +5,7 @@
   "scripts": {
     "assets:generate": "node scripts/generate-assets.mjs",
     "dev": "next dev",
-    "build": "npm run assets:generate && next build",
+    "build": "npm run assets:generate && next build && node scripts/inject-sw-precache.mjs",
     "start": "node scripts/serve-export.mjs",
     "serve": "node scripts/serve-export.mjs"
   },

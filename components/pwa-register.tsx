@@ -36,7 +36,10 @@ export function PwaRegister() {
     }
 
     navigator.serviceWorker.register(withBasePath("/sw.js"), {
-      scope: withBasePath("/")
+      scope: withBasePath("/"),
+      // Prevent the browser from caching sw.js via HTTP cache so updates
+      // are always detected on the next navigation (important on iOS Safari).
+      updateViaCache: "none"
     }).catch(() => {
       // Registration failure should not block the kiosk experience.
     });

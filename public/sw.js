@@ -64,6 +64,12 @@ const CORE_ASSETS = [
 // Large assets — cached best-effort so they never block SW install.
 const VIDEO_ASSETS = ["/boat-video.mp4"];
 
+// _next/static/ assets (JS chunks, CSS, woff2 fonts).
+// This array is empty in the source file and is injected automatically by
+// scripts/inject-sw-precache.mjs after every `npm run build`.
+// Without injection the app still works online; offline it degrades gracefully.
+const NEXT_STATIC_ASSETS = [];
+
 const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "shopping", "info"].flatMap((prefix) =>
   Array.from({ length: 6 }, (_, index) => `/placeholders/business-${prefix}-${index + 1}.svg`)
 );
@@ -113,8 +119,9 @@ function getPrecacheEntries() {
   );
   const coreAssets = CORE_ASSETS.map((asset) => withBasePath(asset));
   const businessAssets = BUSINESS_ASSETS.map((asset) => withBasePath(asset));
+  const nextStaticAssets = NEXT_STATIC_ASSETS.map((asset) => withBasePath(asset));
 
-  return [...standardRoutes, ...totemRoutes, ...coreAssets, ...businessAssets];
+  return [...standardRoutes, ...totemRoutes, ...coreAssets, ...businessAssets, ...nextStaticAssets];
 }
 
 // Only bypass the SW itself and source maps — everything else goes through
