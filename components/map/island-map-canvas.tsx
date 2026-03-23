@@ -76,28 +76,32 @@ function clampCenter(center: MapCoordinate, zoom: number): MapCoordinate {
   };
 }
 
-/** Derives the SVG viewBox string values from a center + zoom level. */
-function getViewBox(center: MapCoordinate, zoom: number) {
-  const vbW = SVG_SCENE_WIDTH / zoom;
-  const vbH = SVG_SCENE_HEIGHT / zoom;
-  const clamped = clampCenter(center, zoom);
+/**
+ * Returns CSS pixels per SVG user unit at the current zoom level.
+ * Equivalent to the old getSvgRenderedScale but expressed directly
+ * from viewport + zoom rather than from a derived viewBox.
+ */
+function getPpu(viewportSize: ViewportSize, zoom: number): number {
+  if (!viewportSize.width || !viewportSize.height) return zoom;
 
-  return {
-    x: clamped.mapX - vbW / 2,
-    y: clamped.mapY - vbH / 2,
-    w: vbW,
-    h: vbH
-  };
+  return Math.min(viewportSize.width / SVG_SCENE_WIDTH, viewportSize.height / SVG_SCENE_HEIGHT) * zoom;
 }
 
 /**
- * Returns the uniform scale factor from SVG user units → CSS pixels
- * for an SVG element with preserveAspectRatio="xMidYMid meet".
+ * CSS transform string for the inner <g> that holds all map content.
+ * Maps SVG user units → CSS pixels so the given center coordinate
+ * appears at the viewport center.
+ *
+ * Using a <g> CSS transform instead of the SVG viewBox means the SVG
+ * element itself never changes; only a GPU-compositor transform is
+ * applied — zero SVG re-layout, zero filter re-rasterisation per frame.
  */
-function getSvgRenderedScale(viewportSize: ViewportSize, vbW: number, vbH: number): number {
-  if (!viewportSize.width || !viewportSize.height || !vbW || !vbH) return 1;
+function getGroupTransform(center: MapCoordinate, zoom: number, viewportSize: ViewportSize): string {
+  const ppu = getPpu(viewportSize, zoom);
+  const tx = viewportSize.width / 2 - center.mapX * ppu;
+  const ty = viewportSize.height / 2 - center.mapY * ppu;
 
-  return Math.min(viewportSize.width / vbW, viewportSize.height / vbH);
+  return `translate(${tx}px, ${ty}px) scale(${ppu})`;
 }
 
 export function IslandMapCanvas({
@@ -117,6 +121,7 @@ export function IslandMapCanvas({
   const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const gRef = useRef<SVGGElement | null>(null);
   const markerRefs = useRef<Record<string, SVGGElement | null>>({});
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const hasUserAdjustedViewRef = useRef(false);
@@ -125,9 +130,9 @@ export function IslandMapCanvas({
     pointerId: number;
     startX: number;
     startY: number;
-    /** Raw CSS pixel delta from drag start — applied as CSS translate during drag. */
-    pixelDx: number;
-    pixelDy: number;
+    originCenter: MapCoordinate;
+    /** Live center updated on every pointermove — synced to React state once on pointerup. */
+    currentCenter: MapCoordinate;
     didMove: boolean;
   } | null>(null);
   /**
@@ -138,7 +143,6 @@ export function IslandMapCanvas({
   const liveCenterRef = useRef<MapCoordinate>(DEFAULT_VIEW_CENTER);
 
   const zoom = ZOOM_LEVELS[zoomLevelIndex];
-  const vb = getViewBox(center, zoom);
   const tooltipEnabled = !pointInsertionMode;
 
   // Keep liveCenterRef in sync with React state when center changes
@@ -331,19 +335,21 @@ export function IslandMapCanvas({
       return null;
     }
 
-    const renderedScale = getSvgRenderedScale({ width: rect.width, height: rect.height }, vb.w, vb.h);
-    const renderedWidth = vb.w * renderedScale;
-    const renderedHeight = vb.h * renderedScale;
-    const renderedLeft = rect.left + (rect.width - renderedWidth) / 2;
-    const renderedTop = rect.top + (rect.height - renderedHeight) / 2;
+    const screenX = clientX - rect.left;
+    const screenY = clientY - rect.top;
 
-    if (clientX < renderedLeft || clientX > renderedLeft + renderedWidth || clientY < renderedTop || clientY > renderedTop + renderedHeight) {
+    if (screenX < 0 || screenX > rect.width || screenY < 0 || screenY > rect.height) {
       return null;
     }
 
+    // Inverse of getGroupTransform: screen → map coordinates.
+    // screen = mapCoord * ppu + (viewportW/2 - center * ppu)
+    // mapCoord = (screen - viewportW/2) / ppu + center
+    const ppu = getPpu(viewportSize, zoom);
+
     return {
-      mapX: Math.round(clamp(vb.x + (clientX - renderedLeft) / renderedScale, SVG_SCENE_MIN_X, SVG_SCENE_MIN_X + SVG_SCENE_WIDTH)),
-      mapY: Math.round(clamp(vb.y + (clientY - renderedTop) / renderedScale, SVG_SCENE_MIN_Y, SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT))
+      mapX: Math.round(clamp((screenX - rect.width / 2) / ppu + center.mapX, SVG_SCENE_MIN_X, SVG_SCENE_MIN_X + SVG_SCENE_WIDTH)),
+      mapY: Math.round(clamp((screenY - rect.height / 2) / ppu + center.mapY, SVG_SCENE_MIN_Y, SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT))
     };
   };
 
@@ -372,8 +378,8 @@ export function IslandMapCanvas({
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      pixelDx: 0,
-      pixelDy: 0,
+      originCenter: center,
+      currentCenter: center,
       didMove: false
     };
 
@@ -395,15 +401,23 @@ export function IslandMapCanvas({
       hasUserAdjustedViewRef.current = true;
     }
 
-    dragState.pixelDx = dx;
-    dragState.pixelDy = dy;
+    const ppu = getPpu(viewportSize, zoom);
+    const nextCenter = clampCenter(
+      {
+        mapX: dragState.originCenter.mapX - dx / ppu,
+        mapY: dragState.originCenter.mapY - dy / ppu
+      },
+      zoom
+    );
 
-    // CSS translate on the SVG — executed entirely by the GPU compositor.
-    // No SVG layout recalculation, no filter re-rasterization, no repaint.
-    // The viewBox stays fixed for the whole gesture; React state is synced
-    // once in endPan via a single setCenter() call.
-    if (svgRef.current) {
-      svgRef.current.style.transform = `translate(${dx}px, ${dy}px)`;
+    dragState.currentCenter = nextCenter;
+    liveCenterRef.current = nextCenter;
+
+    // CSS transform on the inner <g> — handled entirely by the GPU compositor.
+    // The SVG element itself never moves; only its content layer is repositioned.
+    // No SVG re-layout, no filter re-rasterisation. React state is synced once on pointerup.
+    if (gRef.current) {
+      gRef.current.style.transform = getGroupTransform(nextCenter, zoom, viewportSize);
     }
   };
 
@@ -431,35 +445,16 @@ export function IslandMapCanvas({
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
-    // Convert the accumulated CSS pixel delta back to SVG user units and
-    // commit the new center in one React state update. The useLayoutEffect
-    // below clears style.transform synchronously before the browser paints,
-    // so the new viewBox and zero transform are always rendered together.
+    // Commit the final pan position to React state. This triggers one re-render
+    // that sets the <g> style.transform via JSX, naturally overwriting whatever
+    // value was applied directly during the drag — no manual cleanup needed.
     if (dragState?.didMove) {
-      const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
-      const nextCenter = clampCenter(
-        {
-          mapX: center.mapX - dragState.pixelDx / renderedScale,
-          mapY: center.mapY - dragState.pixelDy / renderedScale
-        },
-        zoom
-      );
-      setCenter(nextCenter);
+      setCenter(dragState.currentCenter);
     }
 
     dragStateRef.current = null;
     setIsPanning(false);
   };
-
-  // After every render triggered by a center or zoom state change, clear the
-  // CSS translate that was applied during the drag gesture. useLayoutEffect
-  // fires synchronously before the browser paints, so the new viewBox and an
-  // empty transform are always committed to the DOM in the same frame.
-  useLayoutEffect(() => {
-    if (!dragStateRef.current && svgRef.current) {
-      svgRef.current.style.transform = "";
-    }
-  }, [center, zoomLevelIndex]);
 
   const wheelFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -468,20 +463,21 @@ export function IslandMapCanvas({
     setActivePoiId("");
     hasUserAdjustedViewRef.current = true;
 
-    const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
+    const ppu = getPpu(viewportSize, zoom);
     const nextCenter = clampCenter(
       {
-        mapX: liveCenterRef.current.mapX + event.deltaX / renderedScale,
-        mapY: liveCenterRef.current.mapY + event.deltaY / renderedScale
+        mapX: liveCenterRef.current.mapX + event.deltaX / ppu,
+        mapY: liveCenterRef.current.mapY + event.deltaY / ppu
       },
       zoom
     );
 
-    // Same bypass as pointer drag: direct DOM update + debounced React state sync.
+    // Direct DOM update on the <g> + debounced React state sync.
     // liveCenterRef accumulates deltas so each wheel event reads the correct base.
     liveCenterRef.current = nextCenter;
-    const nextVb = getViewBox(nextCenter, zoom);
-    svgRef.current?.setAttribute("viewBox", `${nextVb.x} ${nextVb.y} ${nextVb.w} ${nextVb.h}`);
+    if (gRef.current) {
+      gRef.current.style.transform = getGroupTransform(nextCenter, zoom, viewportSize);
+    }
 
     if (wheelFlushTimerRef.current !== null) {
       clearTimeout(wheelFlushTimerRef.current);
@@ -543,13 +539,27 @@ export function IslandMapCanvas({
         >
           <svg
             ref={svgRef}
-            viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
-            className="absolute inset-0 h-full w-full"
-            style={{ visibility: isViewReady ? "visible" : "hidden", willChange: "transform" }}
-            preserveAspectRatio="xMidYMid meet"
+            className="absolute inset-0 h-full w-full overflow-hidden"
+            style={{ visibility: isViewReady ? "visible" : "hidden" }}
             aria-label="Mappa interattiva di Lampedusa, Linosa e Lampione"
             role="img"
           >
+            {/*
+              All map content lives inside this <g>. Pan and zoom are applied as a
+              CSS transform here — the SVG element itself never moves, so there is
+              no clipping at the container edge. With will-change: transform the
+              browser promotes this group to its own GPU compositing layer; every
+              pointermove only triggers a compositor-thread texture repositioning —
+              no SVG re-layout, no filter re-rasterisation, no main-thread work.
+            */}
+            <g
+              ref={gRef}
+              style={{
+                transform: getGroupTransform(center, zoom, viewportSize),
+                transformOrigin: "0 0",
+                willChange: "transform"
+              }}
+            >
             <defs>
               <linearGradient
                 id="seaGradient"
@@ -683,6 +693,7 @@ export function IslandMapCanvas({
                 </g>
               );
             })}
+            </g>
           </svg>
         </div>
       </div>
