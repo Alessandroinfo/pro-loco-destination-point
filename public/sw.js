@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-hub-v8";
+const CACHE_NAME = "pro-loco-hub-v9";
 
 const STATIC_ROUTES = [
   "/",
@@ -41,10 +41,10 @@ const STATIC_ROUTES = [
   "/categories/info/mobilita-pelagie/"
 ];
 
+// Critical assets — precached atomically. Must all succeed.
 const CORE_ASSETS = [
   "/manifest.webmanifest",
   "/totem/manifest.webmanifest",
-  "/boat-video.mp4",
   "/logo-pro-loco.svg",
   "/logo-pro-loco-white.svg",
   "/og-image.svg",
@@ -60,6 +60,9 @@ const CORE_ASSETS = [
   "/placeholders/category-map.svg",
   "/placeholders/screensaver-poster.svg"
 ];
+
+// Large assets — cached best-effort so they never block SW install.
+const VIDEO_ASSETS = ["/boat-video.mp4"];
 
 const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "shopping", "info"].flatMap((prefix) =>
   Array.from({ length: 6 }, (_, index) => `/placeholders/business-${prefix}-${index + 1}.svg`)
@@ -114,27 +117,76 @@ function getPrecacheEntries() {
   return [...standardRoutes, ...totemRoutes, ...coreAssets, ...businessAssets];
 }
 
+// Only bypass the SW itself and source maps — everything else goes through
+// the cache-first handler so it works offline (including _next/static/ bundles).
 function shouldBypassRuntimeCache(requestUrl) {
-  const basePath = getBasePath();
-  const nextAssetPrefix = `${basePath}/_next/`;
-
-  if (requestUrl.pathname.startsWith(nextAssetPrefix)) {
-    return true;
-  }
-
   if (requestUrl.pathname === withBasePath("/sw.js")) {
     return true;
   }
 
-  if (/\.(?:js|css|map|txt)$/i.test(requestUrl.pathname)) {
+  if (/\.map$/i.test(requestUrl.pathname)) {
     return true;
   }
 
   return false;
 }
 
+// Wraps fetch() with an AbortController timeout.
+// When the signal fires the fetch rejects with an AbortError,
+// which causes the navigate handler to fall back to the cache immediately.
+function fetchWithTimeout(request, timeoutMs) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(request, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
+}
+
+// Video elements on Safari/iOS send Range requests and strictly require a
+// 206 Partial Content response. The SW caches the full 200 response, so we
+// slice it here and rebuild the correct partial response.
+async function handleRangeRequest(request, cachedResponse) {
+  const rangeHeader = request.headers.get("range");
+
+  if (!rangeHeader) {
+    return cachedResponse;
+  }
+
+  const blob = await cachedResponse.blob();
+  const match = /bytes=(\d+)-(\d*)/.exec(rangeHeader);
+
+  if (!match) {
+    return cachedResponse;
+  }
+
+  const start = Number(match[1]);
+  const end = match[2] ? Number(match[2]) : blob.size - 1;
+  const slicedBlob = blob.slice(start, end + 1);
+
+  return new Response(slicedBlob, {
+    status: 206,
+    statusText: "Partial Content",
+    headers: {
+      "Content-Type": cachedResponse.headers.get("Content-Type") ?? "video/mp4",
+      "Content-Range": `bytes ${start}-${end}/${blob.size}`,
+      "Content-Length": String(slicedBlob.size),
+      "Accept-Ranges": "bytes"
+    }
+  });
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(getPrecacheEntries())));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Routes + images: atomic — if any of these fail the SW does not install.
+      await cache.addAll(getPrecacheEntries());
+
+      // Video: best-effort — a failure here does not block SW install.
+      // On slow connections the 25 MB file could time out and would otherwise
+      // cause cache.addAll() to reject, leaving the user with zero offline support.
+      const videoUrls = VIDEO_ASSETS.map((asset) => withBasePath(asset));
+      await Promise.allSettled(videoUrls.map((url) => cache.add(url)));
+    })
+  );
   self.skipWaiting();
 });
 
@@ -167,6 +219,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Navigation requests: network-first with a 3-second timeout.
+  // On flaky connections this avoids the 30+ second wait for TCP timeout
+  // before the cached page is finally served.
   if (event.request.mode === "navigate") {
     const totemRoot = withBasePath("/totem", { route: true }).replace(/\/$/, "");
     const totemFallbackRoute = withBasePath("/totem/", { route: true });
@@ -177,7 +232,7 @@ self.addEventListener("fetch", (event) => {
         : standardFallbackRoute;
 
     event.respondWith(
-      fetch(event.request)
+      fetchWithTimeout(event.request, 3000)
         .then((response) => {
           if (response.ok) {
             const responseClone = response.clone();
@@ -194,22 +249,29 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Asset requests (images, video, JS bundles, CSS, etc.): cache-first.
+  // _next/static/ files are intentionally included — they are cached at
+  // runtime on first load so they are available on subsequent offline visits.
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
+    caches.match(event.request, { ignoreVary: true }).then(async (cachedResponse) => {
       if (cachedResponse) {
+        // Serve range requests (video) with a proper 206 response so Safari
+        // and iOS do not block playback.
+        if (event.request.headers.has("range")) {
+          return handleRangeRequest(event.request, cachedResponse);
+        }
+
         return cachedResponse;
       }
 
-      return fetch(event.request)
-        .then((response) => {
-          if (response.ok && event.request.url.startsWith(self.location.origin)) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
+      return fetch(event.request).then((response) => {
+        if (response.ok && event.request.url.startsWith(self.location.origin)) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
 
-          return response;
-        })
-        .catch(() => caches.match(withBasePath("/", { route: true })));
+        return response;
+      });
     })
   );
 });
