@@ -733,6 +733,17 @@ export function IslandMapCanvas({
                   className="object-cover"
                   unoptimized
                 />
+                <button
+                  type="button"
+                  aria-label="Chiudi"
+                  onClick={() => setActivePoiId("")}
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-navy-950/60 text-white backdrop-blur transition hover:bg-navy-950/80"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M18 6 6 18" />
+                    <path d="M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
               <div className="px-1 pb-1 pt-3">
                 <p className="text-sm font-semibold text-navy-950">{activePoi.name}</p>
