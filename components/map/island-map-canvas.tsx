@@ -125,9 +125,9 @@ export function IslandMapCanvas({
     pointerId: number;
     startX: number;
     startY: number;
-    originCenter: MapCoordinate;
-    /** Live center updated on every pointermove — synced to React state only on pointerup. */
-    currentCenter: MapCoordinate;
+    /** Raw CSS pixel delta from drag start — applied as CSS translate during drag. */
+    pixelDx: number;
+    pixelDy: number;
     didMove: boolean;
   } | null>(null);
   /**
@@ -372,8 +372,8 @@ export function IslandMapCanvas({
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      originCenter: center,
-      currentCenter: center,
+      pixelDx: 0,
+      pixelDy: 0,
       didMove: false
     };
 
@@ -387,31 +387,24 @@ export function IslandMapCanvas({
       return;
     }
 
-    if (Math.abs(event.clientX - dragState.startX) > 4 || Math.abs(event.clientY - dragState.startY) > 4) {
+    const dx = event.clientX - dragState.startX;
+    const dy = event.clientY - dragState.startY;
+
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
       dragState.didMove = true;
       hasUserAdjustedViewRef.current = true;
     }
 
-    // vb.w and vb.h depend only on zoom (constant during a drag gesture),
-    // so reading them from the render closure is safe and avoids extra computation.
-    const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
-    const nextCenter = clampCenter(
-      {
-        mapX: dragState.originCenter.mapX - (event.clientX - dragState.startX) / renderedScale,
-        mapY: dragState.originCenter.mapY - (event.clientY - dragState.startY) / renderedScale
-      },
-      zoom
-    );
+    dragState.pixelDx = dx;
+    dragState.pixelDy = dy;
 
-    // Bypass React state entirely during the drag.
-    // Writing the viewBox attribute directly on the SVG DOM node is a
-    // single attribute mutation — no React reconciliation, no component
-    // re-render, no SVG tree diff. React state is synced once in endPan.
-    dragState.currentCenter = nextCenter;
-    liveCenterRef.current = nextCenter;
-
-    const nextVb = getViewBox(nextCenter, zoom);
-    svgRef.current?.setAttribute("viewBox", `${nextVb.x} ${nextVb.y} ${nextVb.w} ${nextVb.h}`);
+    // CSS translate on the SVG — executed entirely by the GPU compositor.
+    // No SVG layout recalculation, no filter re-rasterization, no repaint.
+    // The viewBox stays fixed for the whole gesture; React state is synced
+    // once in endPan via a single setCenter() call.
+    if (svgRef.current) {
+      svgRef.current.style.transform = `translate(${dx}px, ${dy}px)`;
+    }
   };
 
   const endPan = (event?: React.PointerEvent<HTMLDivElement>) => {
@@ -438,16 +431,35 @@ export function IslandMapCanvas({
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
-    // Sync the final pan position back to React state in a single update.
-    // This triggers one re-render that reconciles the viewBox JSX attribute
-    // with the value already set on the DOM — no visual snap.
+    // Convert the accumulated CSS pixel delta back to SVG user units and
+    // commit the new center in one React state update. The useLayoutEffect
+    // below clears style.transform synchronously before the browser paints,
+    // so the new viewBox and zero transform are always rendered together.
     if (dragState?.didMove) {
-      setCenter(dragState.currentCenter);
+      const renderedScale = getSvgRenderedScale(viewportSize, vb.w, vb.h);
+      const nextCenter = clampCenter(
+        {
+          mapX: center.mapX - dragState.pixelDx / renderedScale,
+          mapY: center.mapY - dragState.pixelDy / renderedScale
+        },
+        zoom
+      );
+      setCenter(nextCenter);
     }
 
     dragStateRef.current = null;
     setIsPanning(false);
   };
+
+  // After every render triggered by a center or zoom state change, clear the
+  // CSS translate that was applied during the drag gesture. useLayoutEffect
+  // fires synchronously before the browser paints, so the new viewBox and an
+  // empty transform are always committed to the DOM in the same frame.
+  useLayoutEffect(() => {
+    if (!dragStateRef.current && svgRef.current) {
+      svgRef.current.style.transform = "";
+    }
+  }, [center, zoomLevelIndex]);
 
   const wheelFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -533,7 +545,7 @@ export function IslandMapCanvas({
             ref={svgRef}
             viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
             className="absolute inset-0 h-full w-full"
-            style={{ visibility: isViewReady ? "visible" : "hidden" }}
+            style={{ visibility: isViewReady ? "visible" : "hidden", willChange: "transform" }}
             preserveAspectRatio="xMidYMid meet"
             aria-label="Mappa interattiva di Lampedusa, Linosa e Lampione"
             role="img"
@@ -666,7 +678,7 @@ export function IslandMapCanvas({
                     }
                   }}
                 >
-                  <circle r={isActive ? 205 : 165} fill={color} opacity={0.22} filter="url(#markerShadow)" />
+                  <circle r={isActive ? 205 : 165} fill={color} opacity={0.22} />
                   <circle r={isActive ? 126 : 106} fill={color} stroke="#ffffff" strokeWidth="34" />
                 </g>
               );
