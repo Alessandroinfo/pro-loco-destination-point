@@ -54,6 +54,29 @@ EOF
   [ "$a_patch" -ge "$b_patch" ]
 }
 
+exec_project_command() {
+  command_name=$1
+
+  if command -v "$command_name" >/dev/null 2>&1; then
+    exec "$@"
+  fi
+
+  case "$command_name" in
+    */*)
+      ;;
+    *)
+      local_bin="$PROJECT_ROOT/node_modules/.bin/$command_name"
+
+      if [ -x "$local_bin" ]; then
+        shift
+        exec "$local_bin" "$@"
+      fi
+      ;;
+  esac
+
+  exec "$@"
+}
+
 CURRENT_NODE_VERSION=""
 
 if command -v node >/dev/null 2>&1; then
@@ -61,7 +84,7 @@ if command -v node >/dev/null 2>&1; then
 fi
 
 if [ -n "$CURRENT_NODE_VERSION" ] && version_gte "$CURRENT_NODE_VERSION" "$REQUIRED_NODE_VERSION"; then
-  exec "$@"
+  exec_project_command "$@"
 fi
 
 NVM_SH=""
@@ -88,7 +111,7 @@ fi
 . "$NVM_SH"
 
 if nvm use --silent "$REQUIRED_NODE_VERSION" >/dev/null 2>&1 || nvm use --silent "$REQUIRED_NODE_MAJOR" >/dev/null 2>&1; then
-  exec "$@"
+  exec_project_command "$@"
 fi
 
 echo "[with-project-node] Unable to activate Node $REQUIRED_NODE_VERSION via nvm." >&2

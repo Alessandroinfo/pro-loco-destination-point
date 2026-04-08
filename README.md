@@ -6,7 +6,8 @@ Static Next.js tourism hub for the Pro Loco of Lampedusa and Linosa, with a publ
 
 - The npm scripts automatically try to use the Node version declared in `.nvmrc` when `nvm` is available.
 - If `nvm` is not available, run the project with Node `20.x` or newer.
-- `npm run dev`: start local development.
+- `npm run dev`: start local development with Turbopack.
+- `npm run dev:clean`: clear `.next` and start local development with Turbopack.
 - `npm run build`: create the static production build.
 - `npm run serve`: serve the exported `out/` folder locally.
 - `npm run prod:local`: build and serve the local production export in one command.
