@@ -1,16 +1,18 @@
 {
-  "name": "pro-loco-hub",
+  "name": "pro-loco-discovery-point",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "assets:generate": "node scripts/generate-assets.mjs",
-    "dev": "next dev",
-    "build": "npm run assets:generate && next build && node scripts/inject-sw-precache.mjs",
-    "start": "node scripts/serve-export.mjs",
-    "serve": "node scripts/serve-export.mjs"
+    "assets:generate": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs",
+    "dev": "sh ./scripts/with-project-node.sh next dev",
+    "build": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs && sh ./scripts/with-project-node.sh next build && sh ./scripts/with-project-node.sh node scripts/inject-sw-precache.mjs",
+    "prod:local": "npm run build && npm run serve",
+    "deploy": "sh ./scripts/with-project-node.sh node scripts/deploy.mjs",
+    "start": "sh ./scripts/with-project-node.sh node scripts/serve-export.mjs",
+    "serve": "sh ./scripts/with-project-node.sh node scripts/serve-export.mjs"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20"
   },
   "dependencies": {
     "framer-motion": "12.38.0",

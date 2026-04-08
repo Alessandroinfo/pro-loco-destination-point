@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
 import { useAppMode } from "@/components/providers/app-mode-provider";
+import { useLocale } from "@/components/providers/locale-provider";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
 import { getCanonicalPathname } from "@/lib/app-mode";
 import { getCurrentRouteLabel } from "@/lib/routes";
@@ -14,7 +15,8 @@ import { getRuntimeAbsoluteUrl } from "@/lib/site";
 export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
   const currentPath = pathname ?? "/";
-  const currentPageLabel = getCurrentRouteLabel(currentPath);
+  const { locale, messages } = useLocale();
+  const currentPageLabel = getCurrentRouteLabel(currentPath, locale);
   const { isTotemMode } = useAppMode();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
@@ -78,8 +80,8 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
           <QrIcon />
         </span>
         <span>
-          <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-navy-900/55">Continua sul tuo dispositivo</span>
-          <span className="mt-1 block text-sm font-semibold text-navy-950">QR della pagina attuale</span>
+          <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-navy-900/55">{messages.routeQr.buttonEyebrow}</span>
+          <span className="mt-1 block text-sm font-semibold text-navy-950">{messages.routeQr.buttonTitle}</span>
         </span>
       </button>
 
@@ -111,24 +113,24 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
                 type="button"
                 className="absolute right-5 top-5 flex h-14 w-14 items-center justify-center rounded-full border border-navy-950/10 bg-white text-[2rem] leading-none text-navy-950"
                 onClick={() => setIsOpen(false)}
-                aria-label="Chiudi modale"
+                aria-label={messages.common.close}
               >
                 ×
               </button>
-              <p className="text-sm uppercase tracking-[0.3em] text-navy-900/55">Pagina attuale</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-navy-900/55">{messages.routeQr.modalEyebrow}</p>
               <h2 id={titleId} className="mt-3 text-3xl font-semibold text-navy-950">
                 {currentPageLabel}
               </h2>
               <p id={descriptionId} className="mt-4 text-lg leading-8 text-navy-900/70">
-                Inquadra il QR Code per aprire sul telefono esattamente la pagina che stai visitando in questo momento.
+                {messages.routeQr.modalDescription}
               </p>
 
               <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
                 {qrCodeDataUrl ? (
-                  <img src={qrCodeDataUrl} alt="QR Code della pagina corrente" width={288} height={288} />
+                  <img src={qrCodeDataUrl} alt={messages.routeQr.qrAlt} width={288} height={288} />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center rounded-[1.5rem] border border-dashed border-navy-950/12 text-sm font-medium text-navy-900/55">
-                    Generazione QR Code...
+                    {messages.common.loadingQr}
                   </div>
                 )}
               </div>

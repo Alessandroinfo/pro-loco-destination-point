@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useAppMode } from "@/components/providers/app-mode-provider";
+import { useLocale } from "@/components/providers/locale-provider";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -16,6 +17,7 @@ const DISMISS_STORAGE_KEY = "pro-loco-install-banner-dismissed";
 
 export function InstallAppBanner() {
   const { isStandardMode } = useAppMode();
+  const { messages } = useLocale();
   const [installPromptEvent, setInstallPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isDismissed, setIsDismissed] = useState(false);
   const [isIosSafari, setIsIosSafari] = useState(false);
@@ -121,15 +123,13 @@ export function InstallAppBanner() {
     <div className="fixed inset-x-4 bottom-4 z-40 mx-auto max-w-[720px] sm:bottom-6">
       <div className="glass-panel soft-outline flex flex-col gap-5 rounded-[1.8rem] border px-4 py-5 shadow-[0_22px_48px_rgba(16,36,63,0.18)] sm:flex-row sm:items-end sm:justify-between sm:px-6">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-navy-900/48">Installa l'app</p>
-          <h2 className="mt-2 text-xl font-semibold text-navy-950 sm:text-2xl">Usala offline sul tuo dispositivo</h2>
-          <p className="mt-2 max-w-2xl text-base leading-7 text-navy-900/72">
-            Aggiungi il sito alla schermata Home per aprirlo come app e consultarlo anche senza connessione.
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-navy-900/48">{messages.installBanner.eyebrow}</p>
+          <h2 className="mt-2 text-xl font-semibold text-navy-950 sm:text-2xl">{messages.installBanner.title}</h2>
+          <p className="mt-2 max-w-2xl text-base leading-7 text-navy-900/72">{messages.installBanner.description}</p>
           {isIosSafari ? (
             <p className="mt-3 text-sm font-medium leading-6 text-navy-900/62">
-              Su iOS: tocca <span className="font-semibold text-navy-950">Condividi</span> e poi{" "}
-              <span className="font-semibold text-navy-950">Aggiungi a Home</span>.
+              {messages.installBanner.iosInstructions} <span className="font-semibold text-navy-950">{messages.installBanner.iosShare}</span> e poi{" "}
+              <span className="font-semibold text-navy-950">{messages.installBanner.iosAddToHome}</span>.
             </p>
           ) : null}
         </div>
@@ -143,7 +143,7 @@ export function InstallAppBanner() {
                 void installApp();
               }}
             >
-              Installa app
+              {messages.installBanner.installButton}
             </button>
           ) : null}
 
@@ -152,7 +152,7 @@ export function InstallAppBanner() {
             className="flex min-h-12 w-full items-center justify-center rounded-full border border-navy-950/12 bg-white px-5 text-sm font-semibold text-navy-950 sm:w-auto"
             onClick={dismissBanner}
           >
-            Non ora
+            {messages.installBanner.laterButton}
           </button>
         </div>
       </div>

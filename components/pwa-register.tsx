@@ -10,14 +10,7 @@ export function PwaRegister() {
       return;
     }
 
-    const hostname = window.location.hostname;
-    const isLocalEnvironment =
-      hostname === "localhost" ||
-      hostname === "127.0.0.1" ||
-      hostname === "[::1]" ||
-      hostname.endsWith(".local");
-
-    if (process.env.NODE_ENV !== "production" || isLocalEnvironment) {
+    if (process.env.NODE_ENV !== "production") {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((registration) => {
           registration.unregister();

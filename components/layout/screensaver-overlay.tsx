@@ -4,6 +4,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import { useLocale } from "@/components/providers/locale-provider";
 import { withBasePath } from "@/lib/site";
 
 const SCREENSAVER_VIDEO = withBasePath("/boat-video.mp4");
@@ -17,6 +18,7 @@ export function ScreensaverOverlay({
   onDismiss: () => boolean;
 }) {
   const overlayRef = useRef<HTMLButtonElement>(null);
+  const { messages } = useLocale();
 
   useEffect(() => {
     if (!isActive) {
@@ -38,7 +40,7 @@ export function ScreensaverOverlay({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          aria-label="Chiudi lo screensaver e torna alla pagina corrente"
+          aria-label={messages.screensaver.dismissAriaLabel}
           onClick={() => {
             onDismiss();
           }}
@@ -60,7 +62,7 @@ export function ScreensaverOverlay({
             <div className="relative h-28 w-28 overflow-hidden border-white/20">
               <Image
                 src={withBasePath("/logo-pro-loco-white.svg")}
-                alt="Logo Pro Loco"
+                alt={messages.screensaver.logoAlt}
                 fill
                 sizes="112px"
                 className="object-contain p-3"
@@ -72,7 +74,7 @@ export function ScreensaverOverlay({
             </div>
             <p className="mt-2 text-sm uppercase tracking-[0.36em] text-white/65">Pro Loco</p>
             <h2 className="font-title mt-5 text-7xl font-semibold italic tracking-[0.02em] text-white">Lampedusa &amp; Linosa</h2>
-            <p className="pulse-invite mt-12 text-2xl font-thin font-semibold tracking-[0.12em] text-gold-300">Tocca per iniziare</p>
+            <p className="pulse-invite mt-12 text-2xl font-thin font-semibold tracking-[0.12em] text-gold-300">{messages.screensaver.tapToStart}</p>
           </div>
         </motion.button>
       ) : null}

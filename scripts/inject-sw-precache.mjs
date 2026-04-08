@@ -1,6 +1,6 @@
 /**
  * Post-build script: injects the list of all _next/static/ assets into out/sw.js
- * and sets CACHE_NAME to "pro-loco-hub-<BUILD_ID>" so the cache version is
+ * and sets CACHE_NAME to "<cache-prefix>-<BUILD_ID>" so the cache version is
  * automatically bumped on every deploy without any manual intervention.
  *
  * Run automatically as part of `npm run build`.
@@ -41,7 +41,6 @@ if (!buildIdEntry) {
 }
 
 const buildId = buildIdEntry.name;
-const cacheName = `pro-loco-hub-${buildId}`;
 
 // Collect every _next/static/ file, excluding source maps which are not needed offline.
 const allStaticFiles = collectFiles(staticDir)
@@ -52,18 +51,24 @@ const allStaticFiles = collectFiles(staticDir)
     return "/" + rel.split(sep).join("/");
   });
 
+// Patch out/sw.js — replace the two placeholders left by public/sw.js.
+let sw = readFileSync(swPath, "utf8");
+const cacheNameMatch = sw.match(/const CACHE_NAME = "([^"]+)";/);
+
+if (!cacheNameMatch) {
+  console.error("[inject-sw-precache] Could not find CACHE_NAME declaration in out/sw.js. Skipping.");
+  process.exit(1);
+}
+
+const cacheNamePrefix = cacheNameMatch[1].replace(/-v\d+$/, "");
+const cacheName = `${cacheNamePrefix}-${buildId}`;
+
 console.log(`[inject-sw-precache] BUILD_ID  : ${buildId}`);
 console.log(`[inject-sw-precache] CACHE_NAME: ${cacheName}`);
 console.log(`[inject-sw-precache] _next/static assets: ${allStaticFiles.length} files`);
 
-// Patch out/sw.js — replace the two placeholders left by public/sw.js.
-let sw = readFileSync(swPath, "utf8");
-
 // 1. Bump the cache name to the build-specific version.
-const cacheNameReplaced = sw.replace(
-  /const CACHE_NAME = "pro-loco-hub-[^"]+";/,
-  `const CACHE_NAME = "${cacheName}";`
-);
+const cacheNameReplaced = sw.replace(/const CACHE_NAME = "[^"]+";/, `const CACHE_NAME = "${cacheName}";`);
 
 if (cacheNameReplaced === sw) {
   console.warn("[inject-sw-precache] Warning: CACHE_NAME pattern not found in out/sw.js.");

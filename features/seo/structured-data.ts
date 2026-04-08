@@ -1,22 +1,28 @@
 import type { Business } from "@/features/catalog/catalog.types";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-brand";
+import type { Locale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
+import { getSiteName } from "@/lib/site-brand";
 
-export const touristHubStructuredData = {
-  "@context": "https://schema.org",
-  "@type": "TouristInformationCenter",
-  name: SITE_NAME,
-  description: SITE_DESCRIPTION,
-  areaServed: ["Lampedusa", "Linosa"],
-  availableLanguage: ["it", "en"],
-  audience: {
-    "@type": "Audience",
-    audienceType: "Turisti"
-  },
-  provider: {
-    "@type": "Organization",
-    name: "Pro Loco Lampedusa e Linosa"
-  }
-};
+export function getTouristHubStructuredData(locale: Locale) {
+  const messages = getMessages(locale);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristInformationCenter",
+    name: getSiteName(locale),
+    description: messages.site.description,
+    areaServed: ["Lampedusa", "Linosa"],
+    availableLanguage: ["it", "en"],
+    audience: {
+      "@type": "Audience",
+      audienceType: locale === "en" ? "Tourists" : "Turisti"
+    },
+    provider: {
+      "@type": "Organization",
+      name: "Pro Loco Lampedusa e Linosa"
+    }
+  };
+}
 
 export function getBusinessStructuredData(business: Business) {
   return {

@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useId, useState } from "react";
 
+import { useLocale } from "@/components/providers/locale-provider";
 import type { PointOfInterest } from "@/features/map/map.types";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
 
@@ -25,6 +26,7 @@ export function PoiRouteQrModal({ isOpen, point, onClose }: PoiRouteQrModalProps
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const titleId = useId();
   const descriptionId = useId();
+  const { messages } = useLocale();
   const { closeButtonRef, dialogRef } = useDialogAccessibility(isOpen, onClose);
   const googleMapsUrl = getGoogleMapsUrl(point);
 
@@ -74,23 +76,23 @@ export function PoiRouteQrModal({ isOpen, point, onClose }: PoiRouteQrModalProps
               type="button"
               className="absolute right-5 top-5 flex h-14 w-14 items-center justify-center rounded-full border border-navy-950/10 bg-white text-[2rem] leading-none text-navy-950"
               onClick={onClose}
-              aria-label="Chiudi modale"
+              aria-label={messages.common.close}
             >
               ×
             </button>
             <h2 id={titleId} className="mt-3 text-3xl font-semibold text-navy-950">
-              Portami a {point.name}
+              {messages.poiQr.titlePrefix} {point.name}
             </h2>
             <p id={descriptionId} className="mt-4 text-lg leading-8 text-navy-900/70">
-              Inquadra il QR Code per aprire Google Maps sul telefono e raggiungere direttamente questo punto.
+              {messages.poiQr.description}
             </p>
 
-            <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
+              <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
               {qrCodeDataUrl ? (
-                <img src={qrCodeDataUrl} alt={`QR Code per ${point.name}`} width={288} height={288} />
+                <img src={qrCodeDataUrl} alt={`${messages.poiQr.qrAltPrefix} ${point.name}`} width={288} height={288} />
               ) : (
                 <div className="flex h-full w-full items-center justify-center rounded-[1.5rem] border border-dashed border-navy-950/12 text-sm font-medium text-navy-900/55">
-                  Generazione QR Code...
+                  {messages.common.loadingQr}
                 </div>
               )}
             </div>

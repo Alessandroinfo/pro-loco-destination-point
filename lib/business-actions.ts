@@ -5,6 +5,8 @@ import type {
   BusinessActionTotemBehavior,
   DirectionsGoogleMapsAction
 } from "@/features/catalog/catalog.types";
+import type { Locale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
 
 export type BusinessActionQrModalContent = {
   eyebrow: string;
@@ -72,12 +74,14 @@ export function getBusinessActionHref(action: BusinessAction) {
   }
 }
 
-export function getBusinessActionLabel(action: BusinessAction) {
+export function getBusinessActionLabel(action: BusinessAction, locale: Locale = "it") {
   if (action.label) {
     return action.label;
   }
 
-  return action.kind === "directions-google-maps" ? "Portami li" : "Prenota";
+  const messages = getMessages(locale);
+
+  return action.kind === "directions-google-maps" ? messages.actions.directions : messages.actions.book;
 }
 
 export function getBusinessActionTotemBehavior(action: BusinessAction): BusinessActionTotemBehavior {
@@ -97,30 +101,38 @@ export function getBusinessActionTotemBehavior(action: BusinessAction): Business
   }
 }
 
-export function getBusinessActionQrModalContent(action: BusinessAction, businessName: string): BusinessActionQrModalContent {
+export function getBusinessActionQrModalContent(
+  action: BusinessAction,
+  businessName: string,
+  locale: Locale = "it"
+): BusinessActionQrModalContent {
+  const messages = getMessages(locale);
+
   switch (action.kind) {
     case "book-whatsapp":
       return {
-        eyebrow: "Prenotazione",
-        title: "Apri QR per inviare richiesta disponibilita",
-        description:
-          "Inquadra il QR Code con il telefono per aprire WhatsApp e inviare subito una richiesta di disponibilita alla struttura.",
-        previewLabel: "Anteprima messaggio:",
+        eyebrow: messages.bookingQr.bookingEyebrow,
+        title: messages.bookingQr.bookingWhatsappTitle,
+        description: messages.bookingQr.bookingWhatsappDescription,
+        previewLabel: messages.bookingQr.messagePreviewLabel,
         previewValue: action.message
       };
     case "book-external":
       return {
-        eyebrow: "Prenotazione",
-        title: "Apri QR per continuare la prenotazione",
-        description: `Inquadra il QR Code con il telefono per aprire il portale di ${businessName} e completare la prenotazione.`,
+        eyebrow: messages.bookingQr.bookingEyebrow,
+        title: messages.bookingQr.bookingExternalTitle,
+        description:
+          locale === "en"
+            ? `${messages.bookingQr.bookingExternalDescriptionPrefix} ${businessName} and complete your booking.`
+            : `${messages.bookingQr.bookingExternalDescriptionPrefix} ${businessName} e completare la prenotazione.`,
         actionHref: getBusinessActionHref(action),
-        actionHrefLabel: "Apri il portale"
+        actionHrefLabel: messages.bookingQr.bookingExternalActionLabel
       };
     case "directions-google-maps":
       return {
-        eyebrow: "Navigazione",
-        title: `Portami a ${businessName}`,
-        description: "Inquadra il QR Code con il telefono per aprire Google Maps e raggiungere direttamente questa attivita."
+        eyebrow: messages.bookingQr.directionsEyebrow,
+        title: `${messages.bookingQr.directionsTitlePrefix} ${businessName}`,
+        description: messages.bookingQr.directionsDescription
       };
     default:
       return exhaustiveCheck(action);

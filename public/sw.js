@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-hub-v9";
+const CACHE_NAME = "pro-loco-discovery-point-v10";
 
 const STATIC_ROUTES = [
   "/",
@@ -44,7 +44,9 @@ const STATIC_ROUTES = [
 // Critical assets — precached atomically. Must all succeed.
 const CORE_ASSETS = [
   "/manifest.webmanifest",
+  "/en/manifest.webmanifest",
   "/totem/manifest.webmanifest",
+  "/totem/en/manifest.webmanifest",
   "/logo-pro-loco.svg",
   "/logo-pro-loco-white.svg",
   "/og-image.svg",
@@ -113,10 +115,14 @@ function withBasePath(pathname, { route = false } = {}) {
 }
 
 function getPrecacheEntries() {
-  const standardRoutes = STATIC_ROUTES.map((route) => withBasePath(route, { route: true }));
-  const totemRoutes = STATIC_ROUTES.map((route) =>
-    withBasePath(route === "/" ? "/totem/" : `/totem${route}`, { route: true })
-  );
+  const standardRoutes = STATIC_ROUTES.flatMap((route) => [
+    withBasePath(route, { route: true }),
+    withBasePath(route === "/" ? "/en/" : `/en${route}`, { route: true })
+  ]);
+  const totemRoutes = STATIC_ROUTES.flatMap((route) => [
+    withBasePath(route === "/" ? "/totem/" : `/totem${route}`, { route: true }),
+    withBasePath(route === "/" ? "/totem/en/" : `/totem/en${route}`, { route: true })
+  ]);
   const coreAssets = CORE_ASSETS.map((asset) => withBasePath(asset));
   const businessAssets = BUSINESS_ASSETS.map((asset) => withBasePath(asset));
   const nextStaticAssets = NEXT_STATIC_ASSETS.map((asset) => withBasePath(asset));
@@ -232,10 +238,18 @@ self.addEventListener("fetch", (event) => {
   if (event.request.mode === "navigate") {
     const totemRoot = withBasePath("/totem", { route: true }).replace(/\/$/, "");
     const totemFallbackRoute = withBasePath("/totem/", { route: true });
+    const totemEnglishRoot = withBasePath("/totem/en", { route: true }).replace(/\/$/, "");
+    const totemEnglishFallbackRoute = withBasePath("/totem/en/", { route: true });
     const standardFallbackRoute = withBasePath("/", { route: true });
+    const englishRoot = withBasePath("/en", { route: true }).replace(/\/$/, "");
+    const englishFallbackRoute = withBasePath("/en/", { route: true });
     const fallbackRoute =
-      requestUrl.pathname === totemRoot || requestUrl.pathname.startsWith(totemFallbackRoute)
+      requestUrl.pathname === totemEnglishRoot || requestUrl.pathname.startsWith(totemEnglishFallbackRoute)
+        ? totemEnglishFallbackRoute
+        : requestUrl.pathname === totemRoot || requestUrl.pathname.startsWith(totemFallbackRoute)
         ? totemFallbackRoute
+        : requestUrl.pathname === englishRoot || requestUrl.pathname.startsWith(englishFallbackRoute)
+          ? englishFallbackRoute
         : standardFallbackRoute;
 
     event.respondWith(
