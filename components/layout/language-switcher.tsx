@@ -12,6 +12,7 @@ export function LanguageSwitcher() {
 
   return (
     <div
+      role="group"
       className="inline-flex items-center gap-1 rounded-full border border-navy-950/10 bg-white/78 p-1 shadow-[0_10px_30px_rgba(16,36,63,0.08)] backdrop-blur"
       aria-label={messages.header.languageLabel}
     >

@@ -33,6 +33,7 @@ type Messages = {
   featuredMap: {
     eyebrow: string;
     title: string;
+    imageAlt: string;
   };
   footer: {
     poweredBy: string;
@@ -139,7 +140,8 @@ const messages: Record<Locale, Messages> = {
     },
     featuredMap: {
       eyebrow: "Spiagge e cale, punti di interesse",
-      title: "Esplora le Pelagie"
+      title: "Esplora le Pelagie",
+      imageAlt: "Illustrazione delle isole Pelagie"
     },
     footer: {
       poweredBy: "Powered by"
@@ -245,7 +247,8 @@ const messages: Record<Locale, Messages> = {
     },
     featuredMap: {
       eyebrow: "Beaches and coves, landmarks",
-      title: "Explore Pelagie"
+      title: "Explore Pelagie",
+      imageAlt: "Illustration of the Pelagie islands"
     },
     footer: {
       poweredBy: "Powered by"
@@ -347,4 +350,20 @@ export function formatPoiCount(locale: Locale, count: number) {
   }
 
   return `${count} punti di interesse`;
+}
+
+export function formatBusinessGalleryImageAlt(locale: Locale, businessName: string, index: number) {
+  if (locale === "en") {
+    return `${businessName}, gallery image ${index}`;
+  }
+
+  return `${businessName}, immagine della galleria ${index}`;
+}
+
+export function formatBusinessGalleryButtonLabel(locale: Locale, businessName: string, index: number) {
+  if (locale === "en") {
+    return `Open image ${index} of ${businessName}`;
+  }
+
+  return `Apri immagine ${index} di ${businessName}`;
 }

@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { MapCompass } from "@/components/map/map-compass";
 import { PoiRouteQrModal, getGoogleMapsUrl } from "@/components/map/poi-route-qr-modal";
 import { useAppMode } from "@/components/providers/app-mode-provider";
+import { useLocale } from "@/components/providers/locale-provider";
 import type { PointOfInterest } from "@/features/map/map.types";
 import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
 import { withBasePath } from "@/lib/site";
@@ -153,6 +154,7 @@ export function IslandMapCanvas({
   }
   const activePoi = points.find((poi) => poi.id === activePoiId);
   const { isTotemMode } = useAppMode();
+  const { messages } = useLocale();
 
   useEffect(() => {
     setIsClient(true);
@@ -541,7 +543,7 @@ export function IslandMapCanvas({
             ref={svgRef}
             className="absolute inset-0 h-full w-full overflow-hidden"
             style={{ visibility: isViewReady ? "visible" : "hidden" }}
-            aria-label="Mappa interattiva di Lampedusa, Linosa e Lampione"
+            aria-label={messages.map.interactiveMapAriaLabel}
             role="img"
           >
             {/*
@@ -699,7 +701,7 @@ export function IslandMapCanvas({
       </div>
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-white/76 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur">
-        Trascina con mouse o touch
+        {messages.map.dragHint}
       </div>
 
       <div data-map-control="true" className="absolute right-4 top-4 z-20 flex flex-col items-center gap-3">
@@ -710,7 +712,7 @@ export function IslandMapCanvas({
             className="flex h-12 w-12 items-center justify-center text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:text-navy-950/30"
             onClick={zoomIn}
             disabled={zoomLevelIndex === ZOOM_LEVELS.length - 1}
-            aria-label="Aumenta lo zoom"
+            aria-label={messages.map.zoomIn}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M12 5v14" />
@@ -723,7 +725,7 @@ export function IslandMapCanvas({
             className="flex h-12 w-12 items-center justify-center text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:text-navy-950/30"
             onClick={zoomOut}
             disabled={zoomLevelIndex === 0}
-            aria-label="Riduci lo zoom"
+            aria-label={messages.map.zoomOut}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M5 12h14" />
@@ -758,7 +760,7 @@ export function IslandMapCanvas({
                 />
                 <button
                   type="button"
-                  aria-label="Chiudi"
+                  aria-label={messages.common.close}
                   onClick={() => setActivePoiId("")}
                   className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-navy-950/60 text-white backdrop-blur transition hover:bg-navy-950/80"
                 >
@@ -778,7 +780,7 @@ export function IslandMapCanvas({
                     disabled={activePoi.latitude === null || activePoi.longitude === null}
                     className="inline-flex items-center justify-center rounded-full bg-navy-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:cursor-not-allowed disabled:bg-navy-950/20 disabled:text-navy-950/35"
                   >
-                    Portami li
+                    {messages.map.routeButton}
                   </button>
                 </div>
               </div>

@@ -17,7 +17,7 @@ export function FeaturedMapCard({ locale }: { locale: Locale }) {
       >
         <SmoothImage
           src="/placeholders/category-map-pelagie.svg"
-          alt="Esplora le Pelagie"
+          alt={messages.featuredMap.imageAlt}
           fill
           className="object-cover brightness-[0.72] saturate-[0.88]"
           sizes="100vw"

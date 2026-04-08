@@ -36,7 +36,7 @@ function createModeAwareMetadata({
   mode,
   locale
 }: {
-  title: string;
+  title: Exclude<Metadata["title"], null>;
   description: string;
   canonicalPathname: string;
   mode: AppMode;
@@ -76,7 +76,9 @@ export function createHomePageMetadata(mode: AppMode, locale: Locale = "it"): Me
   const messages = getMessages(locale);
 
   return createModeAwareMetadata({
-    title: locale === "en" ? "Home" : "Home",
+    title: {
+      absolute: "Pro Loco - Discovery Point - Lampedusa e Linosa"
+    },
     description: messages.site.description,
     canonicalPathname: publicRoutes.home,
     locale,

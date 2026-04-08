@@ -17,6 +17,7 @@ import { useAppMode } from "@/components/providers/app-mode-provider";
 import { BackLink } from "@/components/shared/back-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 import { BusinessActionQrModal } from "@/components/business/business-action-qr-modal";
+import { formatBusinessGalleryButtonLabel, formatBusinessGalleryImageAlt } from "@/lib/i18n/messages";
 
 export function BusinessDetailPage({
   business,
@@ -97,12 +98,12 @@ export function BusinessDetailPage({
                     isActive ? "border-gold-500 shadow-[0_10px_30px_rgba(200,154,61,0.22)]" : "border-transparent"
                   }`}
                   onClick={() => setSelectedImage(image)}
-                  aria-label={`${messages.business.imageAriaLabel} ${index + 1}`}
+                  aria-label={formatBusinessGalleryButtonLabel(locale, business.name, index + 1)}
                   aria-pressed={isActive}
                 >
                   <SmoothImage
                     src={image}
-                    alt={`${business.name} gallery ${index + 1}`}
+                    alt={formatBusinessGalleryImageAlt(locale, business.name, index + 1)}
                     fill
                     className="object-cover"
                     sizes="160px"
