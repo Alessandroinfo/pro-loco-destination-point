@@ -59,7 +59,7 @@ const CORE_ASSETS = [
   "/placeholders/category-renting.svg",
   "/placeholders/category-shopping.svg",
   "/placeholders/category-info.svg",
-  "/placeholders/category-map.svg",
+  "/placeholders/category-map-pelagie.svg",
   "/placeholders/screensaver-poster.svg"
 ];
 

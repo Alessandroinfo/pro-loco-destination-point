@@ -16,7 +16,7 @@ export function FeaturedMapCard({ locale }: { locale: Locale }) {
         aria-label={`${messages.featuredMap.title}, ${formatPoiCount(locale, pointsOfInterest.length)}`}
       >
         <SmoothImage
-          src="/placeholders/category-map.svg"
+          src="/placeholders/category-map-pelagie.svg"
           alt="Esplora le Pelagie"
           fill
           className="object-cover brightness-[0.72] saturate-[0.88]"
