@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 import { IslandMapCanvas } from "@/components/map/island-map-canvas";
 import { pointOfInterestLegend, pointsOfInterest } from "@/features/map/map.data";
 import type { PointOfInterest } from "@/features/map/map.types";
+import { mapAssetPaths } from "@/lib/asset-paths";
 
 const DRAFT_POINT_ID = "__draft__";
-const DEFAULT_POINT_IMAGE = "/placeholders/category-map.svg";
+const DEFAULT_POINT_IMAGE = mapAssetPaths.pointOfInterestPlaceholder;
 const LAMPIONE_BOUNDS = {
   minX: -1700,
   maxX: -700,
@@ -454,7 +455,7 @@ export function MapPointWorkbench() {
                   value={draft.imageSrc}
                   onChange={(event) => handleDraftFieldChange("imageSrc", event.target.value)}
                   className="rounded-[1rem] border border-navy-950/12 bg-white px-4 py-3 text-sm text-navy-950 outline-none transition focus:border-navy-950/30"
-                  placeholder="/placeholders/category-map.svg"
+                  placeholder={mapAssetPaths.pointOfInterestPlaceholder}
                 />
               </label>
             </div>

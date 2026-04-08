@@ -1,5 +1,6 @@
 import { pointsOfInterest } from "@/features/map/map.data";
 import { publicRoutes } from "@/lib/routes";
+import { mapAssetPaths } from "@/lib/asset-paths";
 import { AppModeLink } from "@/components/shared/app-mode-link";
 import { SmoothImage } from "@/components/shared/smooth-image";
 import type { Locale } from "@/lib/i18n/config";
@@ -16,7 +17,7 @@ export function FeaturedMapCard({ locale }: { locale: Locale }) {
         aria-label={`${messages.featuredMap.title}, ${formatPoiCount(locale, pointsOfInterest.length)}`}
       >
         <SmoothImage
-          src="/placeholders/category-map-pelagie.svg"
+          src={mapAssetPaths.featuredCard}
           alt={messages.featuredMap.imageAlt}
           fill
           className="object-cover brightness-[0.72] saturate-[0.88]"

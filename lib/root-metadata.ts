@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { brandAssetPaths } from "@/lib/asset-paths";
 import type { Locale } from "@/lib/i18n/config";
 import { getSiteDescription, getSiteName } from "@/lib/site-brand";
 import { getAbsoluteUrl, getSiteUrl, withBasePath } from "@/lib/site";
@@ -57,7 +58,7 @@ export function createRootMetadata(locale: Locale): Metadata {
       alternateLocale: locale === "en" ? ["it_IT"] : ["en_GB"],
       images: [
         {
-          url: getAbsoluteUrl("/og-image.svg"),
+          url: getAbsoluteUrl(brandAssetPaths.openGraph),
           width: 1200,
           height: 630,
           alt: siteName
@@ -68,7 +69,7 @@ export function createRootMetadata(locale: Locale): Metadata {
       card: "summary_large_image",
       title: siteName,
       description: siteDescription,
-      images: [getAbsoluteUrl("/og-image.svg")]
+      images: [getAbsoluteUrl(brandAssetPaths.openGraph)]
     },
     category: "travel",
     manifest: withBasePath(manifestPath)

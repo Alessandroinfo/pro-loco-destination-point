@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import type { AppMode } from "@/lib/app-mode";
+import { pwaAssetPaths } from "@/lib/asset-paths";
 import type { Locale } from "@/lib/i18n/config";
 import { getLocalePathname } from "@/lib/i18n/config";
 import { getHomeRoute } from "@/lib/routes";
@@ -24,17 +25,17 @@ export function createManifest(mode: AppMode, locale: Locale = "it"): MetadataRo
     orientation: "portrait",
     icons: [
       {
-        src: withBasePath("/icons/icon-192.png"),
+        src: withBasePath(pwaAssetPaths.icon192),
         sizes: "192x192",
         type: "image/png"
       },
       {
-        src: withBasePath("/icons/icon-512.png"),
+        src: withBasePath(pwaAssetPaths.icon512),
         sizes: "512x512",
         type: "image/png"
       },
       {
-        src: withBasePath("/icons/icon-512-maskable.png"),
+        src: withBasePath(pwaAssetPaths.icon512Maskable),
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable"

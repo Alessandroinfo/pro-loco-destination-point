@@ -12,7 +12,7 @@ Static Next.js tourism hub for the Pro Loco of Lampedusa and Linosa, with a publ
 - `npm run serve`: serve the exported `out/` folder locally.
 - `npm run prod:local`: build and serve the local production export in one command.
 - `npm run deploy`: build and deploy using the service configured via `DEPLOY_SERVICE`.
-- `npm run assets:generate`: regenerate local SVG placeholders.
+- `npm run assets:generate`: regenerate local placeholder, brand, and manifest assets under `public/assets`.
 
 If you build with a non-empty `NEXT_PUBLIC_BASE_PATH`, preview with the same mounted path:
 
@@ -64,5 +64,6 @@ The public experience stays on `/` and the kiosk experience stays on `/totem`, r
 ## Docs
 
 - [Architecture](./docs/architecture.md)
+- [Content & Assets](./docs/content-assets.md)
 - [Route Modes](./docs/route-modes.md)
 - [PWA, SEO, Analytics](./docs/pwa-seo-analytics.md)

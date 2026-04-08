@@ -15,7 +15,7 @@ This project is a static Next.js App Router application optimized for a touch ki
 - `features/map/`: points of interest data and map types.
 - `features/seo/`: structured data helpers for the public indexable pages.
 - `lib/`: shared helpers for app mode, routes, metadata, site URLs, manifests, and page param resolution.
-- `public/`: icons, placeholders, media, service worker, and the dedicated `/totem` manifest.
+- `public/`: shared static output, with application assets organized under `public/assets/`, plus the service worker and localized manifest files.
 
 ## Shared Rendering Strategy
 
@@ -26,4 +26,5 @@ This project is a static Next.js App Router application optimized for a touch ki
 ## Related Docs
 
 - [Route Modes](./route-modes.md)
+- [Content & Assets](./content-assets.md)
 - [PWA, SEO, Analytics](./pwa-seo-analytics.md)

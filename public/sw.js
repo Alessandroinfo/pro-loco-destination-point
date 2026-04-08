@@ -1,4 +1,4 @@
-const CACHE_NAME = "pro-loco-discovery-point-v10";
+const CACHE_NAME = "pro-loco-discovery-point-v11";
 
 const STATIC_ROUTES = [
   "/",
@@ -47,24 +47,25 @@ const CORE_ASSETS = [
   "/en/manifest.webmanifest",
   "/totem/manifest.webmanifest",
   "/totem/en/manifest.webmanifest",
-  "/logo-pro-loco.svg",
-  "/logo-pro-loco-white.svg",
-  "/og-image.svg",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
-  "/icons/icon-512-maskable.png",
-  "/placeholders/category-experiences.svg",
-  "/placeholders/category-dining.svg",
-  "/placeholders/category-hospitality.svg",
-  "/placeholders/category-renting.svg",
-  "/placeholders/category-shopping.svg",
-  "/placeholders/category-info.svg",
-  "/placeholders/category-map-pelagie.svg",
-  "/placeholders/screensaver-poster.svg"
+  "/assets/brand/logos/pro-loco.svg",
+  "/assets/brand/logos/pro-loco-white.svg",
+  "/assets/brand/social/og-image.svg",
+  "/assets/pwa/icons/icon-192.png",
+  "/assets/pwa/icons/icon-512.png",
+  "/assets/pwa/icons/icon-512-maskable.png",
+  "/assets/catalog/placeholders/categories/experiences.svg",
+  "/assets/catalog/placeholders/categories/dining.svg",
+  "/assets/catalog/placeholders/categories/hospitality.svg",
+  "/assets/catalog/placeholders/categories/renting.svg",
+  "/assets/catalog/placeholders/categories/shopping.svg",
+  "/assets/catalog/placeholders/categories/info.svg",
+  "/assets/maps/placeholders/pelagie-overview.svg",
+  "/assets/maps/placeholders/point-of-interest.svg",
+  "/assets/video/screensaver/poster.svg"
 ];
 
 // Large assets — cached best-effort so they never block SW install.
-const VIDEO_ASSETS = ["/boat-video.mp4"];
+const VIDEO_ASSETS = ["/assets/video/screensaver/boat-video.mp4"];
 
 // _next/static/ assets (JS chunks, CSS, woff2 fonts).
 // This array is empty in the source file and is injected automatically by
@@ -72,8 +73,8 @@ const VIDEO_ASSETS = ["/boat-video.mp4"];
 // Without injection the app still works online; offline it degrades gracefully.
 const NEXT_STATIC_ASSETS = [];
 
-const BUSINESS_ASSETS = ["experience", "dining", "hospitality", "renting", "shopping", "info"].flatMap((prefix) =>
-  Array.from({ length: 6 }, (_, index) => `/placeholders/business-${prefix}-${index + 1}.svg`)
+const BUSINESS_ASSETS = ["experiences", "dining", "hospitality", "renting", "shopping", "info"].flatMap((categoryId) =>
+  Array.from({ length: 6 }, (_, index) => `/assets/catalog/placeholders/businesses/${categoryId}/${index + 1}.svg`)
 );
 
 function normalizeRoute(pathname) {

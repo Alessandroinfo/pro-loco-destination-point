@@ -1,4 +1,5 @@
 import type { Category } from "@/features/catalog/catalog.types";
+import { getCategoryPlaceholderImage } from "@/lib/asset-paths";
 
 export const categories: Category[] = [
   {
@@ -7,7 +8,7 @@ export const categories: Category[] = [
     shortLabel: "Tour in barca, diving, escursioni",
     tagline: "Scopri il lato piu emozionante dell'isola",
     color: "#2E8AA5",
-    image: "/placeholders/category-experiences.svg"
+    image: getCategoryPlaceholderImage("experiences")
   },
   {
     id: "dining",
@@ -15,7 +16,7 @@ export const categories: Category[] = [
     shortLabel: "Ristoranti, Pizzerie, Trattorie",
     tagline: "Ristoranti, bistrot e sapori del porto",
     color: "#C89A3D",
-    image: "/placeholders/category-dining.svg"
+    image: getCategoryPlaceholderImage("dining")
   },
   {
     id: "hospitality",
@@ -23,7 +24,7 @@ export const categories: Category[] = [
     shortLabel: "Hotel, B&B, Case vacanza",
     tagline: "Accoglienza raffinata tra mare e pietra bianca",
     color: "#C89A3D",
-    image: "/placeholders/category-hospitality.svg"
+    image: getCategoryPlaceholderImage("hospitality")
   },
   {
     id: "renting",
@@ -31,7 +32,7 @@ export const categories: Category[] = [
     shortLabel: "Barche, Scooter, Auto, Bici",
     tagline: "Muoviti con liberta tra costa e centro",
     color: "#4E9C63",
-    image: "/placeholders/category-renting.svg"
+    image: getCategoryPlaceholderImage("renting")
   },
   {
     id: "shopping",
@@ -39,7 +40,7 @@ export const categories: Category[] = [
     shortLabel: "Souvenir, Boutique, Artigianato, Abbigliamento",
     tagline: "Indirizzi selezionati tra stile isolano, idee regalo e piccole botteghe da scoprire",
     color: "#C96F53",
-    image: "/placeholders/category-shopping.svg"
+    image: getCategoryPlaceholderImage("shopping")
   },
   {
     id: "info",
@@ -47,6 +48,6 @@ export const categories: Category[] = [
     shortLabel: "Trasporti, assistenza, servizi",
     tagline: "Contatti e informazioni pratiche per vivere al meglio le Pelagie",
     color: "#16365D",
-    image: "/placeholders/category-info.svg"
+    image: getCategoryPlaceholderImage("info")
   }
 ];

@@ -5,6 +5,7 @@ import {
   createWhatsappAction,
   getDefaultBusinessWhatsappMessage
 } from "@/lib/business-actions";
+import { getBusinessPlaceholderImage, normalizeLegacyAssetPath } from "@/lib/asset-paths";
 
 type BusinessSeed = Omit<Business, "actions">;
 
@@ -26,15 +27,21 @@ function createShoppingGallery(heroIndex: number) {
   const galleryIndexes = [heroIndex, 1, 2, 3, 4, 5];
   const deduplicatedIndexes = Array.from(new Set(galleryIndexes)).slice(0, 5);
 
-  return deduplicatedIndexes.map((index) => `/placeholders/business-shopping-${index}.svg`);
+  return deduplicatedIndexes.map((index) => getBusinessPlaceholderImage("shopping", index));
+}
+
+function normalizeBusinessAssetList(assetPaths: string[]) {
+  return assetPaths.map((assetPath) => normalizeLegacyAssetPath(assetPath));
 }
 
 function createBusinessFromWhatsappSeed(seed: WhatsappBusinessSeed): Business {
-  const { whatsappMessage, whatsappNumber, ...business } = seed;
+  const { whatsappMessage, whatsappNumber, gallery, heroImage, ...business } = seed;
   const coordinate = getWhatsappMockCoordinate(seed.id);
 
   return {
     ...business,
+    heroImage: normalizeLegacyAssetPath(heroImage),
+    gallery: normalizeBusinessAssetList(gallery),
     actions: {
       booking: createExternalLinkAction({
         url: createBusinessBookingUrl(seed.id)
@@ -358,7 +365,7 @@ const shoppingBusinesses: Business[] = shoppingBusinessSeeds.map((seed, index) =
         phoneNumber: whatsappNumber
       })
     },
-    heroImage: `/placeholders/business-shopping-${seed.heroIndex}.svg`,
+    heroImage: getBusinessPlaceholderImage("shopping", seed.heroIndex),
     gallery: createShoppingGallery(seed.heroIndex)
   };
 });

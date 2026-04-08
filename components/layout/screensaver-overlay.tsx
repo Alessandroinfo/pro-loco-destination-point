@@ -5,10 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import { useLocale } from "@/components/providers/locale-provider";
+import { brandAssetPaths, videoAssetPaths } from "@/lib/asset-paths";
 import { withBasePath } from "@/lib/site";
 
-const SCREENSAVER_VIDEO = withBasePath("/boat-video.mp4");
-const SCREENSAVER_POSTER = withBasePath("/placeholders/screensaver-poster.svg");
+const SCREENSAVER_VIDEO = withBasePath(videoAssetPaths.screensaverLoop);
+const SCREENSAVER_POSTER = withBasePath(videoAssetPaths.screensaverPoster);
 
 export function ScreensaverOverlay({
   isActive,
@@ -61,7 +62,7 @@ export function ScreensaverOverlay({
           <div className="relative z-10 flex h-full flex-col items-center justify-center px-8 text-center">
             <div className="relative h-28 w-28 overflow-hidden border-white/20">
               <Image
-                src={withBasePath("/logo-pro-loco-white.svg")}
+                src={withBasePath(brandAssetPaths.logoWhite)}
                 alt={messages.screensaver.logoAlt}
                 fill
                 sizes="112px"

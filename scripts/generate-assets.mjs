@@ -2,15 +2,28 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
-const placeholdersDir = join(root, "public", "placeholders");
-const iconsDir = join(root, "public", "icons");
+const assetsRootDir = join(root, "public", "assets");
+const brandLogosDir = join(assetsRootDir, "brand", "logos");
+const brandSocialDir = join(assetsRootDir, "brand", "social");
+const catalogCategoryPlaceholdersDir = join(assetsRootDir, "catalog", "placeholders", "categories");
+const catalogBusinessPlaceholdersDir = join(assetsRootDir, "catalog", "placeholders", "businesses");
+const mapsIllustrationsDir = join(assetsRootDir, "maps", "illustrations");
+const mapsPlaceholdersDir = join(assetsRootDir, "maps", "placeholders");
+const pwaIconsDir = join(assetsRootDir, "pwa", "icons");
+const videoScreensaverDir = join(assetsRootDir, "video", "screensaver");
 const totemDir = join(root, "public", "totem");
 const totemEnglishDir = join(root, "public", "totem", "en");
 const englishDir = join(root, "public", "en");
 const installableAppName = "Discovery Point - Pro Loco - Lampedusa e Linosa";
 
-mkdirSync(placeholdersDir, { recursive: true });
-mkdirSync(iconsDir, { recursive: true });
+mkdirSync(brandLogosDir, { recursive: true });
+mkdirSync(brandSocialDir, { recursive: true });
+mkdirSync(catalogCategoryPlaceholdersDir, { recursive: true });
+mkdirSync(catalogBusinessPlaceholdersDir, { recursive: true });
+mkdirSync(mapsIllustrationsDir, { recursive: true });
+mkdirSync(mapsPlaceholdersDir, { recursive: true });
+mkdirSync(pwaIconsDir, { recursive: true });
+mkdirSync(videoScreensaverDir, { recursive: true });
 mkdirSync(totemDir, { recursive: true });
 mkdirSync(totemEnglishDir, { recursive: true });
 mkdirSync(englishDir, { recursive: true });
@@ -20,36 +33,38 @@ const siteDescriptionEn = "Discovery Point by the Pro Loco of Lampedusa and Lino
 const basePath = getBasePath();
 
 const assets = [
-  ["public/logo-pro-loco.svg", logoSvg()],
-  ["public/logo-pro-loco-white.svg", logoWhiteSvg()],
-  ["public/og-image.svg", ogImageSvg()],
-  ["public/icons/app-icon.svg", appIconSvg()],
+  ["public/assets/brand/logos/pro-loco.svg", logoSvg()],
+  ["public/assets/brand/logos/pro-loco-white.svg", logoWhiteSvg()],
+  ["public/assets/brand/social/og-image.svg", ogImageSvg()],
+  ["public/assets/pwa/icons/app-icon.svg", appIconSvg()],
   ["public/totem/manifest.webmanifest", JSON.stringify(createTotemManifest(), null, 2)],
   ["public/totem/en/manifest.webmanifest", JSON.stringify(createTotemManifest("en"), null, 2)],
   ["public/en/manifest.webmanifest", JSON.stringify(createStandardManifest("en"), null, 2)],
-  ["public/placeholders/category-experiences.svg", scenicSvg("Esperienze", "Mare, sport e luce", "#16365D", "#5BB7D4", "#C89A3D", "sea")],
-  ["public/placeholders/category-dining.svg", scenicSvg("Ristorazione", "Ristoranti, Pizzerie, Trattorie", "#4B2B18", "#C89A3D", "#F6D9A6", "dining")],
-  ["public/placeholders/category-hospitality.svg", scenicSvg("Ospitalità", "Hotel, B&B, Case vacanza", "#7A5A1A", "#C89A3D", "#F3E0B2", "hospitality")],
-  ["public/placeholders/category-renting.svg", scenicSvg("Trasporti", "Barche, Scooter, auto, bici", "#1E5A38", "#4E9C63", "#DCEFD9", "renting")],
-  ["public/placeholders/category-shopping.svg", scenicSvg("Shopping", "Souvenir, Boutique, Artigianato, Abbigliamento", "#8D4935", "#C96F53", "#F7D7CB", "shopping")],
-  ["public/placeholders/category-info.svg", scenicSvg("Info utili", "Trasporti, assistenza, servizi", "#16365D", "#5B8CB9", "#D6E8F8", "info")],
-  ["public/placeholders/category-map.svg", scenicSvg("Esplora le Pelagie", "Lampedusa e Linosa illustrate", "#10243F", "#5BB7D4", "#E7C989", "map")],
-  ["public/placeholders/screensaver-poster.svg", screensaverSvg()]
+  ["public/assets/catalog/placeholders/categories/experiences.svg", scenicSvg("Esperienze", "Mare, sport e luce", "#16365D", "#5BB7D4", "#C89A3D", "sea")],
+  ["public/assets/catalog/placeholders/categories/dining.svg", scenicSvg("Ristorazione", "Ristoranti, Pizzerie, Trattorie", "#4B2B18", "#C89A3D", "#F6D9A6", "dining")],
+  ["public/assets/catalog/placeholders/categories/hospitality.svg", scenicSvg("Ospitalità", "Hotel, B&B, Case vacanza", "#7A5A1A", "#C89A3D", "#F3E0B2", "hospitality")],
+  ["public/assets/catalog/placeholders/categories/renting.svg", scenicSvg("Trasporti", "Barche, Scooter, auto, bici", "#1E5A38", "#4E9C63", "#DCEFD9", "renting")],
+  ["public/assets/catalog/placeholders/categories/shopping.svg", scenicSvg("Shopping", "Souvenir, Boutique, Artigianato, Abbigliamento", "#8D4935", "#C96F53", "#F7D7CB", "shopping")],
+  ["public/assets/catalog/placeholders/categories/info.svg", scenicSvg("Info utili", "Trasporti, assistenza, servizi", "#16365D", "#5B8CB9", "#D6E8F8", "info")],
+  ["public/assets/maps/placeholders/point-of-interest.svg", scenicSvg("Esplora le Pelagie", "Lampedusa e Linosa illustrate", "#10243F", "#5BB7D4", "#E7C989", "map")],
+  ["public/assets/video/screensaver/poster.svg", screensaverSvg()]
 ];
 
 const businessThemes = [
-  ["experience", "#173B63", "#5BC1D8", "#D9F7FB"],
-  ["dining", "#5A3520", "#D39C42", "#F6E0B0"],
-  ["hospitality", "#6E5520", "#C89A3D", "#F6EAD0"],
-  ["renting", "#255B3D", "#58AE72", "#DAF1E1"],
-  ["shopping", "#8D4935", "#C96F53", "#F7D7CB"],
-  ["info", "#173B63", "#5B8CB9", "#E3EEF9"],
+  ["experiences", "experience", "#173B63", "#5BC1D8", "#D9F7FB"],
+  ["dining", "dining", "#5A3520", "#D39C42", "#F6E0B0"],
+  ["hospitality", "hospitality", "#6E5520", "#C89A3D", "#F6EAD0"],
+  ["renting", "renting", "#255B3D", "#58AE72", "#DAF1E1"],
+  ["shopping", "shopping", "#8D4935", "#C96F53", "#F7D7CB"],
+  ["info", "info", "#173B63", "#5B8CB9", "#E3EEF9"],
 ];
 
-for (const [prefix, dark, accent, light] of businessThemes) {
+for (const [categoryId, mode, dark, accent, light] of businessThemes) {
+  mkdirSync(join(catalogBusinessPlaceholdersDir, categoryId), { recursive: true });
+
   for (let index = 1; index <= 6; index += 1) {
-    const filename = join("public", "placeholders", `business-${prefix}-${index}.svg`);
-    assets.push([filename, businessSvg(prefix, index, dark, accent, light)]);
+    const filename = join("public", "assets", "catalog", "placeholders", "businesses", categoryId, `${index}.svg`);
+    assets.push([filename, businessSvg(mode, index, dark, accent, light)]);
   }
 }
 
@@ -120,17 +135,17 @@ function createManifest({ description, lang, scope, startUrl }) {
     orientation: "portrait",
     icons: [
       {
-        src: withBasePath("/icons/icon-192.png"),
+        src: withBasePath("/assets/pwa/icons/icon-192.png"),
         sizes: "192x192",
         type: "image/png"
       },
       {
-        src: withBasePath("/icons/icon-512.png"),
+        src: withBasePath("/assets/pwa/icons/icon-512.png"),
         sizes: "512x512",
         type: "image/png"
       },
       {
-        src: withBasePath("/icons/icon-512-maskable.png"),
+        src: withBasePath("/assets/pwa/icons/icon-512-maskable.png"),
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable"
@@ -177,7 +192,7 @@ function ogImageSvg() {
   <circle cx="952" cy="146" r="104" fill="#C89A3D" opacity="0.18"/>
   <circle cx="188" cy="506" r="140" fill="#5BB7D4" opacity="0.16"/>
   <rect x="94" y="90" width="104" height="104" rx="26" fill="#FFF"/>
-  <image href="logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
+  <image href="../logos/pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="302" fill="#FFFFFF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
   <text x="94" y="358" fill="#E7C989" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa -</text>
   <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Discovery Point</text>

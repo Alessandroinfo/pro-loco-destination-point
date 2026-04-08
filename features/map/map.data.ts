@@ -1,11 +1,12 @@
 import type { PointOfInterest } from "@/features/map/map.types";
+import { normalizeLegacyAssetPath } from "@/lib/asset-paths";
 
 export const pointOfInterestLegend = {
   "Spiagge e Cale": "#56C1D9",
   "Luoghi di interesse": "#C89A3D"
 } as const;
 
-export const pointsOfInterest: PointOfInterest[] = [
+const rawPointsOfInterest: PointOfInterest[] = [
   {
     id: "isola-dei-conigli",
     name: "Isola dei Conigli",
@@ -691,3 +692,8 @@ export const pointsOfInterest: PointOfInterest[] = [
     island: "Linosa"
   }
 ];
+
+export const pointsOfInterest: PointOfInterest[] = rawPointsOfInterest.map((point) => ({
+  ...point,
+  imageSrc: normalizeLegacyAssetPath(point.imageSrc)
+}));

@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { useLocale } from "@/components/providers/locale-provider";
+import { brandAssetPaths } from "@/lib/asset-paths";
 import { withBasePath } from "@/lib/site";
 
 export function AppHeader() {
@@ -15,7 +16,7 @@ export function AppHeader() {
         <div className="flex items-center gap-4">
           <div className="relative h-16 w-16 overflow-hidden rounded-[1.4rem] bg-white shadow-[0_14px_36px_rgba(16,36,63,0.12)]">
             <Image
-              src={withBasePath("/logo-pro-loco.svg")}
+              src={withBasePath(brandAssetPaths.logo)}
               alt={messages.site.name}
               fill
               sizes="64px"
