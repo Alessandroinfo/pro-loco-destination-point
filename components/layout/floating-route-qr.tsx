@@ -18,12 +18,17 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
   const { locale, messages } = useLocale();
   const currentPageLabel = getCurrentRouteLabel(currentPath, locale);
   const { isTotemMode } = useAppMode();
+  const [hasMounted, setHasMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const titleId = useId();
   const descriptionId = useId();
   const { closeButtonRef, dialogRef } = useDialogAccessibility(isOpen, () => setIsOpen(false));
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -62,7 +67,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
       .catch(() => setQrCodeDataUrl(""));
   }, [currentPageUrl, isOpen]);
 
-  if (hidden || !isTotemMode) {
+  if (!hasMounted || hidden || !isTotemMode) {
     return null;
   }
 
@@ -70,7 +75,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
     <>
       <button
         type="button"
-        className="fixed bottom-8 right-6 z-30 flex min-h-16 items-center gap-3 rounded-full border border-navy-950/10 bg-white/92 px-5 py-3 text-left shadow-[0_18px_38px_rgba(16,36,63,0.14)] backdrop-blur"
+        className="fixed bottom-8 left-1/2 z-30 flex min-h-16 -translate-x-1/2 items-center gap-3 rounded-full border border-navy-950/10 bg-white/92 px-5 py-3 text-left shadow-[0_18px_38px_rgba(16,36,63,0.14)] backdrop-blur sm:left-auto sm:right-6 sm:translate-x-0"
         onClick={() => setIsOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
@@ -125,9 +130,9 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
                 {messages.routeQr.modalDescription}
               </p>
 
-              <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
+              <div className="mx-auto mt-8 flex w-full max-w-[320px] aspect-square items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
                 {qrCodeDataUrl ? (
-                  <img src={qrCodeDataUrl} alt={messages.routeQr.qrAlt} width={288} height={288} />
+                  <img src={qrCodeDataUrl} alt={messages.routeQr.qrAlt} width={288} height={288} className="h-full w-full object-contain" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center rounded-[1.5rem] border border-dashed border-navy-950/12 text-sm font-medium text-navy-900/55">
                     {messages.common.loadingQr}

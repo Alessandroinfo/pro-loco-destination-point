@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "assets:generate": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs",
-    "dev": "sh ./scripts/with-project-node.sh next dev --turbopack",
-    "dev:clean": "rm -rf .next && sh ./scripts/with-project-node.sh next dev --turbopack",
+    "dev": "sh ./scripts/with-project-node.sh next dev",
+    "dev:clean": "rm -rf .next && sh ./scripts/with-project-node.sh next dev",
     "build": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs && sh ./scripts/with-project-node.sh next build && sh ./scripts/with-project-node.sh node scripts/inject-sw-precache.mjs",
     "prod:local": "npm run build && npm run serve",
     "deploy": "sh ./scripts/with-project-node.sh node scripts/deploy.mjs",

@@ -245,7 +245,7 @@ const messages: Record<Locale, Messages> = {
     },
     featuredMap: {
       eyebrow: "Beaches and coves, landmarks",
-      title: "Explore the Pelagie Islands"
+      title: "Explore Pelagie"
     },
     footer: {
       poweredBy: "Powered by"
