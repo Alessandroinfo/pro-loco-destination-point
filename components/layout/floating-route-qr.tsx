@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
 import { useAppMode } from "@/components/providers/app-mode-provider";
+import { useLocale } from "@/components/providers/locale-provider";
 import { useDialogAccessibility } from "@/hooks/use-dialog-accessibility";
 import { getCanonicalPathname } from "@/lib/app-mode";
 import { getCurrentRouteLabel } from "@/lib/routes";
@@ -14,14 +15,20 @@ import { getRuntimeAbsoluteUrl } from "@/lib/site";
 export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
   const pathname = usePathname();
   const currentPath = pathname ?? "/";
-  const currentPageLabel = getCurrentRouteLabel(currentPath);
+  const { locale, messages } = useLocale();
+  const currentPageLabel = getCurrentRouteLabel(currentPath, locale);
   const { isTotemMode } = useAppMode();
+  const [hasMounted, setHasMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentPageUrl, setCurrentPageUrl] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const titleId = useId();
   const descriptionId = useId();
   const { closeButtonRef, dialogRef } = useDialogAccessibility(isOpen, () => setIsOpen(false));
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -60,7 +67,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
       .catch(() => setQrCodeDataUrl(""));
   }, [currentPageUrl, isOpen]);
 
-  if (hidden || !isTotemMode) {
+  if (!hasMounted || hidden || !isTotemMode) {
     return null;
   }
 
@@ -68,7 +75,7 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
     <>
       <button
         type="button"
-        className="fixed bottom-8 right-6 z-30 flex min-h-16 items-center gap-3 rounded-full border border-navy-950/10 bg-white/92 px-5 py-3 text-left shadow-[0_18px_38px_rgba(16,36,63,0.14)] backdrop-blur"
+        className="fixed bottom-8 left-1/2 z-30 flex min-h-16 -translate-x-1/2 items-center gap-3 rounded-full border border-navy-950/10 bg-white/92 px-5 py-3 text-left shadow-[0_18px_38px_rgba(16,36,63,0.14)] backdrop-blur sm:left-auto sm:right-6 sm:translate-x-0"
         onClick={() => setIsOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
@@ -78,8 +85,8 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
           <QrIcon />
         </span>
         <span>
-          <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-navy-900/55">Continua sul tuo dispositivo</span>
-          <span className="mt-1 block text-sm font-semibold text-navy-950">QR della pagina attuale</span>
+          <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-navy-900/55">{messages.routeQr.buttonEyebrow}</span>
+          <span className="mt-1 block text-sm font-semibold text-navy-950">{messages.routeQr.buttonTitle}</span>
         </span>
       </button>
 
@@ -111,24 +118,24 @@ export function FloatingRouteQr({ hidden = false }: { hidden?: boolean }) {
                 type="button"
                 className="absolute right-5 top-5 flex h-14 w-14 items-center justify-center rounded-full border border-navy-950/10 bg-white text-[2rem] leading-none text-navy-950"
                 onClick={() => setIsOpen(false)}
-                aria-label="Chiudi modale"
+                aria-label={messages.common.close}
               >
                 ×
               </button>
-              <p className="text-sm uppercase tracking-[0.3em] text-navy-900/55">Pagina attuale</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-navy-900/55">{messages.routeQr.modalEyebrow}</p>
               <h2 id={titleId} className="mt-3 text-3xl font-semibold text-navy-950">
                 {currentPageLabel}
               </h2>
               <p id={descriptionId} className="mt-4 text-lg leading-8 text-navy-900/70">
-                Inquadra il QR Code per aprire sul telefono esattamente la pagina che stai visitando in questo momento.
+                {messages.routeQr.modalDescription}
               </p>
 
-              <div className="mx-auto mt-8 flex h-[320px] w-[320px] items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
+              <div className="mx-auto mt-8 flex w-full max-w-[320px] aspect-square items-center justify-center rounded-[2rem] bg-white p-4 shadow-[0_18px_45px_rgba(16,36,63,0.1)]">
                 {qrCodeDataUrl ? (
-                  <img src={qrCodeDataUrl} alt="QR Code della pagina corrente" width={288} height={288} />
+                  <img src={qrCodeDataUrl} alt={messages.routeQr.qrAlt} width={288} height={288} className="h-full w-full object-contain" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center rounded-[1.5rem] border border-dashed border-navy-950/12 text-sm font-medium text-navy-900/55">
-                    Generazione QR Code...
+                    {messages.common.loadingQr}
                   </div>
                 )}
               </div>

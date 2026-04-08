@@ -5,13 +5,18 @@ const root = process.cwd();
 const placeholdersDir = join(root, "public", "placeholders");
 const iconsDir = join(root, "public", "icons");
 const totemDir = join(root, "public", "totem");
-const installableAppName = "Destination Point - Pro Loco - Lampedusa e Linosa";
+const totemEnglishDir = join(root, "public", "totem", "en");
+const englishDir = join(root, "public", "en");
+const installableAppName = "Discovery Point - Pro Loco - Lampedusa e Linosa";
 
 mkdirSync(placeholdersDir, { recursive: true });
 mkdirSync(iconsDir, { recursive: true });
 mkdirSync(totemDir, { recursive: true });
+mkdirSync(totemEnglishDir, { recursive: true });
+mkdirSync(englishDir, { recursive: true });
 
-const siteDescription = "Destination Point della Pro Loco di Lampedusa e Linosa.";
+const siteDescription = "Discovery Point della Pro Loco di Lampedusa e Linosa.";
+const siteDescriptionEn = "Discovery Point by the Pro Loco of Lampedusa and Linosa.";
 const basePath = getBasePath();
 
 const assets = [
@@ -20,6 +25,8 @@ const assets = [
   ["public/og-image.svg", ogImageSvg()],
   ["public/icons/app-icon.svg", appIconSvg()],
   ["public/totem/manifest.webmanifest", JSON.stringify(createTotemManifest(), null, 2)],
+  ["public/totem/en/manifest.webmanifest", JSON.stringify(createTotemManifest("en"), null, 2)],
+  ["public/en/manifest.webmanifest", JSON.stringify(createStandardManifest("en"), null, 2)],
   ["public/placeholders/category-experiences.svg", scenicSvg("Esperienze", "Mare, sport e luce", "#16365D", "#5BB7D4", "#C89A3D", "sea")],
   ["public/placeholders/category-dining.svg", scenicSvg("Ristorazione", "Ristoranti, Pizzerie, Trattorie", "#4B2B18", "#C89A3D", "#F6D9A6", "dining")],
   ["public/placeholders/category-hospitality.svg", scenicSvg("Ospitalità", "Hotel, B&B, Case vacanza", "#7A5A1A", "#C89A3D", "#F3E0B2", "hospitality")],
@@ -79,13 +86,34 @@ function withBasePath(pathname) {
   return pathname === "/" ? `${basePath}/` : `${basePath}${pathname}`;
 }
 
-function createTotemManifest() {
+function createTotemManifest(locale = "it") {
+  return createManifest({
+    description: locale === "en" ? siteDescriptionEn : siteDescription,
+    lang: locale,
+    scope: withBasePath(locale === "en" ? "/totem/en/" : "/totem/"),
+    startUrl: withBasePath(locale === "en" ? "/totem/en/" : "/totem/")
+  });
+}
+
+function createStandardManifest(locale) {
+  const isEnglish = locale === "en";
+
+  return createManifest({
+    description: isEnglish ? siteDescriptionEn : siteDescription,
+    lang: locale,
+    scope: withBasePath(isEnglish ? "/en/" : "/"),
+    startUrl: withBasePath(isEnglish ? "/en/" : "/")
+  });
+}
+
+function createManifest({ description, lang, scope, startUrl }) {
   return {
     name: installableAppName,
     short_name: installableAppName,
-    description: siteDescription,
-    start_url: withBasePath("/totem/"),
-    scope: withBasePath("/totem/"),
+    description,
+    lang,
+    start_url: startUrl,
+    scope,
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#10243f",
@@ -152,7 +180,7 @@ function ogImageSvg() {
   <image href="logo-pro-loco.svg" x="94" y="90" width="104" height="104"/>
   <text x="94" y="302" fill="#FFFFFF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Pro Loco -</text>
   <text x="94" y="358" fill="#E7C989" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Lampedusa e Linosa -</text>
-  <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Destination Point</text>
+  <text x="94" y="414" fill="#D5E9EF" font-size="46" font-family="Manrope, Arial, sans-serif" font-weight="700">Discovery Point</text>
   <text x="94" y="482" fill="#FFFFFF" fill-opacity="0.78" font-size="28" font-family="Manrope, Arial, sans-serif">${escapeXml(siteDescription)}</text>
   <defs>
     <linearGradient id="panel" x1="62" y1="54" x2="1150" y2="578" gradientUnits="userSpaceOnUse">
@@ -215,8 +243,6 @@ function appIconSvg() {
 }
 
 function scenicSvg(title, subtitle, dark, accent, warm, mode) {
-  const safeTitle = escapeXml(title);
-  const safeSubtitle = escapeXml(subtitle.toUpperCase());
   const decorative = scenicIllustration(mode, dark, accent, warm);
 
   return `
@@ -228,8 +254,9 @@ function scenicSvg(title, subtitle, dark, accent, warm, mode) {
   ${decorative}
   <rect x="52" y="52" width="616" height="436" rx="36" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
   <rect x="0" y="336" width="720" height="204" fill="url(#bottomFade)"/>
-  <text x="64" y="426" fill="#FFFFFF" fill-opacity="0.64" font-size="22" letter-spacing="5" font-family="Arial, sans-serif">${safeSubtitle}</text>
-  <text x="64" y="470" fill="#FFFFFF" font-size="52" font-weight="700" font-family="Arial, sans-serif">${safeTitle}</text>
+  <rect x="64" y="398" width="156" height="12" rx="6" fill="rgba(255,255,255,0.3)"/>
+  <rect x="64" y="426" width="248" height="18" rx="9" fill="rgba(255,255,255,0.92)"/>
+  <rect x="64" y="454" width="196" height="18" rx="9" fill="rgba(255,255,255,0.7)"/>
   <defs>
     <linearGradient id="bg" x1="38" y1="34" x2="684" y2="506" gradientUnits="userSpaceOnUse">
       <stop stop-color="${dark}"/>

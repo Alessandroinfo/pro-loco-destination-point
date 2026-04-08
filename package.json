@@ -1,31 +1,34 @@
 {
-  "name": "pro-loco-hub",
+  "name": "pro-loco-discovery-point",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "assets:generate": "node scripts/generate-assets.mjs",
-    "dev": "next dev",
-    "build": "npm run assets:generate && next build && node scripts/inject-sw-precache.mjs",
-    "start": "node scripts/serve-export.mjs",
-    "serve": "node scripts/serve-export.mjs"
+    "assets:generate": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs",
+    "dev": "sh ./scripts/with-project-node.sh next dev",
+    "dev:clean": "rm -rf .next && sh ./scripts/with-project-node.sh next dev",
+    "build": "sh ./scripts/with-project-node.sh node scripts/generate-assets.mjs && sh ./scripts/with-project-node.sh next build && sh ./scripts/with-project-node.sh node scripts/inject-sw-precache.mjs",
+    "prod:local": "npm run build && npm run serve",
+    "deploy": "sh ./scripts/with-project-node.sh node scripts/deploy.mjs",
+    "start": "sh ./scripts/with-project-node.sh node scripts/serve-export.mjs",
+    "serve": "sh ./scripts/with-project-node.sh node scripts/serve-export.mjs"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20"
   },
   "dependencies": {
     "framer-motion": "12.38.0",
-    "next": "16.2.0",
+    "next": "16.2.2",
     "qrcode": "1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.2.2",
-    "@types/node": "25.5.0",
-    "@types/qrcode": "^1.5.6",
+    "@types/node": "25.5.2",
+    "@types/qrcode": "1.5.6",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "tailwindcss": "4.2.2",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   }
 }

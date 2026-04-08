@@ -10,6 +10,8 @@ import {
   getBusinessActionTotemBehavior
 } from "@/lib/business-actions";
 import type { Business, Category } from "@/features/catalog/catalog.types";
+import type { Locale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
 import { getCategoryRoute } from "@/lib/routes";
 import { useAppMode } from "@/components/providers/app-mode-provider";
 import { BackLink } from "@/components/shared/back-link";
@@ -18,20 +20,23 @@ import { BusinessActionQrModal } from "@/components/business/business-action-qr-
 
 export function BusinessDetailPage({
   business,
-  category
+  category,
+  locale
 }: {
   business: Business;
   category: Category;
+  locale: Locale;
 }) {
   const [selectedImage, setSelectedImage] = useState(business.heroImage);
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const { isTotemMode } = useAppMode();
+  const messages = getMessages(locale);
 
-  const actionLabel = getBusinessActionLabel(business.primaryAction);
+  const actionLabel = getBusinessActionLabel(business.primaryAction, locale);
   const actionHref = getBusinessActionHref(business.primaryAction);
   const shouldOpenQrInTotem = isTotemMode && getBusinessActionTotemBehavior(business.primaryAction) === "qr";
-  const qrModalContent = getBusinessActionQrModalContent(business.primaryAction, business.name);
+  const qrModalContent = getBusinessActionQrModalContent(business.primaryAction, business.name, locale);
 
   useEffect(() => {
     setSelectedImage(business.heroImage);
@@ -58,7 +63,7 @@ export function BusinessDetailPage({
   return (
     <>
       <section className="flex flex-1 flex-col gap-6">
-        <BackLink href={getCategoryRoute(category.id)} label="Lista" />
+        <BackLink href={getCategoryRoute(category.id)} label={messages.common.list} />
 
         <section className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-[0_28px_80px_rgba(16,36,63,0.14)]">
           <div className="relative min-h-[360px]">
@@ -92,7 +97,7 @@ export function BusinessDetailPage({
                     isActive ? "border-gold-500 shadow-[0_10px_30px_rgba(200,154,61,0.22)]" : "border-transparent"
                   }`}
                   onClick={() => setSelectedImage(image)}
-                  aria-label={`Apri immagine ${index + 1}`}
+                  aria-label={`${messages.business.imageAriaLabel} ${index + 1}`}
                   aria-pressed={isActive}
                 >
                   <SmoothImage
@@ -113,15 +118,15 @@ export function BusinessDetailPage({
 
         <section className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
           <article className="glass-panel soft-outline rounded-[2rem] border p-7">
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-navy-900/55">Descrizione</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-navy-900/55">{messages.business.descriptionLabel}</p>
             <p className="mt-4 text-lg leading-8 text-navy-900/78">{business.description}</p>
           </article>
 
           <aside className="glass-panel soft-outline rounded-[2rem] border p-7">
             <div className="space-y-5">
-              <InfoRow icon={<SparkIcon />} label="Tipo di attività" value={business.type} />
-              <InfoRow icon={<ClockIcon />} label="Orari" value={business.hours} />
-              <InfoRow icon={<PinIcon />} label="Indirizzo" value={business.address} />
+              <InfoRow icon={<SparkIcon />} label={messages.business.typeLabel} value={business.type} />
+              <InfoRow icon={<ClockIcon />} label={messages.business.hoursLabel} value={business.hours} />
+              <InfoRow icon={<PinIcon />} label={messages.business.addressLabel} value={business.address} />
             </div>
 
             {shouldOpenQrInTotem ? (
@@ -152,7 +157,7 @@ export function BusinessDetailPage({
         <BusinessActionQrModal
           isOpen={isQrOpen}
           qrCodeDataUrl={qrCodeDataUrl}
-          actionAltText={`QR Code per ${business.name}`}
+          actionAltText={`${messages.business.qrAltPrefix} ${business.name}`}
           eyebrow={qrModalContent.eyebrow}
           title={qrModalContent.title}
           description={qrModalContent.description}
