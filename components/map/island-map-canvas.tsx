@@ -790,6 +790,21 @@ export function IslandMapCanvas({
             role="img"
           >
               {/*
+                Static sea background — covers the full SVG viewport regardless of
+                the pan/zoom transform applied to the <g> below. Prevents any visible
+                gap or hard edge when dragging to the map boundaries.
+              */}
+              <defs>
+                <linearGradient id="staticSeaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#0f5670" />
+                  <stop offset="38%" stopColor="#176987" />
+                  <stop offset="68%" stopColor="#1d7fa2" />
+                  <stop offset="100%" stopColor="#22799a" />
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="100%" height="100%" fill="url(#staticSeaGradient)" />
+
+              {/*
                 All map content lives inside this <g>. Pan and zoom are applied as a
                 CSS transform here — the SVG element itself never moves, so there is
                 no clipping at the container edge. With will-change: transform the
@@ -806,29 +821,6 @@ export function IslandMapCanvas({
                 }}
               >
             <defs>
-              <linearGradient
-                id="seaGradient"
-                x1={SVG_SCENE_MIN_X}
-                y1={SVG_SCENE_MIN_Y}
-                x2={SVG_SCENE_MIN_X + SVG_SCENE_WIDTH}
-                y2={SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT}
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop offset="0%" stopColor="#0f5670" />
-                <stop offset="38%" stopColor="#176987" />
-                <stop offset="68%" stopColor="#1d7fa2" />
-                <stop offset="100%" stopColor="#22799a" />
-              </linearGradient>
-              <radialGradient
-                id="seaGlow"
-                cx={SVG_SCENE_MIN_X + SVG_SCENE_WIDTH * 0.34}
-                cy={SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT * 0.58}
-                r={Math.max(SVG_SCENE_WIDTH, SVG_SCENE_HEIGHT) * 0.6}
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.16" />
-                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-              </radialGradient>
               <linearGradient id="lampedusaGradient" x1="0%" y1="16%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#d9c89e" />
                 <stop offset="48%" stopColor="#bea779" />
@@ -856,20 +848,6 @@ export function IslandMapCanvas({
               </filter>
             </defs>
 
-            <rect
-              x={SVG_SCENE_MIN_X - SEA_BACKGROUND_BLEED_X}
-              y={SVG_SCENE_MIN_Y - SEA_BACKGROUND_BLEED_Y}
-              width={SVG_SCENE_WIDTH + SEA_BACKGROUND_BLEED_X * 2}
-              height={SVG_SCENE_HEIGHT + SEA_BACKGROUND_BLEED_Y * 2}
-              fill="url(#seaGradient)"
-            />
-            <rect
-              x={SVG_SCENE_MIN_X - SEA_BACKGROUND_BLEED_X}
-              y={SVG_SCENE_MIN_Y - SEA_BACKGROUND_BLEED_Y}
-              width={SVG_SCENE_WIDTH + SEA_BACKGROUND_BLEED_X * 2}
-              height={SVG_SCENE_HEIGHT + SEA_BACKGROUND_BLEED_Y * 2}
-              fill="url(#seaGlow)"
-            />
             <ellipse cx="-1190" cy="1165" rx="920" ry="700" fill="#72d9ef" opacity="0.08" />
             <ellipse cx="3760" cy="6680" rx="1800" ry="900" fill="#6ad6f1" opacity="0.06" />
             <ellipse cx="9040" cy="6480" rx="2400" ry="1100" fill="#5ecde7" opacity="0.05" />
@@ -943,7 +921,7 @@ export function IslandMapCanvas({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-white/76 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur sm:left-4 sm:translate-x-0">
+      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/76 px-4 py-2 text-[0.58rem] font-semibold uppercase tracking-[0.22em] sm:text-[0.68rem] sm:tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur sm:left-4 sm:translate-x-0">
         {messages.map.dragHint}
       </div>
 
@@ -1103,7 +1081,7 @@ export function IslandMapCanvas({
                 </div>
               </div>
             </div>,
-            document.body
+            isFullscreen && containerRef.current ? containerRef.current : document.body
           )
         : null}
 
