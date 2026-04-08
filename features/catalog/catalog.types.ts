@@ -10,20 +10,21 @@ export type Category = {
 };
 
 export type BusinessActionTotemBehavior = "link" | "qr";
+export type BusinessActionSlot = "booking" | "directions" | "contact";
 
 type BusinessActionBase = {
   label?: string;
   totemBehavior?: BusinessActionTotemBehavior;
 };
 
-export type BookWhatsappAction = BusinessActionBase & {
-  kind: "book-whatsapp";
+export type WhatsappAction = BusinessActionBase & {
+  kind: "whatsapp";
   phoneNumber: string;
   message: string;
 };
 
-export type BookExternalAction = BusinessActionBase & {
-  kind: "book-external";
+export type ExternalLinkAction = BusinessActionBase & {
+  kind: "external-link";
   url: string;
 };
 
@@ -33,7 +34,13 @@ export type DirectionsGoogleMapsAction = BusinessActionBase & {
   longitude: number;
 };
 
-export type BusinessAction = BookWhatsappAction | BookExternalAction | DirectionsGoogleMapsAction;
+export type BusinessAction = WhatsappAction | ExternalLinkAction | DirectionsGoogleMapsAction;
+
+export type BusinessActions = {
+  booking?: BusinessAction;
+  directions?: DirectionsGoogleMapsAction;
+  contact?: BusinessAction;
+};
 
 export type Business = {
   id: string;
@@ -44,7 +51,7 @@ export type Business = {
   description: string;
   hours: string;
   address: string;
-  primaryAction: BusinessAction;
+  actions: BusinessActions;
   heroImage: string;
   gallery: string[];
 };

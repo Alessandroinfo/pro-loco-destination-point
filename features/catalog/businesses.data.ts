@@ -1,10 +1,12 @@
 import type { Business } from "@/features/catalog/catalog.types";
 import {
+  createExternalLinkAction,
   createGoogleMapsDirectionsAction,
-  createWhatsappBookingAction
+  createWhatsappAction,
+  getDefaultBusinessWhatsappMessage
 } from "@/lib/business-actions";
 
-type BusinessSeed = Omit<Business, "primaryAction">;
+type BusinessSeed = Omit<Business, "actions">;
 
 type WhatsappBusinessSeed = BusinessSeed & {
   whatsappMessage: string;
@@ -29,13 +31,23 @@ function createShoppingGallery(heroIndex: number) {
 
 function createBusinessFromWhatsappSeed(seed: WhatsappBusinessSeed): Business {
   const { whatsappMessage, whatsappNumber, ...business } = seed;
+  const coordinate = getWhatsappMockCoordinate(seed.id);
 
   return {
     ...business,
-    primaryAction: createWhatsappBookingAction({
-      message: whatsappMessage,
-      phoneNumber: whatsappNumber
-    })
+    actions: {
+      booking: createExternalLinkAction({
+        url: createBusinessBookingUrl(seed.id)
+      }),
+      directions: createGoogleMapsDirectionsAction({
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude
+      }),
+      contact: createWhatsappAction({
+        message: whatsappMessage,
+        phoneNumber: whatsappNumber
+      })
+    }
   };
 }
 
@@ -47,6 +59,24 @@ function getShoppingMockCoordinate(index: number) {
   }
 
   return coordinate;
+}
+
+function getWhatsappMockCoordinate(businessId: string) {
+  const coordinate = whatsappBusinessCoordinates[businessId];
+
+  if (!coordinate) {
+    throw new Error(`Missing whatsapp business coordinate for ${businessId}.`);
+  }
+
+  return coordinate;
+}
+
+function getShoppingMockWhatsappNumber(index: number) {
+  return `393490002${String(index + 1).padStart(3, "0")}`;
+}
+
+function createBusinessBookingUrl(businessId: string) {
+  return `https://example.com/prenota/${businessId}`;
 }
 
 const shoppingMockCoordinates: ShoppingMockCoordinate[] = [
@@ -71,6 +101,19 @@ const shoppingMockCoordinates: ShoppingMockCoordinate[] = [
   { latitude: 35.517020, longitude: 12.617110 },
   { latitude: 35.515310, longitude: 12.620020 }
 ];
+
+const whatsappBusinessCoordinates: Record<string, ShoppingMockCoordinate> = {
+  "mare-vivo-diving": { latitude: 35.515420, longitude: 12.600210 },
+  "vento-di-scirocco": { latitude: 35.518040, longitude: 12.605430 },
+  "porto-doro": { latitude: 35.516330, longitude: 12.611860 },
+  "cala-bianca-bistrot": { latitude: 35.515980, longitude: 12.610940 },
+  "suites-dei-coralli": { latitude: 35.519180, longitude: 12.626740 },
+  "linosa-casa-luce": { latitude: 35.864220, longitude: 12.863780 },
+  "island-rent-premium": { latitude: 35.515670, longitude: 12.616010 },
+  "vento-lounge-charter": { latitude: 35.517190, longitude: 12.607510 },
+  "pelagie-help-desk": { latitude: 35.516020, longitude: 12.616820 },
+  "mobilita-pelagie": { latitude: 35.517460, longitude: 12.608120 }
+};
 
 const shoppingBusinessSeeds: ShoppingBusinessSeed[] = [
   {
@@ -297,14 +340,24 @@ const shoppingBusinessSeeds: ShoppingBusinessSeed[] = [
 
 const shoppingBusinesses: Business[] = shoppingBusinessSeeds.map((seed, index) => {
   const coordinate = getShoppingMockCoordinate(index);
+  const whatsappNumber = getShoppingMockWhatsappNumber(index);
 
   return {
     ...seed,
     categoryId: "shopping",
-    primaryAction: createGoogleMapsDirectionsAction({
-      latitude: coordinate.latitude,
-      longitude: coordinate.longitude
-    }),
+    actions: {
+      booking: createExternalLinkAction({
+        url: createBusinessBookingUrl(seed.id)
+      }),
+      directions: createGoogleMapsDirectionsAction({
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude
+      }),
+      contact: createWhatsappAction({
+        message: getDefaultBusinessWhatsappMessage("contact", seed.name),
+        phoneNumber: whatsappNumber
+      })
+    },
     heroImage: `/placeholders/business-shopping-${seed.heroIndex}.svg`,
     gallery: createShoppingGallery(seed.heroIndex)
   };

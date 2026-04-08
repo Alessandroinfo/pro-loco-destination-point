@@ -1,6 +1,7 @@
 import type { Business, Category } from "@/features/catalog/catalog.types";
 import { businesses } from "@/features/catalog/businesses.data";
 import { categories } from "@/features/catalog/categories.data";
+import { getDefaultBusinessWhatsappMessage } from "@/lib/business-actions";
 import type { Locale } from "@/lib/i18n/config";
 
 type CategoryTranslation = Pick<Category, "name" | "shortLabel" | "tagline">;
@@ -298,10 +299,13 @@ export function getLocalizedBusiness(business: Business, locale: Locale): Busine
     type: translation.type ?? business.type
   };
 
-  if (translation.whatsappMessage && localizedBusiness.primaryAction.kind === "book-whatsapp") {
-    localizedBusiness.primaryAction = {
-      ...localizedBusiness.primaryAction,
-      message: translation.whatsappMessage
+  if (localizedBusiness.actions.contact?.kind === "whatsapp") {
+    localizedBusiness.actions = {
+      ...localizedBusiness.actions,
+      contact: {
+        ...localizedBusiness.actions.contact,
+        message: translation.whatsappMessage ?? getDefaultBusinessWhatsappMessage("contact", localizedBusiness.name, locale)
+      }
     };
   }
 

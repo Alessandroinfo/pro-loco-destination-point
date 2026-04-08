@@ -9,7 +9,7 @@ import {
   getBusinessActionQrModalContent,
   getBusinessActionTotemBehavior
 } from "@/lib/business-actions";
-import type { Business, Category } from "@/features/catalog/catalog.types";
+import type { Business, BusinessAction, BusinessActionSlot, Category } from "@/features/catalog/catalog.types";
 import type { Locale } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
 import { getCategoryRoute } from "@/lib/routes";
@@ -29,27 +29,34 @@ export function BusinessDetailPage({
   locale: Locale;
 }) {
   const [selectedImage, setSelectedImage] = useState(business.heroImage);
-  const [isQrOpen, setIsQrOpen] = useState(false);
+  const [activeQrAction, setActiveQrAction] = useState<{ action: BusinessAction; slot: BusinessActionSlot } | null>(null);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const { isTotemMode } = useAppMode();
   const messages = getMessages(locale);
 
-  const actionLabel = getBusinessActionLabel(business.primaryAction, locale);
-  const actionHref = getBusinessActionHref(business.primaryAction);
-  const shouldOpenQrInTotem = isTotemMode && getBusinessActionTotemBehavior(business.primaryAction) === "qr";
-  const qrModalContent = getBusinessActionQrModalContent(business.primaryAction, business.name, locale);
+  const actionEntries: Array<{ action: BusinessAction; slot: BusinessActionSlot }> = [
+    business.actions.booking ? { action: business.actions.booking, slot: "booking" } : null,
+    business.actions.directions ? { action: business.actions.directions, slot: "directions" } : null,
+    business.actions.contact ? { action: business.actions.contact, slot: "contact" } : null
+  ].filter((entry): entry is { action: BusinessAction; slot: BusinessActionSlot } => entry !== null);
+
+  const activeQrActionHref = activeQrAction ? getBusinessActionHref(activeQrAction.action) : "";
+  const activeQrModalContent = activeQrAction
+    ? getBusinessActionQrModalContent(activeQrAction.action, activeQrAction.slot, business.name, locale)
+    : null;
+  const activeQrActionLabel = activeQrAction ? getBusinessActionLabel(activeQrAction.action, activeQrAction.slot, locale) : "";
 
   useEffect(() => {
     setSelectedImage(business.heroImage);
   }, [business.heroImage]);
 
   useEffect(() => {
-    if (!shouldOpenQrInTotem || !isQrOpen) {
+    if (!activeQrAction || !isTotemMode || getBusinessActionTotemBehavior(activeQrAction.action, activeQrAction.slot) !== "qr") {
       setQrCodeDataUrl("");
       return;
     }
 
-    QRCode.toDataURL(actionHref, {
+    QRCode.toDataURL(activeQrActionHref, {
       margin: 1,
       width: 320,
       color: {
@@ -59,7 +66,11 @@ export function BusinessDetailPage({
     })
       .then(setQrCodeDataUrl)
       .catch(() => setQrCodeDataUrl(""));
-  }, [actionHref, isQrOpen, shouldOpenQrInTotem]);
+  }, [activeQrAction, activeQrActionHref, isTotemMode]);
+
+  useEffect(() => {
+    setActiveQrAction(null);
+  }, [business.id]);
 
   return (
     <>
@@ -130,53 +141,86 @@ export function BusinessDetailPage({
               <InfoRow icon={<PinIcon />} label={messages.business.addressLabel} value={business.address} />
             </div>
 
-            {shouldOpenQrInTotem ? (
-              <button
-                type="button"
-                className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
-                onClick={() => setIsQrOpen(true)}
-                aria-haspopup="dialog"
-                aria-expanded={isQrOpen}
-              >
-                {actionLabel}
-              </button>
-            ) : (
-              <a
-                href={actionHref}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-8 flex min-h-16 w-full items-center justify-center rounded-[1.35rem] bg-[#20b15a] px-6 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)] transition active:scale-[0.985]"
-              >
-                {actionLabel}
-              </a>
-            )}
+            {actionEntries.length ? (
+              <div className="mt-8 flex flex-col gap-3">
+                {actionEntries.map(({ action, slot }) => {
+                  const actionLabel = getBusinessActionLabel(action, slot, locale);
+                  const actionHref = getBusinessActionHref(action);
+                  const shouldOpenQrInTotem = isTotemMode && getBusinessActionTotemBehavior(action, slot) === "qr";
+                  const actionClassName = getBusinessActionButtonClassName(slot);
+
+                  if (shouldOpenQrInTotem) {
+                    return (
+                      <button
+                        key={slot}
+                        type="button"
+                        className={actionClassName}
+                        onClick={() => setActiveQrAction({ action, slot })}
+                        aria-haspopup="dialog"
+                        aria-expanded={activeQrAction?.slot === slot}
+                      >
+                        {actionLabel}
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <a
+                      key={slot}
+                      href={actionHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={actionClassName}
+                    >
+                      {actionLabel}
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null}
           </aside>
         </section>
       </section>
 
-      {shouldOpenQrInTotem ? (
+      {activeQrAction && activeQrModalContent ? (
         <BusinessActionQrModal
-          isOpen={isQrOpen}
+          isOpen={true}
           qrCodeDataUrl={qrCodeDataUrl}
-          actionAltText={`${messages.business.qrAltPrefix} ${business.name}`}
-          eyebrow={qrModalContent.eyebrow}
-          title={qrModalContent.title}
-          description={qrModalContent.description}
-          previewLabel={qrModalContent.previewLabel}
-          previewValue={qrModalContent.previewValue}
-          actionHref={qrModalContent.actionHref}
-          actionHrefLabel={qrModalContent.actionHrefLabel}
-          onClose={() => setIsQrOpen(false)}
+          actionAltText={`${messages.business.qrAltPrefix} ${activeQrActionLabel} ${business.name}`}
+          eyebrow={activeQrModalContent.eyebrow}
+          title={activeQrModalContent.title}
+          description={activeQrModalContent.description}
+          previewLabel={activeQrModalContent.previewLabel}
+          previewValue={activeQrModalContent.previewValue}
+          actionHref={activeQrModalContent.actionHref}
+          actionHrefLabel={activeQrModalContent.actionHrefLabel}
+          onClose={() => setActiveQrAction(null)}
         />
       ) : null}
     </>
   );
 }
 
+function getBusinessActionButtonClassName(slot: BusinessActionSlot) {
+  const baseClassName =
+    "flex min-h-16 w-full items-center justify-center rounded-[1.35rem] px-6 text-lg font-semibold shadow-[0_18px_40px_rgba(16,36,63,0.18)] transition active:scale-[0.985]";
+
+  switch (slot) {
+    case "booking":
+      return `${baseClassName} bg-[#168aad] text-white shadow-[0_18px_40px_rgba(22,138,173,0.3)]`;
+    case "directions":
+      return `${baseClassName} bg-navy-950 text-white shadow-[0_18px_40px_rgba(16,36,63,0.25)]`;
+    case "contact":
+      return `${baseClassName} bg-[#20b15a] text-white shadow-[0_18px_40px_rgba(32,177,90,0.25)]`;
+    default:
+      return baseClassName;
+  }
+}
+
 function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-start gap-4 rounded-[1.35rem] border border-navy-950/8 bg-white/80 p-4">
-      <div className="mt-1 flex h-11 w-11 items-center justify-center rounded-full bg-aqua-200 text-navy-950">{icon}</div>
+      <div className="mt-1 flex h-11 w-11 items-center justify-center rounded-full bg-aqua-200 p-3 text-navy-950">{icon}</div>
       <div>
         <p className="text-sm uppercase tracking-[0.26em] text-navy-900/48">{label}</p>
         <p className="mt-2 text-lg font-semibold leading-7 text-navy-950">{value}</p>

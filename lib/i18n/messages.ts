@@ -89,6 +89,14 @@ type Messages = {
     description: string;
     qrAltPrefix: string;
   };
+  contactQr: {
+    eyebrow: string;
+    whatsappTitle: string;
+    whatsappDescription: string;
+    externalTitle: string;
+    externalDescriptionPrefix: string;
+    externalActionLabel: string;
+  };
   bookingQr: {
     bookingEyebrow: string;
     bookingWhatsappTitle: string;
@@ -104,6 +112,7 @@ type Messages = {
   actions: {
     book: string;
     directions: string;
+    contact: string;
   };
 };
 
@@ -197,6 +206,14 @@ const messages: Record<Locale, Messages> = {
       description: "Inquadra il QR Code per aprire Google Maps sul telefono e raggiungere direttamente questo punto.",
       qrAltPrefix: "QR Code per"
     },
+    contactQr: {
+      eyebrow: "Contatto",
+      whatsappTitle: "Apri QR per contattare l'attivita",
+      whatsappDescription: "Inquadra il QR Code con il telefono per aprire WhatsApp e contattare direttamente l'attivita.",
+      externalTitle: "Apri QR per continuare il contatto",
+      externalDescriptionPrefix: "Inquadra il QR Code con il telefono per aprire il canale di contatto di",
+      externalActionLabel: "Apri il contatto"
+    },
     bookingQr: {
       bookingEyebrow: "Prenotazione",
       bookingWhatsappTitle: "Apri QR per inviare richiesta disponibilita",
@@ -212,7 +229,8 @@ const messages: Record<Locale, Messages> = {
     },
     actions: {
       book: "Prenota",
-      directions: "Portami li"
+      directions: "Portami li",
+      contact: "Contatta"
     }
   },
   en: {
@@ -304,6 +322,14 @@ const messages: Record<Locale, Messages> = {
       description: "Scan the QR code to open Google Maps on your phone and reach this place directly.",
       qrAltPrefix: "QR code for"
     },
+    contactQr: {
+      eyebrow: "Contact",
+      whatsappTitle: "Open the QR code to contact the business",
+      whatsappDescription: "Scan the QR code with your phone to open WhatsApp and contact the business directly.",
+      externalTitle: "Open the QR code to continue contacting",
+      externalDescriptionPrefix: "Scan the QR code with your phone to open the contact channel of",
+      externalActionLabel: "Open contact"
+    },
     bookingQr: {
       bookingEyebrow: "Booking",
       bookingWhatsappTitle: "Open the QR code to send an availability request",
@@ -319,7 +345,8 @@ const messages: Record<Locale, Messages> = {
     },
     actions: {
       book: "Book now",
-      directions: "Take me there"
+      directions: "Take me there",
+      contact: "Contact"
     }
   }
 };
