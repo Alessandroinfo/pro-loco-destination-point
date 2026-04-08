@@ -22,7 +22,15 @@ const SVG_SCENE_MIN_X = -SVG_PADDING_X;
 const SVG_SCENE_MIN_Y = -SVG_PADDING_Y;
 const SVG_SCENE_WIDTH = SVG_VIEWBOX_WIDTH + SVG_PADDING_X * 2;
 const SVG_SCENE_HEIGHT = SVG_VIEWBOX_HEIGHT + SVG_PADDING_Y * 2;
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_RENDER_WIDTH = 2048;
+const MOBILE_RENDER_HEIGHT = (MOBILE_RENDER_WIDTH / SVG_SCENE_WIDTH) * SVG_SCENE_HEIGHT;
 const DEFAULT_ZOOM_INDEX = 2;
+const MARKER_HIT_AREA_SIZE = 410;
+const MARKER_OUTER_SIZE = 330;
+const MARKER_OUTER_ACTIVE_SIZE = 410;
+const MARKER_INNER_SIZE = 212;
+const MARKER_INNER_ACTIVE_SIZE = 252;
 const DEFAULT_VIEW_CENTER = {
   mapX: 6289,
   mapY: 4366
@@ -54,6 +62,8 @@ type MapCoordinate = {
   mapX: number;
   mapY: number;
 };
+
+type MarkerRefElement = HTMLButtonElement | SVGGElement;
 
 type IslandMapCanvasProps = {
   points?: PointOfInterest[];
@@ -88,6 +98,18 @@ function getPpu(viewportSize: ViewportSize, zoom: number): number {
   return Math.min(viewportSize.width / SVG_SCENE_WIDTH, viewportSize.height / SVG_SCENE_HEIGHT) * zoom;
 }
 
+function getTransformMetrics(center: MapCoordinate, zoom: number, viewportSize: ViewportSize) {
+  const ppu = getPpu(viewportSize, zoom);
+  const tx = viewportSize.width / 2 - center.mapX * ppu;
+  const ty = viewportSize.height / 2 - center.mapY * ppu;
+
+  return {
+    ppu,
+    tx,
+    ty
+  };
+}
+
 /**
  * CSS transform string for the inner <g> that holds all map content.
  * Maps SVG user units → CSS pixels so the given center coordinate
@@ -98,11 +120,134 @@ function getPpu(viewportSize: ViewportSize, zoom: number): number {
  * applied — zero SVG re-layout, zero filter re-rasterisation per frame.
  */
 function getGroupTransform(center: MapCoordinate, zoom: number, viewportSize: ViewportSize): string {
-  const ppu = getPpu(viewportSize, zoom);
-  const tx = viewportSize.width / 2 - center.mapX * ppu;
-  const ty = viewportSize.height / 2 - center.mapY * ppu;
+  const { ppu, tx, ty } = getTransformMetrics(center, zoom, viewportSize);
 
   return `translate(${tx}px, ${ty}px) scale(${ppu})`;
+}
+
+function getMobileRenderValue(value: number, sceneSize: number, renderSize: number): number {
+  return (value / sceneSize) * renderSize;
+}
+
+function getMobileRenderX(value: number): number {
+  return getMobileRenderValue(value - SVG_SCENE_MIN_X, SVG_SCENE_WIDTH, MOBILE_RENDER_WIDTH);
+}
+
+function getMobileRenderY(value: number): number {
+  return getMobileRenderValue(value - SVG_SCENE_MIN_Y, SVG_SCENE_HEIGHT, MOBILE_RENDER_HEIGHT);
+}
+
+function getMobileRenderSize(value: number): number {
+  return getMobileRenderValue(value, SVG_SCENE_WIDTH, MOBILE_RENDER_WIDTH);
+}
+
+function getMobileLayerTransform(center: MapCoordinate, zoom: number, viewportSize: ViewportSize): string {
+  const ppu = getPpu(viewportSize, zoom);
+  const baseScale = MOBILE_RENDER_WIDTH / SVG_SCENE_WIDTH;
+  const scale = ppu / baseScale;
+  const tx = viewportSize.width / 2 - getMobileRenderX(center.mapX) * scale;
+  const ty = viewportSize.height / 2 - getMobileRenderY(center.mapY) * scale;
+
+  return `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+}
+
+function MobileMapBackdrop() {
+  return (
+    <svg
+      className="pointer-events-none block h-full w-full select-none"
+      viewBox={`${SVG_SCENE_MIN_X} ${SVG_SCENE_MIN_Y} ${SVG_SCENE_WIDTH} ${SVG_SCENE_HEIGHT}`}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient
+          id="mobileSeaGradient"
+          x1={SVG_SCENE_MIN_X}
+          y1={SVG_SCENE_MIN_Y}
+          x2={SVG_SCENE_MIN_X + SVG_SCENE_WIDTH}
+          y2={SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#0f5670" />
+          <stop offset="38%" stopColor="#176987" />
+          <stop offset="68%" stopColor="#1d7fa2" />
+          <stop offset="100%" stopColor="#22799a" />
+        </linearGradient>
+        <radialGradient
+          id="mobileSeaGlow"
+          cx={SVG_SCENE_MIN_X + SVG_SCENE_WIDTH * 0.34}
+          cy={SVG_SCENE_MIN_Y + SVG_SCENE_HEIGHT * 0.58}
+          r={Math.max(SVG_SCENE_WIDTH, SVG_SCENE_HEIGHT) * 0.6}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="mobileLampedusaGradient" x1="0%" y1="16%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d9c89e" />
+          <stop offset="48%" stopColor="#bea779" />
+          <stop offset="100%" stopColor="#9f8961" />
+        </linearGradient>
+        <linearGradient id="mobileLampioneGradient" x1="0%" y1="2%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d8c6a0" />
+          <stop offset="48%" stopColor="#bba37a" />
+          <stop offset="100%" stopColor="#9a8463" />
+        </linearGradient>
+        <linearGradient id="mobileLinosaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d5c39c" />
+          <stop offset="48%" stopColor="#b9a174" />
+          <stop offset="100%" stopColor="#99825e" />
+        </linearGradient>
+        <linearGradient id="mobileRabbitIsletGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#d3c095" />
+          <stop offset="100%" stopColor="#9a8460" />
+        </linearGradient>
+      </defs>
+
+      <rect
+        x={SVG_SCENE_MIN_X - SEA_BACKGROUND_BLEED_X}
+        y={SVG_SCENE_MIN_Y - SEA_BACKGROUND_BLEED_Y}
+        width={SVG_SCENE_WIDTH + SEA_BACKGROUND_BLEED_X * 2}
+        height={SVG_SCENE_HEIGHT + SEA_BACKGROUND_BLEED_Y * 2}
+        fill="url(#mobileSeaGradient)"
+      />
+      <rect
+        x={SVG_SCENE_MIN_X - SEA_BACKGROUND_BLEED_X}
+        y={SVG_SCENE_MIN_Y - SEA_BACKGROUND_BLEED_Y}
+        width={SVG_SCENE_WIDTH + SEA_BACKGROUND_BLEED_X * 2}
+        height={SVG_SCENE_HEIGHT + SEA_BACKGROUND_BLEED_Y * 2}
+        fill="url(#mobileSeaGlow)"
+      />
+      <ellipse cx="-1190" cy="1165" rx="920" ry="700" fill="#72d9ef" opacity="0.08" />
+      <ellipse cx="3760" cy="6680" rx="1800" ry="900" fill="#6ad6f1" opacity="0.06" />
+      <ellipse cx="9040" cy="6480" rx="2400" ry="1100" fill="#5ecde7" opacity="0.05" />
+      <ellipse cx="12860" cy="1860" rx="1400" ry="820" fill="#70d8ef" opacity="0.07" />
+
+      <g opacity="0.88">
+        <path d={mapPaths.lampione} fill="none" stroke="#79dff1" strokeOpacity="0.3" strokeWidth="220" strokeLinejoin="round" />
+        <path d={mapPaths.lampedusa} fill="none" stroke="#79dff1" strokeOpacity="0.28" strokeWidth="280" strokeLinejoin="round" />
+        <path d={mapPaths.linosa} fill="none" stroke="#79dff1" strokeOpacity="0.3" strokeWidth="240" strokeLinejoin="round" />
+        <path d={mapPaths.rabbitIslet} fill="none" stroke="#79dff1" strokeOpacity="0.22" strokeWidth="170" strokeLinejoin="round" />
+        <path d={mapPaths.lampione} fill="none" stroke="#9cecff" strokeOpacity="0.18" strokeWidth="110" strokeLinejoin="round" />
+        <path d={mapPaths.lampedusa} fill="none" stroke="#9cecff" strokeOpacity="0.18" strokeWidth="140" strokeLinejoin="round" />
+        <path d={mapPaths.linosa} fill="none" stroke="#9cecff" strokeOpacity="0.18" strokeWidth="120" strokeLinejoin="round" />
+        <path d={mapPaths.rabbitIslet} fill="none" stroke="#9cecff" strokeOpacity="0.14" strokeWidth="84" strokeLinejoin="round" />
+      </g>
+
+      <g>
+        <path d={mapPaths.lampione} fill="url(#mobileLampioneGradient)" stroke="#f3e6c7" strokeWidth="12" strokeLinejoin="round" />
+        <path d={mapPaths.lampedusa} fill="url(#mobileLampedusaGradient)" stroke="#f3e6c7" strokeWidth="14" strokeLinejoin="round" />
+        <path d={mapPaths.rabbitIslet} fill="url(#mobileRabbitIsletGradient)" stroke="#f3e6c7" strokeWidth="10" strokeLinejoin="round" />
+        <path d={mapPaths.linosa} fill="url(#mobileLinosaGradient)" stroke="#f3e6c7" strokeWidth="14" strokeLinejoin="round" />
+      </g>
+
+      <path d={mapPaths.lampione} fill="none" stroke="#726a4f" strokeOpacity="0.16" strokeWidth="8" strokeLinejoin="round" />
+      <path d={mapPaths.lampedusa} fill="none" stroke="#726a4f" strokeOpacity="0.18" strokeWidth="10" strokeLinejoin="round" />
+      <path d={mapPaths.linosa} fill="none" stroke="#726a4f" strokeOpacity="0.18" strokeWidth="10" strokeLinejoin="round" />
+      <path d={mapPaths.rabbitIslet} fill="none" stroke="#726a4f" strokeOpacity="0.14" strokeWidth="8" strokeLinejoin="round" />
+    </svg>
+  );
 }
 
 export function IslandMapCanvas({
@@ -118,12 +263,14 @@ export function IslandMapCanvas({
   const [zoomLevelIndex, setZoomLevelIndex] = useState(DEFAULT_ZOOM_INDEX);
   const [center, setCenter] = useState<MapCoordinate>(DEFAULT_VIEW_CENTER);
   const [viewportSize, setViewportSize] = useState<ViewportSize>({ width: 0, height: 0 });
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
-  const markerRefs = useRef<Record<string, SVGGElement | null>>({});
+  const mobileLayerRef = useRef<HTMLDivElement | null>(null);
+  const markerRefs = useRef<Record<string, MarkerRefElement | null>>({});
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const hasUserAdjustedViewRef = useRef(false);
   const initialCenterRef = useRef<MapCoordinate>(DEFAULT_VIEW_CENTER);
@@ -193,8 +340,9 @@ export function IslandMapCanvas({
   }, [points, routeQrTarget]);
 
   useLayoutEffect(() => {
-    if (window.innerWidth < 768) {
-      setZoomLevelIndex(ZOOM_LEVELS.length - 1);
+    if (window.innerWidth < MOBILE_BREAKPOINT) {
+      setIsMobileViewport(true);
+      setZoomLevelIndex(ZOOM_LEVELS.length - 2);
       initialCenterRef.current = { mapX: 6427, mapY: 6144 };
     }
   }, []);
@@ -213,6 +361,7 @@ export function IslandMapCanvas({
         width: rect.width,
         height: rect.height
       });
+      setIsMobileViewport(rect.width < MOBILE_BREAKPOINT);
     };
 
     updateViewportSize();
@@ -325,13 +474,13 @@ export function IslandMapCanvas({
   }, [activePoiId, isClient, center, viewportSize, zoom, tooltipEnabled]);
 
   const getMapCoordinatesFromClientPoint = (clientX: number, clientY: number): MapCoordinate | null => {
-    const svgElement = svgRef.current;
+    const viewportElement = viewportRef.current;
 
-    if (!svgElement) {
+    if (!viewportElement) {
       return null;
     }
 
-    const rect = svgElement.getBoundingClientRect();
+    const rect = viewportElement.getBoundingClientRect();
 
     if (!rect.width || !rect.height) {
       return null;
@@ -355,6 +504,12 @@ export function IslandMapCanvas({
     };
   };
 
+  const applyPanTransform = (nextCenter: MapCoordinate) => {
+    if (gRef.current) {
+      gRef.current.style.transform = getGroupTransform(nextCenter, zoom, viewportSize);
+    }
+  };
+
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!(event.target instanceof Element)) {
       return;
@@ -372,7 +527,6 @@ export function IslandMapCanvas({
       return;
     }
 
-    setActivePoiId("");
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
 
@@ -384,8 +538,6 @@ export function IslandMapCanvas({
       currentCenter: center,
       didMove: false
     };
-
-    setIsPanning(true);
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -398,9 +550,11 @@ export function IslandMapCanvas({
     const dx = event.clientX - dragState.startX;
     const dy = event.clientY - dragState.startY;
 
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+    if (!dragState.didMove && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
       dragState.didMove = true;
       hasUserAdjustedViewRef.current = true;
+      setActivePoiId("");
+      setIsPanning(true);
     }
 
     const ppu = getPpu(viewportSize, zoom);
@@ -415,12 +569,7 @@ export function IslandMapCanvas({
     dragState.currentCenter = nextCenter;
     liveCenterRef.current = nextCenter;
 
-    // CSS transform on the inner <g> — handled entirely by the GPU compositor.
-    // The SVG element itself never moves; only its content layer is repositioned.
-    // No SVG re-layout, no filter re-rasterisation. React state is synced once on pointerup.
-    if (gRef.current) {
-      gRef.current.style.transform = getGroupTransform(nextCenter, zoom, viewportSize);
-    }
+    applyPanTransform(nextCenter);
   };
 
   const endPan = (event?: React.PointerEvent<HTMLDivElement>) => {
@@ -460,7 +609,7 @@ export function IslandMapCanvas({
 
   const wheelFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+  const handleWheel = (event: WheelEvent) => {
     event.preventDefault();
     setActivePoiId("");
     hasUserAdjustedViewRef.current = true;
@@ -477,9 +626,7 @@ export function IslandMapCanvas({
     // Direct DOM update on the <g> + debounced React state sync.
     // liveCenterRef accumulates deltas so each wheel event reads the correct base.
     liveCenterRef.current = nextCenter;
-    if (gRef.current) {
-      gRef.current.style.transform = getGroupTransform(nextCenter, zoom, viewportSize);
-    }
+    applyPanTransform(nextCenter);
 
     if (wheelFlushTimerRef.current !== null) {
       clearTimeout(wheelFlushTimerRef.current);
@@ -489,6 +636,28 @@ export function IslandMapCanvas({
       wheelFlushTimerRef.current = null;
     }, 150);
   };
+
+  useEffect(() => {
+    const viewportElement = viewportRef.current;
+
+    if (!viewportElement) {
+      return;
+    }
+
+    viewportElement.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      viewportElement.removeEventListener("wheel", handleWheel);
+    };
+  }, [isMobileViewport, viewportSize, zoom]);
+
+  useEffect(() => {
+    return () => {
+      if (wheelFlushTimerRef.current !== null) {
+        clearTimeout(wheelFlushTimerRef.current);
+      }
+    };
+  }, []);
 
   const togglePoi = (poiId: string) => {
     setActivePoiId((currentPoiId) => (currentPoiId === poiId ? "" : poiId));
@@ -532,12 +701,11 @@ export function IslandMapCanvas({
       >
         <div
           ref={viewportRef}
-          className={`absolute inset-0 touch-none select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"}`}
+          className={`absolute inset-0 z-0 touch-none select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"}`}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={endPan}
           onPointerCancel={endPan}
-          onWheel={handleWheel}
         >
           <svg
             ref={svgRef}
@@ -546,22 +714,22 @@ export function IslandMapCanvas({
             aria-label={messages.map.interactiveMapAriaLabel}
             role="img"
           >
-            {/*
-              All map content lives inside this <g>. Pan and zoom are applied as a
-              CSS transform here — the SVG element itself never moves, so there is
-              no clipping at the container edge. With will-change: transform the
-              browser promotes this group to its own GPU compositing layer; every
-              pointermove only triggers a compositor-thread texture repositioning —
-              no SVG re-layout, no filter re-rasterisation, no main-thread work.
-            */}
-            <g
-              ref={gRef}
-              style={{
-                transform: getGroupTransform(center, zoom, viewportSize),
-                transformOrigin: "0 0",
-                willChange: "transform"
-              }}
-            >
+              {/*
+                All map content lives inside this <g>. Pan and zoom are applied as a
+                CSS transform here — the SVG element itself never moves, so there is
+                no clipping at the container edge. With will-change: transform the
+                browser promotes this group to its own GPU compositing layer; every
+                pointermove only triggers a compositor-thread texture repositioning —
+                no SVG re-layout, no filter re-rasterisation, no main-thread work.
+              */}
+              <g
+                ref={gRef}
+                style={{
+                  transform: getGroupTransform(center, zoom, viewportSize),
+                  transformOrigin: "0 0",
+                  willChange: "transform"
+                }}
+              >
             <defs>
               <linearGradient
                 id="seaGradient"
@@ -643,7 +811,7 @@ export function IslandMapCanvas({
               <path d={mapPaths.rabbitIslet} fill="none" stroke="#9cecff" strokeOpacity="0.14" strokeWidth="84" strokeLinejoin="round" />
             </g>
 
-            <g filter="url(#islandShadow)">
+            <g filter={isMobileViewport ? undefined : "url(#islandShadow)"}>
               <path d={mapPaths.lampione} fill="url(#lampioneGradient)" stroke="#f3e6c7" strokeWidth="12" strokeLinejoin="round" />
               <path d={mapPaths.lampedusa} fill="url(#lampedusaGradient)" stroke="#f3e6c7" strokeWidth="14" strokeLinejoin="round" />
               <path d={mapPaths.rabbitIslet} fill="url(#rabbitIsletGradient)" stroke="#f3e6c7" strokeWidth="10" strokeLinejoin="round" />
@@ -695,7 +863,7 @@ export function IslandMapCanvas({
                 </g>
               );
             })}
-            </g>
+              </g>
           </svg>
         </div>
       </div>
@@ -704,7 +872,7 @@ export function IslandMapCanvas({
         {messages.map.dragHint}
       </div>
 
-      <div data-map-control="true" className="absolute right-4 top-4 z-20 flex flex-col items-center gap-3">
+      <div data-map-control="true" className="absolute right-4 top-4 z-30 flex flex-col items-center gap-3">
         <MapCompass />
         <div className="overflow-hidden rounded-[1.2rem] border border-white/55 bg-white/84 shadow-[0_18px_40px_rgba(16,36,63,0.16)] backdrop-blur">
           <button

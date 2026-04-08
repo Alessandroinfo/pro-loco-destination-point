@@ -10,6 +10,17 @@ export function PwaRegister() {
       return;
     }
 
+    let didReloadForUpdate = false;
+
+    const reloadOnControllerChange = () => {
+      if (didReloadForUpdate) {
+        return;
+      }
+
+      didReloadForUpdate = true;
+      window.location.reload();
+    };
+
     if (process.env.NODE_ENV !== "production") {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((registration) => {
@@ -28,14 +39,48 @@ export function PwaRegister() {
       return;
     }
 
+    navigator.serviceWorker.addEventListener("controllerchange", reloadOnControllerChange);
+
+    const activateWaitingWorker = (registration: ServiceWorkerRegistration) => {
+      if (!registration.waiting || !navigator.serviceWorker.controller) {
+        return;
+      }
+
+      registration.waiting.postMessage({ type: "SKIP_WAITING" });
+    };
+
     navigator.serviceWorker.register(withBasePath("/sw.js"), {
       scope: withBasePath("/"),
       // Prevent the browser from caching sw.js via HTTP cache so updates
       // are always detected on the next navigation (important on iOS Safari).
       updateViaCache: "none"
+    }).then((registration) => {
+      activateWaitingWorker(registration);
+
+      registration.addEventListener("updatefound", () => {
+        const installingWorker = registration.installing;
+
+        if (!installingWorker) {
+          return;
+        }
+
+        installingWorker.addEventListener("statechange", () => {
+          if (installingWorker.state === "installed") {
+            activateWaitingWorker(registration);
+          }
+        });
+      });
+
+      registration.update().catch(() => {
+        // Ignore manual update failures; the SW remains optional.
+      });
     }).catch(() => {
       // Registration failure should not block the kiosk experience.
     });
+
+    return () => {
+      navigator.serviceWorker.removeEventListener("controllerchange", reloadOnControllerChange);
+    };
   }, []);
 
   return null;
