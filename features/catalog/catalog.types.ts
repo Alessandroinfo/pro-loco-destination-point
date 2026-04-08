@@ -42,6 +42,26 @@ export type BusinessActions = {
   contact?: BusinessAction;
 };
 
+export type BusinessLocation = {
+  latitude: number;
+  longitude: number;
+};
+
+export type BusinessContact = {
+  phoneNumber?: string;
+  whatsappMessage?: string;
+};
+
+export type BusinessLinks = {
+  bookingUrl?: string;
+  websiteUrl?: string;
+};
+
+export type BusinessMedia = {
+  heroImage: string;
+  gallery: string[];
+};
+
 export type Business = {
   id: string;
   categoryId: CategoryId;
@@ -49,9 +69,16 @@ export type Business = {
   type: string;
   shortDescription: string;
   description: string;
-  hours: string;
+  openingHours: string;
   address: string;
+  location: BusinessLocation;
+  contact?: BusinessContact;
+  links?: BusinessLinks;
   actions: BusinessActions;
   heroImage: string;
   gallery: string[];
+};
+
+export type BusinessSeed = Omit<Business, "actions" | "heroImage" | "gallery"> & {
+  media: BusinessMedia;
 };

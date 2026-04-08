@@ -59,6 +59,9 @@ type Messages = {
     dragHint: string;
     zoomIn: string;
     zoomOut: string;
+    enterFullscreen: string;
+    exitFullscreen: string;
+    navigateTo: string;
     interactiveMapAriaLabel: string;
     routeButton: string;
   };
@@ -176,6 +179,9 @@ const messages: Record<Locale, Messages> = {
       dragHint: "Trascina con mouse o touch",
       zoomIn: "Aumenta lo zoom",
       zoomOut: "Riduci lo zoom",
+      enterFullscreen: "Schermo intero",
+      exitFullscreen: "Esci da schermo intero",
+      navigateTo: "Vai a",
       interactiveMapAriaLabel: "Mappa interattiva di Lampedusa, Linosa e Lampione",
       routeButton: "Portami li"
     },
@@ -292,6 +298,9 @@ const messages: Record<Locale, Messages> = {
       dragHint: "Drag with mouse or touch",
       zoomIn: "Zoom in",
       zoomOut: "Zoom out",
+      enterFullscreen: "Enter fullscreen",
+      exitFullscreen: "Exit fullscreen",
+      navigateTo: "Go to",
       interactiveMapAriaLabel: "Interactive map of Lampedusa, Linosa and Lampione",
       routeButton: "Take me there"
     },

@@ -37,6 +37,15 @@ const DEFAULT_VIEW_CENTER = {
 } as const;
 const ZOOM_LEVELS = [1, 1.08, 1.16, 1.24, 1.42, 1.62, 1.84, 2.08, 2.36, 2.68, 3.04, 3.44, 3.88, 4.36, 4.88, 5.44, 6.04, 6.68, 7.36];
 
+const ISLAND_INDICATORS = [
+  { id: "linosa", name: "Linosa", center: { mapX: 12860, mapY: 1860 } },
+  { id: "lampione", name: "Lampione", center: { mapX: -1190, mapY: 1165 } }
+] as const;
+
+// Estimated half-dimensions of the indicator pill (px) used for clamping to viewport bounds.
+const INDICATOR_PILL_HALF_W = 56;
+const INDICATOR_PILL_HALF_H = 18;
+
 const mapPaths = {
   lampione:
     "M -1396.39 625.44 L -1477.99 736.23 L -1505.19 917.21 L -1551.58 1061.82 L -1577.98 1135.4 L -1578.78 1240.27 L -1561.98 1323.99 L -1615.58 1419.56 L -1564.38 1553.18 L -1465.99 1638.59 L -1357.99 1698.64 L -1258.8 1704.56 L -1159.6 1655.51 L -1098.8 1594.62 L -1091.6 1451.69 L -990.81 1374.73 L -970.01 1347.67 L -874.01 1313.84 L -842.02 1213.21 L -846.82 1177.69 L -764.42 1160.77 L -771.62 1076.2 L -863.62 1011.08 L -948.41 873.23 L -1077.21 823.34 L -1396.39 625.44 Z",
@@ -149,6 +158,60 @@ function getMobileLayerTransform(center: MapCoordinate, zoom: number, viewportSi
   const ty = viewportSize.height / 2 - getMobileRenderY(center.mapY) * scale;
 
   return `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+}
+
+/**
+ * Returns the screen-space position and direction angle for an off-screen island
+ * indicator badge. Returns null when the island center is within the viewport.
+ */
+function getIslandIndicatorPosition(
+  islandCenter: MapCoordinate,
+  center: MapCoordinate,
+  zoom: number,
+  viewportSize: ViewportSize
+): { x: number; y: number; angle: number } | null {
+  if (!viewportSize.width || !viewportSize.height) return null;
+
+  const { ppu, tx, ty } = getTransformMetrics(center, zoom, viewportSize);
+  const screenX = islandCenter.mapX * ppu + tx;
+  const screenY = islandCenter.mapY * ppu + ty;
+
+  // Island center is on-screen — no indicator needed.
+  if (screenX >= 0 && screenX <= viewportSize.width && screenY >= 0 && screenY <= viewportSize.height) {
+    return null;
+  }
+
+  const vpCX = viewportSize.width / 2;
+  const vpCY = viewportSize.height / 2;
+  const dx = screenX - vpCX;
+  const dy = screenY - vpCY;
+  if (dx === 0 && dy === 0) return null;
+
+  const angle = Math.atan2(dy, dx);
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+
+  // Find intersection of direction ray with the viewport rectangle edges.
+  let edgeX: number;
+  let edgeY: number;
+
+  if (vpCX * absDy <= vpCY * absDx) {
+    // Hits left or right edge
+    const t = vpCX / absDx;
+    edgeX = vpCX + dx * t;
+    edgeY = vpCY + dy * t;
+  } else {
+    // Hits top or bottom edge
+    const t = vpCY / absDy;
+    edgeX = vpCX + dx * t;
+    edgeY = vpCY + dy * t;
+  }
+
+  // Clamp pill center so the full pill stays within the viewport.
+  edgeX = clamp(edgeX, INDICATOR_PILL_HALF_W + 8, viewportSize.width - INDICATOR_PILL_HALF_W - 8);
+  edgeY = clamp(edgeY, INDICATOR_PILL_HALF_H + 8, viewportSize.height - INDICATOR_PILL_HALF_H - 8);
+
+  return { x: edgeX, y: edgeY, angle };
 }
 
 function MobileMapBackdrop() {
@@ -266,6 +329,8 @@ export function IslandMapCanvas({
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
@@ -691,10 +756,32 @@ export function IslandMapCanvas({
     setZoomLevelIndex((currentIndex) => Math.max(currentIndex - 1, 0));
   };
 
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
   return (
-    <div className="relative isolate h-full overflow-visible">
+    <div ref={containerRef} className="relative isolate h-full select-none overflow-visible">
       <div
-        className="absolute inset-0 overflow-hidden rounded-[1.8rem] border border-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
+        className={`absolute inset-0 overflow-hidden ${isFullscreen ? "" : "rounded-[1.8rem]"} border border-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]`}
         style={{
           background: "linear-gradient(135deg, #0f5670 0%, #176987 38%, #1d7fa2 68%, #22799a 100%)"
         }}
@@ -868,7 +955,7 @@ export function IslandMapCanvas({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-white/76 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur">
+      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-white/76 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-navy-950/60 shadow-[0_12px_24px_rgba(16,36,63,0.12)] backdrop-blur sm:left-4 sm:translate-x-0">
         {messages.map.dragHint}
       </div>
 
@@ -900,7 +987,82 @@ export function IslandMapCanvas({
             </svg>
           </button>
         </div>
+        <button
+          type="button"
+          className="flex h-12 w-12 items-center justify-center rounded-[1.2rem] border border-white/55 bg-white/84 text-navy-950 shadow-[0_18px_40px_rgba(16,36,63,0.16)] backdrop-blur transition hover:bg-white/90"
+          onClick={toggleFullscreen}
+          aria-label={isFullscreen ? messages.map.exitFullscreen : messages.map.enterFullscreen}
+        >
+          {isFullscreen ? (
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+              <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+              <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+              <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+            </svg>
+          ) : (
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+              <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+              <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+              <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+            </svg>
+          )}
+        </button>
       </div>
+
+      {isViewReady && !pointInsertionMode && ISLAND_INDICATORS.map((island) => {
+        const pos = getIslandIndicatorPosition(island.center, center, zoom, viewportSize);
+        if (!pos) return null;
+        return (
+          <button
+            key={island.id}
+            data-map-control="true"
+            type="button"
+            aria-label={`${messages.map.navigateTo} ${island.name}`}
+            className="pointer-events-auto absolute z-20 flex items-center gap-1.5 rounded-full border border-white/55 bg-white/84 py-1.5 pl-3 pr-2.5 text-xs font-semibold text-navy-950 shadow-[0_8px_20px_rgba(16,36,63,0.14)] backdrop-blur transition hover:bg-white/96 active:scale-95"
+            style={{ left: pos.x, top: pos.y, transform: "translate(-50%, -50%)" }}
+            onClick={() => {
+              hasUserAdjustedViewRef.current = true;
+              setCenter(clampCenter(island.center, zoom));
+            }}
+          >
+            {pos.x < viewportSize.width / 2 && (
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                className="h-3.5 w-3.5 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ transform: `rotate(${pos.angle}rad)` }}
+              >
+                <path d="M2 8H12" />
+                <path d="M8 4l4 4-4 4" />
+              </svg>
+            )}
+            <span>{island.name}</span>
+            {pos.x >= viewportSize.width / 2 && (
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                className="h-3.5 w-3.5 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ transform: `rotate(${pos.angle}rad)` }}
+              >
+                <path d="M2 8H12" />
+                <path d="M8 4l4 4-4 4" />
+              </svg>
+            )}
+          </button>
+        );
+      })}
 
       {tooltipEnabled && isClient && activePoi
         ? createPortal(

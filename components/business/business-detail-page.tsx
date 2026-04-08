@@ -137,7 +137,7 @@ export function BusinessDetailPage({
           <aside className="glass-panel soft-outline rounded-[2rem] border p-7">
             <div className="space-y-5">
               <InfoRow icon={<SparkIcon />} label={messages.business.typeLabel} value={business.type} />
-              <InfoRow icon={<ClockIcon />} label={messages.business.hoursLabel} value={business.hours} />
+              <InfoRow icon={<ClockIcon />} label={messages.business.hoursLabel} value={business.openingHours} />
               <InfoRow icon={<PinIcon />} label={messages.business.addressLabel} value={business.address} />
             </div>
 

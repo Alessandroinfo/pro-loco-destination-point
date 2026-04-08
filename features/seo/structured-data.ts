@@ -31,6 +31,6 @@ export function getBusinessStructuredData(business: Business) {
     name: business.name,
     description: business.description,
     address: business.address,
-    openingHours: business.hours
+    openingHours: business.openingHours
   };
 }
