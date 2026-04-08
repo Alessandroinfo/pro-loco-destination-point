@@ -188,28 +188,13 @@ function getIslandIndicatorPosition(
   if (dx === 0 && dy === 0) return null;
 
   const angle = Math.atan2(dy, dx);
-  const absDx = Math.abs(dx);
-  const absDy = Math.abs(dy);
 
-  // Find intersection of direction ray with the viewport rectangle edges.
-  let edgeX: number;
-  let edgeY: number;
-
-  if (vpCX * absDy <= vpCY * absDx) {
-    // Hits left or right edge
-    const t = vpCX / absDx;
-    edgeX = vpCX + dx * t;
-    edgeY = vpCY + dy * t;
-  } else {
-    // Hits top or bottom edge
-    const t = vpCY / absDy;
-    edgeX = vpCX + dx * t;
-    edgeY = vpCY + dy * t;
-  }
-
-  // Clamp pill center so the full pill stays within the viewport.
-  edgeX = clamp(edgeX, INDICATOR_PILL_HALF_W + 8, viewportSize.width - INDICATOR_PILL_HALF_W - 8);
-  edgeY = clamp(edgeY, INDICATOR_PILL_HALF_H + 8, viewportSize.height - INDICATOR_PILL_HALF_H - 8);
+  // Always pin the badge to the vertical center of the viewport,
+  // on the left or right edge depending on the island's horizontal position.
+  const edgeX = dx >= 0
+    ? viewportSize.width - INDICATOR_PILL_HALF_W - 8
+    : INDICATOR_PILL_HALF_W + 8;
+  const edgeY = vpCY;
 
   return { x: edgeX, y: edgeY, angle };
 }
@@ -330,6 +315,7 @@ export function IslandMapCanvas({
   const [isPanning, setIsPanning] = useState(false);
   const [routeQrTarget, setRouteQrTarget] = useState<PointOfInterest | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreenSupported, setIsFullscreenSupported] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -757,6 +743,8 @@ export function IslandMapCanvas({
   };
 
   useEffect(() => {
+    setIsFullscreenSupported(Boolean(document.fullscreenEnabled));
+
     const handleFullscreenChange = () => {
       setIsFullscreen(Boolean(document.fullscreenElement));
     };
@@ -987,7 +975,7 @@ export function IslandMapCanvas({
             </svg>
           </button>
         </div>
-        <button
+        {isFullscreenSupported && <button
           type="button"
           className="flex h-12 w-12 items-center justify-center rounded-[1.2rem] border border-white/55 bg-white/84 text-navy-950 shadow-[0_18px_40px_rgba(16,36,63,0.16)] backdrop-blur transition hover:bg-white/90"
           onClick={toggleFullscreen}
@@ -1008,7 +996,7 @@ export function IslandMapCanvas({
               <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
             </svg>
           )}
-        </button>
+        </button>}
       </div>
 
       {isViewReady && !pointInsertionMode && ISLAND_INDICATORS.map((island) => {
